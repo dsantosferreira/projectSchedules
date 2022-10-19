@@ -1,8 +1,5 @@
-//
-// Created by franciscocardoso on 18-10-2022.
-//
 #include "Student.h"
-#include "Uc.h"
+#include "UcClass.h"
 #include <list>
 #include <set>
 using namespace std;
@@ -25,7 +22,7 @@ public:
 private:
     //set<Unkownstructer> IDK; set para varias ordenações de estudante
     set<Student> students;
-    list<Uc> schedule;
+    list<UcClass> schedule;
 
 
 
