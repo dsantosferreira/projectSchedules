@@ -23,9 +23,6 @@ private:
     //set<Unkownstructer> IDK; set para varias ordenações de estudante
     set<Student> students;
     list<UcClass> schedule;
-
-
-
 };
 
 
