@@ -1,6 +1,6 @@
 #include "Student.h"
 #include "UcClass.h"
-#include <list>
+#include <vector>
 #include <set>
 using namespace std;
 
@@ -8,8 +8,12 @@ using namespace std;
 #define PROJETO_SCHEDULE_DATABASE_H
 
 
-class dataBase {
+class Database {
 public:
+    Database();
+    set<Student> getStudents() const;
+    vector<UcClass> getSchedule() const;
+
     /* Funcões para listagens
      * Funcões para pesquisa
      * Funçoes dos pedidos
@@ -20,9 +24,13 @@ public:
      * Funções de escrita em ficheiros
      * */
 private:
+    void readUcClasses();
+    set<Student> readStudents();
+    void readUcClassesFile();
+    void readStudentClassesFile();
     //set<Unkownstructer> IDK; set para varias ordenações de estudante
     set<Student> students;
-    list<UcClass> schedule;
+    vector<UcClass> schedule;
 };
 
 
