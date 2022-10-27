@@ -11,7 +11,7 @@ public:
     string getUcCode() const;
     string getClassCode() const;
     list<Lecture> getLectures() const;
-    void print() const;
+    //void print() const;
 private:
     string ucCode;
     string classCode;

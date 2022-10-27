@@ -10,12 +10,17 @@ using namespace std;
 
 class Student {
 public:
-    Student();
+
     Student(string studentName_, int studentCode_, list<UcClass> ucClasses_);
     string getStudentname()const;
     int getstudentCode() const;
     list<UcClass> getUcClasses() const;
-    void print();
+
+    string classOfUc(string ucCode_)const;
+    string ucOfClass(string classCode_ ) const;
+    bool hasClass(string classCode_)const;
+    bool hasUc(string ucCode_)const;
+    //void print();
     bool operator< (const Student & student); // para o set conseguir comparar os estudantes;
 private:
     string studentName;
