@@ -18,12 +18,17 @@ public:
     int getStudentCode() const;
     list<UcClass> getUcClasses() const;
     void print();
-    bool operator<(const Student student) const; // para o set conseguir comparar os estudantes;
+    string classOfUc(string ucCode_)const;
+    string ucOfClass(string classCode_ ) const;
+    bool hasClass(string classCode_)const;
+    bool hasUc(string ucCode_)const;
+    bool operator< (const Student & student) const;
+
 private:
     string studentName;
     int studentCode;
-    list<UcClass> ucClasses;// tentar transformar em int int
+    list<UcClass> ucClasses;
 };
 
 
-#endif //PROJETO_SCHEDULE_STUDENT_H
+#endif

@@ -40,6 +40,7 @@ void Database::readUcClassesFile() {
     ifstream in("../files/classes.csv");
     string aLine, ucCode, classCode, weekDay, type, startTime, duration;
     UcClass* aUcClass = NULL;
+    list<Lecture> lectureList;
 
     getline(in, aLine);
     int i, j, middle;
@@ -57,6 +58,8 @@ void Database::readUcClassesFile() {
             break;
 
         aUcClass = findUcClass(ucCode, classCode);
+        lectureList = (*aUcClass).getLectures();
+        // NÃO ESTÁ A ADICIONAR
         (*aUcClass).getLectures().push_back(Lecture(weekDay, stof(startTime), stof(duration), type));
     }
 }
