@@ -7,9 +7,6 @@ using namespace std;
 
 class UcClass {
 public:
-    string ucCode;
-    string classCode;
-    list<Lecture> lectures;
     UcClass(string ucCode_, string classCode_, list<Lecture> lectures_);
     string getUcCode() const;
     string getClassCode() const;
@@ -17,10 +14,9 @@ public:
     bool operator<(const UcClass secondUcClass) const;
     void print() const;
 private:
-    /*
     string ucCode;
     string classCode;
-    list<Lecture> lectures;*/
+    list<Lecture> lectures;
 };
 
 #endif

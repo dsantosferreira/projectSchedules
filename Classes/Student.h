@@ -1,6 +1,3 @@
-//
-// Created by franciscocardoso on 18-10-2022.
-//
 #include <string>
 #include<list>
 #include "UcClass.h"
@@ -12,11 +9,16 @@ class Student {
 public:
     Student();
     Student(string studentName_, int studentCode_, list<UcClass> ucClasses_);
-    string getStudentname()const;
-    int getstudentCode() const;
+    string getStudentname() const;
+    void setStudentName(string studentName_);
+    void setStudentCode(int studentCode_);
+    void setUcClasses(list<UcClass> ucClasses_);
+    void addUcClass(UcClass aUcClass);
+    string getStudentName() const;
+    int getStudentCode() const;
     list<UcClass> getUcClasses() const;
     void print();
-    bool operator< (const Student & student); // para o set conseguir comparar os estudantes;
+    bool operator<(const Student student) const; // para o set conseguir comparar os estudantes;
 private:
     string studentName;
     int studentCode;

@@ -25,9 +25,9 @@ public:
      * */
 private:
     void readUcClasses();
-    set<Student> readStudents();
     void readUcClassesFile();
     void readStudentClassesFile();
+    UcClass* findUcClass(string ucCode, string classCode);
     //set<Unkownstructer> IDK; set para varias ordenações de estudante
     set<Student> students;
     vector<UcClass> schedule;

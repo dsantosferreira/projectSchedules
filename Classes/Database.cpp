@@ -5,10 +5,15 @@
 Database::Database() {
     readUcClasses();
     readUcClassesFile();
+    readStudentClassesFile();
 }
 
 vector<UcClass> Database::getSchedule() const {
     return schedule;
+}
+
+set<Student> Database::getStudents() const {
+    return students;
 }
 
 void Database::readUcClasses() {
@@ -34,6 +39,8 @@ void Database::readUcClasses() {
 void Database::readUcClassesFile() {
     ifstream in("../files/classes.csv");
     string aLine, ucCode, classCode, weekDay, type, startTime, duration;
+    UcClass* aUcClass = NULL;
+
     getline(in, aLine);
     int i, j, middle;
 
@@ -49,30 +56,67 @@ void Database::readUcClassesFile() {
         if (ucCode[0] == 'U')
             break;
 
-        i = 0;
-        j = schedule.size() - 1;
-        while (i <= j) {
-            middle = i + (j - i)/2;
-            UcClass* curr = &schedule[middle];
-            if (ucCode < (*curr).ucCode) {
-                j = middle - 1;
+        aUcClass = findUcClass(ucCode, classCode);
+        (*aUcClass).getLectures().push_back(Lecture(weekDay, stof(startTime), stof(duration), type));
+    }
+}
+
+void Database::readStudentClassesFile() {
+    ifstream in("../files/students_classes.csv");
+    string stuCode, stuName, ucCode, classCode, aLine, prevStuCode = "";
+    list<UcClass> emptyList;
+    Student currStudent;
+    UcClass* aUcClass = NULL;
+
+    getline(in, aLine);
+    while(getline(in, aLine)) {
+        // Read a line
+        istringstream inn(aLine);
+        getline(inn, stuCode, ',');
+        getline(inn, stuName, ',');
+        getline(inn, ucCode, ',');
+        getline(inn, classCode, '\r');
+
+        if (stuCode != prevStuCode) {
+            if (prevStuCode != "")
+                students.insert(currStudent);
+            currStudent.setStudentName(stuName);
+            currStudent.setStudentCode(stoi(stuCode));
+            currStudent.setUcClasses(emptyList);
+        }
+
+        aUcClass = findUcClass(ucCode, classCode);
+        currStudent.addUcClass(*aUcClass);
+        prevStuCode = stuCode;
+    }
+}
+
+UcClass* Database::findUcClass(string ucCode, string classCode) {
+    int i, j, middle;
+    i = 0;
+    j = schedule.size() - 1;
+    while (i <= j) {
+        middle = i + (j - i)/2;
+        UcClass* curr = &schedule[middle];
+        if (ucCode < (*curr).getUcCode()) {
+            j = middle - 1;
+        }
+        else if (ucCode == (*curr).getUcCode()) {
+            if (classCode == (*curr).getClassCode()) {
+                return curr;
             }
-            else if (ucCode == (*curr).ucCode) {
-                if (classCode == (*curr).classCode) {
-                    (*curr).lectures.push_back(Lecture(weekDay, stof(startTime), stof(duration), type));
-                    break;
-                }
-                else if (classCode < (*curr).classCode) {
-                    j = middle - 1;
-                }
-                else {
-                    i = middle + 1;
-                }
+            else if (classCode < (*curr).getClassCode()) {
+                j = middle - 1;
             }
             else {
                 i = middle + 1;
             }
         }
+        else {
+            i = middle + 1;
+        }
     }
 }
+
+
 
