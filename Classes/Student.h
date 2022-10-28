@@ -12,16 +12,16 @@ class Student {
 public:
 
     Student(string studentName_, int studentCode_, list<UcClass> ucClasses_);
+    Student();
     string getStudentname()const;
     int getstudentCode() const;
     list<UcClass> getUcClasses() const;
-
     string classOfUc(string ucCode_)const;
     string ucOfClass(string classCode_ ) const;
     bool hasClass(string classCode_)const;
     bool hasUc(string ucCode_)const;
     //void print();
-    bool operator< (const Student & student); // para o set conseguir comparar os estudantes;
+    bool operator< (const Student & student)const; // para o set conseguir comparar os estudantes;
 private:
     string studentName;
     int studentCode;

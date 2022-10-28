@@ -5,13 +5,16 @@ Student::Student(string studentName_, int studentCode_, list<UcClass> ucClasses_
     this->studentName= studentName_;
     this->ucClasses=ucClasses_;
 }
+
 string Student::getStudentname() const {
     return this->studentName;
 }
+
 list<UcClass> Student::getUcClasses() const {
     return  this->ucClasses;
 }
-bool Student::operator<(const Student &student) {
+
+bool Student::operator<(const Student &student) const{
     return this->studentCode < student.studentCode;
 }
 

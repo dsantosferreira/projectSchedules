@@ -1,0 +1,5 @@
+Show
+Search
+Make request
+Save changes
+Quit

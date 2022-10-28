@@ -2,13 +2,14 @@
 #include "UcClass.h"
 #include <list>
 #include <set>
+
 using namespace std;
 
 #ifndef PROJETO_SCHEDULE_DATABASE_H
 #define PROJETO_SCHEDULE_DATABASE_H
 
 
-class dataBase {
+class DataBase {
 public:
     /* Funcões para listagens
      * Funcões para pesquisa
@@ -23,6 +24,7 @@ private:
     //set<Unkownstructer> IDK; set para varias ordenações de estudante
     set<Student> students;
     list<UcClass> schedule;
+
 
 
 
