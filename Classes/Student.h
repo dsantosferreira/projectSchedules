@@ -1,8 +1,5 @@
-//
-// Created by franciscocardoso on 18-10-2022.
-//
 #include <string>
-#include<list>
+#include <list>
 #include "UcClass.h"
 using namespace std;
 #ifndef PROJETO_SCHEDULE_STUDENT_H
@@ -10,23 +7,27 @@ using namespace std;
 
 class Student {
 public:
-
-    Student(string studentName_, int studentCode_, list<UcClass> ucClasses_);
     Student();
-    string getStudentname()const;
-    int getstudentCode() const;
+    Student(string studentName_, int studentCode_, list<UcClass> ucClasses_);
     list<UcClass> getUcClasses() const;
+    void setStudentName(string studentName_);
+    void setStudentCode(int studentCode_);
+    void setUcClasses(list<UcClass> ucClasses_);
+    void addUcClass(UcClass aUcClass);
+    string getStudentName() const;
+    int getStudentCode() const;
+    void print();
     string classOfUc(string ucCode_)const;
     string ucOfClass(string classCode_ ) const;
     bool hasClass(string classCode_)const;
     bool hasUc(string ucCode_)const;
-    //void print();
-    bool operator< (const Student & student)const; // para o set conseguir comparar os estudantes;
+    bool operator< (const Student & student) const; // para o set conseguir comparar os estudantes;
+
 private:
     string studentName;
     int studentCode;
-    list<UcClass> ucClasses;// tentar transformar em int int
+    list<UcClass> ucClasses;
 };
 
 
-#endif //PROJETO_SCHEDULE_STUDENT_H
+#endif

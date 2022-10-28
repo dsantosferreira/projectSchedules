@@ -1,11 +1,7 @@
-#include <iostream>
-#include <fstream>
-#include <sstream>
-#include <stdlib.h>
-
+#include "Classes/Database.h"
+#include "Classes/Program.h"
 using namespace std;
 int main() {
-
-
+    
     return 0;
 }

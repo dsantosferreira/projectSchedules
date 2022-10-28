@@ -3,7 +3,7 @@ project(Projeto_schedule)
 
 set(CMAKE_CXX_STANDARD 14)
 
-add_executable(Projeto_schedule main.cpp Classes/Student.cpp Classes/Student.h Classes/UcClass.cpp Classes/UcClass.h Classes/Lecture.cpp Classes/Lecture.h Classes/Database.cpp Classes/Database.h Classes/Program.cpp Classes/Program.h Classes/Menu.cpp Classes/Menu.h)
+add_executable(Projeto_schedule main.cpp Classes/Student.cpp Classes/Student.h Classes/UcClass.cpp Classes/UcClass.h Classes/Lecture.cpp Classes/Lecture.h Classes/Database.cpp Classes/Database.h Classes/Program.h Classes/Program.cpp Classes/Menu.cpp Classes/Menu.h)
 
 # Doxygen Build
 find_package(Doxygen)
@@ -24,3 +24,5 @@ if(DOXYGEN_FOUND)
 else(DOXYGEN_FOUND)
     message("Doxygen needs to be installed to generate the documentation.")
 endif(DOXYGEN_FOUND)
+
+
