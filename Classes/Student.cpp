@@ -27,7 +27,7 @@ string Student::getStudentName() const {
     return this->studentName;
 }
 list<UcClass> Student::getUcClasses() const {
-    return  this->ucClasses;
+    return this->ucClasses;
 }
 bool Student::operator<(const Student &student) const {
     return this->studentCode < student.studentCode;

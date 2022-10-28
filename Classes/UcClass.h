@@ -11,6 +11,7 @@ public:
     string getUcCode() const;
     string getClassCode() const;
     list<Lecture> getLectures() const;
+    void addALecture(Lecture aLecture);
     bool operator<(const UcClass secondUcClass) const;
     void print() const;
 private:

@@ -1,6 +1,7 @@
 #include "Database.h"
 #include <fstream>
 #include <sstream>
+#include <iostream>
 
 Database::Database() {
     readUcClasses();
@@ -43,7 +44,6 @@ void Database::readUcClassesFile() {
     list<Lecture> lectureList;
 
     getline(in, aLine);
-    int i, j, middle;
 
     while(getline(in, aLine)) {
         istringstream inn(aLine);
@@ -58,13 +58,12 @@ void Database::readUcClassesFile() {
             break;
 
         aUcClass = findUcClass(ucCode, classCode);
-        lectureList = (*aUcClass).getLectures();
-        // NÃO ESTÁ A ADICIONAR
-        (*aUcClass).getLectures().push_back(Lecture(weekDay, stof(startTime), stof(duration), type));
+        aUcClass->addALecture(Lecture(weekDay, stof(startTime), stof(duration), type));
     }
 }
 
 void Database::readStudentClassesFile() {
+    int counter = 0;
     ifstream in("../files/students_classes.csv");
     string stuCode, stuName, ucCode, classCode, aLine, prevStuCode = "";
     list<UcClass> emptyList;
@@ -81,8 +80,9 @@ void Database::readStudentClassesFile() {
         getline(inn, classCode, '\r');
 
         if (stuCode != prevStuCode) {
-            if (prevStuCode != "")
+            if (prevStuCode != "") {
                 students.insert(currStudent);
+            }
             currStudent.setStudentName(stuName);
             currStudent.setStudentCode(stoi(stuCode));
             currStudent.setUcClasses(emptyList);
@@ -92,6 +92,7 @@ void Database::readStudentClassesFile() {
         currStudent.addUcClass(*aUcClass);
         prevStuCode = stuCode;
     }
+    students.insert(currStudent);
 }
 
 UcClass* Database::findUcClass(string ucCode, string classCode) {

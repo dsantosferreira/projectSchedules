@@ -28,3 +28,7 @@ string UcClass::getClassCode() const {
 list<Lecture> UcClass::getLectures() const {
     return this->lectures;
 }
+
+void UcClass::addALecture(Lecture aLecture) {
+    lectures.push_back(aLecture);
+}
