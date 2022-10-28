@@ -5,7 +5,7 @@
 #include <vector>
 #include "Menu.h"
 #include <string>
-#include "DataBase.h"
+#include "Database.h"
 using namespace std;
 #ifndef PROJETO_SCHEDULE_PROGRAM_H
 #define PROJETO_SCHEDULE_PROGRAM_H
@@ -26,7 +26,7 @@ public:
 private:
     int currentMenuPage;
     vector<Menu> menus;
-    DataBase data;
+    Database data;
 };
 
 

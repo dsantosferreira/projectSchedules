@@ -9,7 +9,7 @@ using namespace std;
 #define PROJETO_SCHEDULE_DATABASE_H
 
 
-class DataBase {
+class Database {
 public:
     /* Funcões para listagens
      * Funcões para pesquisa
