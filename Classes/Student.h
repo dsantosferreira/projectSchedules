@@ -1,6 +1,7 @@
 #include <string>
 #include <list>
 #include "UcClass.h"
+#include <vector>
 using namespace std;
 #ifndef PROJETO_SCHEDULE_STUDENT_H
 #define PROJETO_SCHEDULE_STUDENT_H
@@ -16,12 +17,12 @@ public:
     void addUcClass(UcClass aUcClass);
     string getStudentName() const;
     int getStudentCode() const;
-    void print();
     string classOfUc(string ucCode_)const;
     string ucOfClass(string classCode_ ) const;
     bool hasClass(string classCode_)const;
     bool hasUc(string ucCode_)const;
     bool operator< (const Student & student) const; // para o set conseguir comparar os estudantes;
+    void printGraficalSchedule() const;
 
 private:
     string studentName;

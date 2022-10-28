@@ -17,6 +17,7 @@ void Student::setUcClasses(list<UcClass> ucClasses_) {
 void Student::addUcClass(UcClass aUcClass) {
     ucClasses.push_back(aUcClass);
 }
+/**/
 
 Student::Student(string studentName_, int studentCode_, list<UcClass> ucClasses_){
     this->studentCode=studentCode_;
@@ -68,4 +69,57 @@ bool Student::hasUc(string ucCode_) const {
         if(ucClass.getUcCode()==ucCode_) return true;
     }
     return false;
+}
+
+void Student::printGraficalSchedule() const {
+    cout<<this->studentName<<" Schedule"<<endl;
+    string schedual=" ____________________________________________________________________________________ \n"
+                    "|   Hour  |    Monday    |   Tuesday    |   Wednesday  |   Thursday   |    Friday    |\n"
+                    "|____________________________________________________________________________________|\n";
+
+
+    vector<string> periodOfTime;/*this vector will contain what has to be printed in each period of time
+                                (24 periods of time each day 5 days of the week and each period has a sperating line so times two)*/
+    for(int i=0;i<24*5*2;i+=2){
+        periodOfTime.push_back("              |");
+        periodOfTime.push_back("______________|");
+    } //Inizializing the vctor with alternating lines;
+
+    for(UcClass aux:this->ucClasses){
+        for(Lecture lecture:aux.getLectures()){
+            string weekday=lecture.getWeekDay();
+            int weekDayPosition;
+            if(weekday=="Monday") weekDayPosition=0;
+            else if(weekday=="Tuesday") weekDayPosition=1;
+            else if( weekday=="Wednesday") weekDayPosition=2;
+            else if(weekday=="Thursday") weekDayPosition=3;
+            else weekDayPosition=4;
+
+            float duration=lecture.getDuration();
+
+            int lectureStartPosition=24*2*weekDayPosition +(lecture.getLectureTime().first-8.00)*4;
+            periodOfTime[lectureStartPosition]=" "+aux.getUcCode()+"("+lecture.getType()+")";
+            if(lecture.getType().length()==1) periodOfTime[lectureStartPosition]+="  |";
+            else  periodOfTime[lectureStartPosition]+=" |";
+            periodOfTime[++lectureStartPosition]="   "+aux.getClassCode()+"    |";
+            duration-=0.5;
+            while(duration>0.5){
+                duration-=0.5;
+                periodOfTime[++lectureStartPosition]="              |";
+                periodOfTime[++lectureStartPosition]="              |";
+            }
+            periodOfTime[++lectureStartPosition]="              |";
+        }
+    }
+    float time=8.0;
+    for(int i=0;i<24*2;i+=2) {
+
+        if(time<10) schedual+="|   ";
+        else schedual+="|  ";
+        schedual+=to_string((int)time)+':'+ to_string((int)((time-(int)time)*6))+"0  |"+periodOfTime[i]+periodOfTime[48*1+i]+periodOfTime[48*2+i]+periodOfTime[48*3+i]+periodOfTime[48*4+i]+'\n';
+        schedual+="|_________|"+periodOfTime[i+1]+periodOfTime[48*1+i+1]+periodOfTime[48*2+i+1]+periodOfTime[48*3+i+1]+periodOfTime[48*4+i+1]+'\n';
+        time+=0.5;
+
+    }
+cout<<schedual;
 }

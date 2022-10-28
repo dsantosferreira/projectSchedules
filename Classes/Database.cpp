@@ -120,4 +120,6 @@ UcClass* Database::findUcClass(string ucCode, string classCode) {
             i = middle + 1;
         }
     }
+
 }
+

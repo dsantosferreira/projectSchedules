@@ -30,3 +30,6 @@ void Lecture::print() const {
     cout << this->weekDay << " " << this->lectureTime.first << " " << this->lectureTime.first + this->lectureTime.second
          << " " << this->type;
 }
+string Lecture::getWeekDay() const {
+    return this->weekDay;
+}

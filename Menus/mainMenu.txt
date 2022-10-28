@@ -1,5 +1,6 @@
 Show
 Search
+Schedule
 Make request
 Save changes
 Quit

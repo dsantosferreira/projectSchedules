@@ -6,6 +6,7 @@
 #include "Menu.h"
 #include <string>
 #include "Database.h"
+#include "Student.h"
 using namespace std;
 #ifndef PROJETO_SCHEDULE_PROGRAM_H
 #define PROJETO_SCHEDULE_PROGRAM_H
@@ -20,7 +21,7 @@ public:
     void run();
     void menu();
     void createMenu();
-    void printShedual()const;
+    void printSchedule()const;
 
 
 private:

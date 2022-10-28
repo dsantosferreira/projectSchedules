@@ -15,7 +15,7 @@ public:
     set<Student> getStudents() const;
     vector<UcClass> getSchedule() const;
 
-    /* Funcões para listagens
+    /** Funcões para listagens
      * Funcões para pesquisa
      * Funçoes dos pedidos
      * Funcões de inicialização de estruturas
@@ -23,7 +23,7 @@ public:
      * Funções de leitura
      * Funcões print
      * Funções de escrita em ficheiros
-     * */
+      */
 private:
     void readUcClasses();
     void readUcClassesFile();

@@ -1,5 +1,6 @@
 #include <string>
 
+#include <iostream>
 using namespace std;
 #ifndef PROJETO_SCHEDULE_LECTURE_H
 #define PROJETO_SCHEDULE_LECTURE_H
@@ -13,17 +14,11 @@ public:
     pair<float,float> getLectureTime()const;
     int getDuration()const;
     void print()const;
+
+private:
     string weekDay;
     pair<float,float> lectureTime;
     string type;
-
-
-
-private:
-    /*
-    string weekDay;
-    pair<float,float> lectureTime;
-    string type;*/
 };
 
 

@@ -7,8 +7,8 @@
 Program::Program() {
     this->currentMenuPage=0;
     createMenu();
+    this->data=Database();
 }
-
 void Program::createMenu() {
     this->menus.push_back(Menu("../Menus/mainMenu.txt"));//Inatialize main menu
     this->menus.push_back(Menu("../Menus/showSubMenu.txt"));// Inatialize show submenu
@@ -61,6 +61,9 @@ void Program::menu() {
                             //use func or change currentMenuPage
                             break;
                         case '5':
+                            //use func or change currentMenuPage
+                            break;
+                        case '6':
                             this->currentMenuPage = -1; //-1 indicates that it wants to leave
                             break;
                         default:
@@ -94,10 +97,21 @@ void Program::menu() {
                 default:
                     cond = true;
             }
-
         }
         if (cond) cout << "\nInvalid intput. Insert a valid option:"; //the input was invalid
-
+    }
+}
+void Program::printSchedule() const {
+    cout<<"Introduce Students code: ";
+    int up;
+    cin>>up;
+    list<UcClass>emptyList;
+    set<Student> students= data.getStudents();
+    auto itr=students.find(Student("Irrelevant",up,emptyList));
+    if(itr==students.end()){
+        cout<<"Student not found\n";
+    }else {
+        itr->printGraficalSchedule();
     }
 }
 
