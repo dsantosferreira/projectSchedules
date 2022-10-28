@@ -1,21 +1,39 @@
 #include "Student.h"
 
+Student::Student() {}
+
+void Student::setStudentCode(int studentCode_) {
+    studentCode = studentCode_;
+}
+
+void Student::setStudentName(std::string studentName_) {
+    studentName = studentName_;
+}
+
+void Student::setUcClasses(list<UcClass> ucClasses_) {
+    ucClasses = ucClasses_;
+}
+
+void Student::addUcClass(UcClass aUcClass) {
+    ucClasses.push_back(aUcClass);
+}
+
 Student::Student(string studentName_, int studentCode_, list<UcClass> ucClasses_){
     this->studentCode=studentCode_;
     this->studentName= studentName_;
     this->ucClasses=ucClasses_;
 }
-string Student::getStudentname() const {
+string Student::getStudentName() const {
     return this->studentName;
 }
 list<UcClass> Student::getUcClasses() const {
-    return  this->ucClasses;
+    return this->ucClasses;
 }
-bool Student::operator<(const Student &student) {
+bool Student::operator<(const Student &student) const {
     return this->studentCode < student.studentCode;
 }
 
-int Student::getstudentCode() const {
+int Student::getStudentCode() const {
     return this->studentCode;
 }
 

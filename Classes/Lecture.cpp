@@ -1,13 +1,10 @@
-//
-// Created by franciscocardoso on 18-10-2022.
-//
 #include <iostream>
 #include <string>
 #include "Lecture.h"
 
-Lecture::Lecture(std::string weekDay_, float start_, int duration, std::string type_) {
+Lecture::Lecture(string weekDay_, float start_, float duration_, string type_) {
     this->weekDay = weekDay_;
-    this->lectureTime = pair<float, float>(start_,start_ + duration);
+    this->lectureTime = pair<float, float>(start_,start_ + duration_);
     this->type = type_;
 }
 
@@ -30,5 +27,6 @@ int Lecture::endTime() const{
 */
 
 void Lecture::print() const {
-    cout << this->weekDay << " " << this->lectureTime.first << " " << this->lectureTime.first + this->lectureTime.second << " " << this->type;
+    cout << this->weekDay << " " << this->lectureTime.first << " " << this->lectureTime.first + this->lectureTime.second
+         << " " << this->type;
 }
