@@ -3,7 +3,8 @@
 using namespace std;
 int main() {
     Program p=Program();
-    p.printSchedule();
+    //p.printSchedule(); //test the schedule
+    p.run() ; //test the menu
 
     return 0;
 }

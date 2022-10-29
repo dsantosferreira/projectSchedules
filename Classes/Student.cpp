@@ -123,3 +123,16 @@ void Student::printGraficalSchedule() const {
     }
 cout<<schedual;
 }
+
+bool Student::hasUcClass(UcClass ucClass_) const {
+    for (UcClass ucClass: ucClasses) {
+        if (ucClass.getUcCode() == ucClass_.getUcCode() && ucClass.getClassCode() == ucClass_.getClassCode()) {
+            return true;
+        }
+    }
+    return false;
+}
+
+void Student::print() const{
+    std::cout << studentName << '|' << studentCode << endl;
+}
