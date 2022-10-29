@@ -122,5 +122,13 @@ UcClass* Database::findUcClass(string ucCode, string classCode) {
     }
 }
 
+void Database::searchByUC(std::string ucCode){
+    for(Student student : students){
+        if(student.hasUc(ucCode)){
+            student.print();
+        }
+    }
+}
+
 
 

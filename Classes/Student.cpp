@@ -1,3 +1,4 @@
+#include <iostream>
 #include "Student.h"
 
 Student::Student() {}
@@ -16,6 +17,10 @@ void Student::setUcClasses(list<UcClass> ucClasses_) {
 
 void Student::addUcClass(UcClass aUcClass) {
     ucClasses.push_back(aUcClass);
+}
+
+void Student::print(){
+    std::cout << studentName << '|' << studentCode << endl;
 }
 
 Student::Student(string studentName_, int studentCode_, list<UcClass> ucClasses_){
@@ -63,6 +68,15 @@ bool Student::hasClass(string classCode_) const {
 bool Student::hasUc(string ucCode_) const {
     for(UcClass ucClass: this->ucClasses){
         if(ucClass.getUcCode()==ucCode_) return true;
+    }
+    return false;
+}
+
+bool Student::hasUcClass(UcClass ucClass_) const{
+    for(UcClass ucClass : ucClasses){
+        if(ucClass.getUcCode()==ucClass_.getUcCode() && ucClass.getClassCode()==ucClass_.getClassCode()){
+            return true;
+        }
     }
     return false;
 }

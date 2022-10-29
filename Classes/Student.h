@@ -22,6 +22,7 @@ public:
     string ucOfClass(string classCode_ ) const;
     bool hasClass(string classCode_)const;
     bool hasUc(string ucCode_)const;
+    bool hasUcClass(UcClass ucClass_) const;
     bool operator< (const Student & student) const;
 
 private:

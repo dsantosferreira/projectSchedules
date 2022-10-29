@@ -14,6 +14,10 @@ public:
     set<Student> getStudents() const;
     vector<UcClass> getSchedule() const;
 
+    void searchByUC(std::string ucCode);
+    void searchByStudent(int studentCode);
+    void searchByYear(int year);
+
     /* Funcões para listagens
      * Funcões para pesquisa
      * Funçoes dos pedidos
