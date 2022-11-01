@@ -71,11 +71,11 @@ bool Student::hasUc(string ucCode_) const {
     return false;
 }
 
-void Student::printGraficalSchedule() const {
+void Student::printGraphicalSchedule() const {
     cout<<this->studentName<<" Schedule"<<endl;
-    string schedual=" ____________________________________________________________________________________ \n"
-                    "|   Hour  |    Monday    |   Tuesday    |   Wednesday  |   Thursday   |    Friday    |\n"
-                    "|____________________________________________________________________________________|\n";
+    string schedule=" ________________________________________________________________________________________\n"
+                    "|     Hour    |    Monday    |   Tuesday    |   Wednesday  |   Thursday   |    Friday    |\n"
+                    "|________________________________________________________________________________________|\n";
 
 
     vector<string> periodOfTime;/*this vector will contain what has to be printed in each period of time
@@ -83,7 +83,7 @@ void Student::printGraficalSchedule() const {
     for(int i=0;i<24*5*2;i+=2){
         periodOfTime.push_back("              |");
         periodOfTime.push_back("______________|");
-    } //Inizializing the vctor with alternating lines;
+    } //Initializing the vector with alternating lines;
 
     for(UcClass aux:this->ucClasses){
         for(Lecture lecture:aux.getLectures()){
@@ -94,7 +94,6 @@ void Student::printGraficalSchedule() const {
             else if( weekday=="Wednesday") weekDayPosition=2;
             else if(weekday=="Thursday") weekDayPosition=3;
             else weekDayPosition=4;
-
             float duration=lecture.getDuration();
 
             int lectureStartPosition=24*2*weekDayPosition +(lecture.getLectureTime().first-8.00)*4;
@@ -114,14 +113,19 @@ void Student::printGraficalSchedule() const {
     float time=8.0;
     for(int i=0;i<24*2;i+=2) {
 
-        if(time<10) schedual+="|   ";
-        else schedual+="|  ";
-        schedual+=to_string((int)time)+':'+ to_string((int)((time-(int)time)*6))+"0  |"+periodOfTime[i]+periodOfTime[48*1+i]+periodOfTime[48*2+i]+periodOfTime[48*3+i]+periodOfTime[48*4+i]+'\n';
-        schedual+="|_________|"+periodOfTime[i+1]+periodOfTime[48*1+i+1]+periodOfTime[48*2+i+1]+periodOfTime[48*3+i+1]+periodOfTime[48*4+i+1]+'\n';
+        if(time<10 ||(time+0.5<10)) schedule+="|  ";
+
+        else schedule+="| ";
+        schedule+=to_string((int)time)+':'+ to_string((int)((time-(int)time)*6))+"0-";
         time+=0.5;
+        schedule+=to_string((int)time)+':'+ to_string((int)((time-(int)time)*6))+"0";
+        if(time<10 &&(time-0.5<10)) schedule+=' ';
+        schedule+=" |"+periodOfTime[i]+periodOfTime[48*1+i]+periodOfTime[48*2+i]+periodOfTime[48*3+i]+periodOfTime[48*4+i]+'\n';
+        schedule+="|_____________|"+periodOfTime[i+1]+periodOfTime[48*1+i+1]+periodOfTime[48*2+i+1]+periodOfTime[48*3+i+1]+periodOfTime[48*4+i+1]+'\n';
+
 
     }
-cout<<schedual;
+cout<<schedule;
 }
 
 bool Student::hasUcClass(UcClass ucClass_) const {
@@ -134,5 +138,18 @@ bool Student::hasUcClass(UcClass ucClass_) const {
 }
 
 void Student::print() const{
-    std::cout << studentName << '|' << studentCode << endl;
+    std::cout << "Name:" +studentName << " | Code:up" << studentCode << endl;
+}
+
+void Student::printDiagramSchedule() const {
+    cout<<this->studentName<<" Schedule"<<endl;
+    for(UcClass ucClass_:this->ucClasses){
+        cout<<"\tUc:"+ucClass_.getUcCode()+"|Class:"+ucClass_.getClassCode()+'\n';
+        for(Lecture lecture_: ucClass_.getLectures()){
+            cout<<"\t\t -> Weekday:"+lecture_.getWeekDay()+"|Start:"<<(int)lecture_.getLectureTime().first
+            <<':'<< (lecture_.getLectureTime().first-(int)lecture_.getLectureTime().first)*6<<"0|End:"<<(int)lecture_.getLectureTime().second
+            <<':'<< (lecture_.getLectureTime().second-(int)lecture_.getLectureTime().second)*6<<"0|Type:"+lecture_.getType()<<endl;
+        }
+
+    }
 }

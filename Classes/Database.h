@@ -14,7 +14,13 @@ public:
     Database();
     set<Student> getStudents() const;
     vector<UcClass> getSchedule() const;
-    void searchByUC(std::string ucCode);
+    bool searchByUC(std::string ucCode)const;
+    bool searchByUcClass(UcClass ucClass)const;
+    bool searchByClass(string class_) const;
+    bool searchStudent(int upCode)const;
+    void printClassDiagramSchedule(string classCode_)const;
+    void printClassGraphicSchedule(string classCode_)const;
+
 
     /** Funcões para listagens
      * Funcões para pesquisa

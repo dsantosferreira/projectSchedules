@@ -17,11 +17,20 @@ public:
     Program();
     int getCurrentPage()const;
     void setCurrentPage(int newCurrentpage);
+
+    Database getData(){
+        return this->data;
+    }
     void draw() const;
     void run();
     void menu();
     void createMenu();
-    void printSchedule()const;
+    void printStudentSchedule()const;
+    void printClassSchedule()const;
+    void searchStudent()const;
+    void searchByClass() const;
+    void searchByUc() const;
+    void searchByUcClass() const;
 
 
 private:

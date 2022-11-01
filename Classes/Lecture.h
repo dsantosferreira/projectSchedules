@@ -12,7 +12,7 @@ public:
     string getWeekDay()const;
     string getType()const;
     pair<float,float> getLectureTime()const;
-    int getDuration()const;
+    float getDuration()const;//changed to float because duration is a float
     void print()const;
 
 private:
