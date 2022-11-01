@@ -17,6 +17,23 @@ set<Student> Database::getStudents() const {
     return students;
 }
 
+void Database::addRequestToQueue(Request request) {
+    mainQueue.push(request);
+}
+
+int Database::getNumberUcClasses() const {
+    int counter = 0;
+    set<string> alreadySeen;
+    for(UcClass ucClass : schedule) {
+        string ucCode = ucClass.getUcCode();
+        if (alreadySeen.find(ucCode) == alreadySeen.end()) {
+            alreadySeen.insert(ucCode);
+            counter++;
+        }
+    }
+    return counter;
+}
+
 void Database::readUcClasses() {
     vector<UcClass> ucClasses;
     set<UcClass> aux;
@@ -63,16 +80,15 @@ void Database::readUcClassesFile() {
 }
 
 void Database::readStudentClassesFile() {
-    int counter = 0;
     ifstream in("../files/students_classes.csv");
     string stuCode, stuName, ucCode, classCode, aLine, prevStuCode = "";
     list<UcClass> emptyList;
     Student currStudent;
     UcClass* aUcClass = NULL;
+    int currStudentsUC;
 
     getline(in, aLine);
     while(getline(in, aLine)) {
-        // Read a line
         istringstream inn(aLine);
         getline(inn, stuCode, ',');
         getline(inn, stuName, ',');
@@ -89,7 +105,10 @@ void Database::readStudentClassesFile() {
         }
 
         aUcClass = findUcClass(ucCode, classCode);
-        currStudent.addUcClass(*aUcClass);
+        currStudentsUC = aUcClass->getNumberOfStudents();
+        aUcClass->setNumberOfStudents(++currStudentsUC);
+        aUcClass->setCapacity(currStudentsUC);
+        currStudent.addUcClass(*aUcClass, currStudent.getUcClasses().size());
         prevStuCode = stuCode;
     }
     students.insert(currStudent);
@@ -120,9 +139,10 @@ UcClass* Database::findUcClass(string ucCode, string classCode) {
             i = middle + 1;
         }
     }
-
 }
 
+// Ter a certeza que isto está no deles a funcionar
+/*
 void Database::searchByUC(std::string ucCode){
     for(Student student : students){
         if(student.hasUc(ucCode)){
@@ -130,4 +150,5 @@ void Database::searchByUC(std::string ucCode){
         }
     }
 }
+*/
 

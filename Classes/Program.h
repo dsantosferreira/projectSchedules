@@ -1,6 +1,3 @@
-//
-// Created by franciscocardoso on 26-10-2022.
-//
 #include <iostream>
 #include <vector>
 #include "Menu.h"

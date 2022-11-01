@@ -1,7 +1,9 @@
 #include "Student.h"
 #include "UcClass.h"
+#include "Request.h"
 #include <vector>
 #include <set>
+#include <queue>
 
 using namespace std;
 
@@ -14,7 +16,10 @@ public:
     Database();
     set<Student> getStudents() const;
     vector<UcClass> getSchedule() const;
+    int getNumberUcClasses() const;
     void searchByUC(std::string ucCode);
+    UcClass findUc(string ucCode);
+    void addRequestToQueue(Request request);
 
     /** Funcões para listagens
      * Funcões para pesquisa
@@ -33,6 +38,8 @@ private:
     //set<Unkownstructer> IDK; set para varias ordenações de estudante
     set<Student> students;
     vector<UcClass> schedule;
+    queue<Request> mainQueue;
+    queue<Request> archive;
 };
 
 

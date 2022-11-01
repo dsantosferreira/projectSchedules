@@ -1,21 +1,19 @@
-//
-// Created by franciscocardoso on 26-10-2022.
-//
+#include <vector>
+#include <fstream>
+#include "UcClass.h"
+#include "Student.h"
 
 #ifndef PROJETO_SCHEDULE_MENU_H
 #define PROJETO_SCHEDULE_MENU_H
-#include <iostream>
-#include <string>
-#include <vector>
-#include <stdlib.h>
-#include <cstdlib>
-#include <fstream>
-#include <list>
+
 using namespace std;
 
 class Menu {
 public:
     Menu(string file_);
+    Menu(vector<UcClass> ucClasses);
+    Menu(list<UcClass> ucClasses);
+    Menu(Student student);
     void draw()const;
 private:
     vector<string> buttons;

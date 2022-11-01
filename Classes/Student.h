@@ -9,12 +9,13 @@ using namespace std;
 class Student {
 public:
     Student();
+    Student(const Student &student);
     Student(string studentName_, int studentCode_, list<UcClass> ucClasses_);
     list<UcClass> getUcClasses() const;
     void setStudentName(string studentName_);
     void setStudentCode(int studentCode_);
     void setUcClasses(list<UcClass> ucClasses_);
-    void addUcClass(UcClass aUcClass);
+    void addUcClass(UcClass aUcClass, int pos);
     string getStudentName() const;
     int getStudentCode() const;
     string classOfUc(string ucCode_)const;

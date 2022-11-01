@@ -11,6 +11,10 @@ public:
     string getUcCode() const;
     string getClassCode() const;
     list<Lecture> getLectures() const;
+    int getNumberOfStudents() const;
+    int getCapacity() const;
+    void setNumberOfStudents(int newNumberOfStudents);
+    void setCapacity(int newCapacity);
     void addALecture(Lecture aLecture);
     bool operator<(const UcClass secondUcClass) const;
     void print() const;
@@ -18,6 +22,8 @@ private:
     string ucCode;
     string classCode;
     list<Lecture> lectures;
+    int capacity;
+    int numberOfStudents;
 };
 
 #endif

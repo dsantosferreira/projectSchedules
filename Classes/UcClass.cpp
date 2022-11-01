@@ -4,6 +4,7 @@ UcClass::UcClass(std::string ucCode_, std::string classCode_, list<Lecture> lect
     this->ucCode=ucCode_;
     this->classCode=classCode_;
     this->lectures=lectures_;
+    numberOfStudents = 0;
 }
 
 bool UcClass::operator<(const UcClass secondUcClass) const {
@@ -26,9 +27,24 @@ string UcClass::getClassCode() const {
     return this->classCode;
 }
 
-
 list<Lecture> UcClass::getLectures() const {
     return this->lectures;
+}
+
+int UcClass::getNumberOfStudents() const {
+    return numberOfStudents;
+}
+
+int UcClass::getCapacity() const {
+    return capacity;
+}
+
+void UcClass::setNumberOfStudents(int newNumberOfStudents) {
+    numberOfStudents = newNumberOfStudents;
+}
+
+void UcClass::setCapacity(int newCapacity) {
+    capacity = newCapacity;
 }
 
 void UcClass::addALecture(Lecture aLecture) {
