@@ -1,10 +1,10 @@
+#ifndef PROJETO_SCHEDULE_MENU_H
+#define PROJETO_SCHEDULE_MENU_H
+
 #include <vector>
 #include <fstream>
 #include "UcClass.h"
 #include "Student.h"
-
-#ifndef PROJETO_SCHEDULE_MENU_H
-#define PROJETO_SCHEDULE_MENU_H
 
 using namespace std;
 

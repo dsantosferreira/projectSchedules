@@ -1,10 +1,12 @@
+#ifndef PROJETO_SCHEDULE_STUDENT_H
+#define PROJETO_SCHEDULE_STUDENT_H
+
 #include <string>
 #include <list>
 #include "UcClass.h"
 #include <vector>
+
 using namespace std;
-#ifndef PROJETO_SCHEDULE_STUDENT_H
-#define PROJETO_SCHEDULE_STUDENT_H
 
 class Student {
 public:

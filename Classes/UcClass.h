@@ -1,9 +1,11 @@
+#ifndef PROJETO_SCHEDULE_UCCLASS_H
+#define PROJETO_SCHEDULE_UCCLASS_H
+
 #include <string>
 #include "Lecture.h"
 #include <list>
+
 using namespace std;
-#ifndef PROJETO_SCHEDULE_UCCLASS_H
-#define PROJETO_SCHEDULE_UCCLASS_H
 
 class UcClass {
 public:

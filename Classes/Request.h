@@ -1,7 +1,7 @@
-#include "Student.h"
-
 #ifndef PROJETO_SCHEDULE_REQUEST_H
 #define PROJETO_SCHEDULE_REQUEST_H
+
+#include "Student.h"
 
 class Request {
 private:

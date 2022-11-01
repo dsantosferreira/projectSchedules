@@ -1,3 +1,6 @@
+#ifndef PROJETO_SCHEDULE_DATABASE_H
+#define PROJETO_SCHEDULE_DATABASE_H
+
 #include "Student.h"
 #include "UcClass.h"
 #include "Request.h"
@@ -6,9 +9,6 @@
 #include <queue>
 
 using namespace std;
-
-#ifndef PROJETO_SCHEDULE_DATABASE_H
-#define PROJETO_SCHEDULE_DATABASE_H
 
 
 class Database {

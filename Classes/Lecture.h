@@ -1,10 +1,10 @@
-#include <string>
-
-#include <iostream>
-using namespace std;
 #ifndef PROJETO_SCHEDULE_LECTURE_H
 #define PROJETO_SCHEDULE_LECTURE_H
 
+#include <string>
+#include <iostream>
+
+using namespace std;
 
 class Lecture {
 public:
