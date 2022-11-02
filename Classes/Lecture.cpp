@@ -16,7 +16,7 @@ pair<float, float> Lecture::getLectureTime() const {
     return this->lectureTime;
 }
 
-int Lecture::getDuration() const {
+float Lecture::getDuration() const {
     return this->lectureTime.second - this->lectureTime.first;
 }
 
@@ -32,4 +32,20 @@ void Lecture::print() const {
 }
 string Lecture::getWeekDay() const {
     return this->weekDay;
+}
+
+bool Lecture::Overlaps(const Lecture aLecture) const {
+    if (this->weekDay == aLecture.weekDay) {
+        if (this->lectureTime.first <= aLecture.lectureTime.first && aLecture.lectureTime.first < this->lectureTime.second)
+            return true;
+        else if (aLecture.lectureTime.first <= this->lectureTime.first && this->lectureTime.first < aLecture.lectureTime.second)
+            return true;
+    }
+    return false;
+}
+
+bool Lecture::isOverlapableWith(const Lecture aLecture) const {
+    if (this->type.find('P') != string::npos && aLecture.type.find('P') != string::npos)
+        return false;
+    return true;
 }

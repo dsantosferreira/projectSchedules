@@ -1,21 +1,26 @@
-#include "Student.h"
-#include "UcClass.h"
-#include <vector>
-#include <set>
-
-using namespace std;
-
 #ifndef PROJETO_SCHEDULE_DATABASE_H
 #define PROJETO_SCHEDULE_DATABASE_H
 
+#include "Student.h"
+#include "UcClass.h"
+#include "Request.h"
+#include <vector>
+#include <set>
+#include <queue>
+
+using namespace std;
 
 class Database {
 public:
     Database();
     set<Student> getStudents() const;
     vector<UcClass> getSchedule() const;
+    int getNumberUcClasses() const;
     void searchByUC(std::string ucCode);
     /*bool*/void searchByYear(int year) const;
+    /*bool*/void searchByYearAdmission(int year) const;
+    int findUc(string ucCode);
+    void addRequestToQueue(Request request);
 
     /** Funcões para listagens
      * Funcões para pesquisa
@@ -34,6 +39,8 @@ private:
     //set<Unkownstructer> IDK; set para varias ordenações de estudante
     set<Student> students;
     vector<UcClass> schedule;
+    queue<Request> mainQueue;
+    queue<Request> archive;
 };
 
 

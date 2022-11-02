@@ -1,10 +1,6 @@
-//
-// Created by franciscocardoso on 26-10-2022.
-//
-
 #include "Menu.h"
 #include <stdlib.h>
-
+#include <set>
 
 Menu::Menu(string file_) {
     ifstream file(file_);
@@ -13,10 +9,31 @@ Menu::Menu(string file_) {
     }
 }
 
-/**
- * d snds
- *
- **/
+Menu::Menu(vector<UcClass> ucClasses) {
+    set<string> alreadySeen;
+    for (UcClass ucClass : ucClasses) {
+        string ucCode = ucClass.getUcCode();
+        if (alreadySeen.find(ucCode) == alreadySeen.end()) {
+            alreadySeen.insert(ucCode);
+            this->buttons.push_back(ucCode);
+        }
+    }
+}
+
+Menu::Menu(list<UcClass> ucClasses) {
+    for (UcClass ucClass : ucClasses) {
+        this->buttons.push_back(ucClass.getUcCode() + ' ' + ucClass.getClassCode());
+    }
+}
+
+vector<string> Menu::getButtons() const {
+    return buttons;
+}
+
+void Menu::setButtons(vector<std::string> buttons_) {
+    this->buttons = buttons_;
+}
+
 void Menu::draw() const {
     system("clear");
     string display;
@@ -32,5 +49,5 @@ void Menu::draw() const {
     display+="|________________________________________|\n"
               ;
     cout<<display<<endl;
-    cout<<"Chooce a option: ";
+    cout<<"Choose an option: ";
 }

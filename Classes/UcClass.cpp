@@ -26,9 +26,24 @@ string UcClass::getClassCode() const {
     return this->classCode;
 }
 
-
 list<Lecture> UcClass::getLectures() const {
     return this->lectures;
+}
+
+int UcClass::getNumberOfStudents() const {
+    return numberOfStudents;
+}
+
+int UcClass::getCapacity() const {
+    return capacity;
+}
+
+void UcClass::setNumberOfStudents(int newNumberOfStudents) {
+    numberOfStudents = newNumberOfStudents;
+}
+
+void UcClass::setCapacity(int newCapacity) {
+    capacity = newCapacity;
 }
 
 void UcClass::addALecture(Lecture aLecture) {

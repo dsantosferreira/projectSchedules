@@ -2,11 +2,17 @@
 
 Student::Student() {}
 
+Student::Student(const Student &student_) {
+    this->studentCode = student_.studentCode;
+    this->studentName = student_.studentName;
+    this->ucClasses = student_.ucClasses;
+}
+
 void Student::setStudentCode(int studentCode_) {
     studentCode = studentCode_;
 }
 
-void Student::setStudentName(std::string studentName_) {
+void Student::setStudentName(string studentName_) {
     studentName = studentName_;
 }
 
@@ -14,10 +20,11 @@ void Student::setUcClasses(list<UcClass> ucClasses_) {
     ucClasses = ucClasses_;
 }
 
-void Student::addUcClass(UcClass aUcClass) {
-    ucClasses.push_back(aUcClass);
+void Student::addUcClass(UcClass aUcClass, int pos) {
+    auto itr = ucClasses.begin();
+    advance(itr, pos);
+    ucClasses.insert(itr, aUcClass);
 }
-/**/
 
 Student::Student(string studentName_, int studentCode_, list<UcClass> ucClasses_){
     this->studentCode=studentCode_;
