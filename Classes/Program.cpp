@@ -97,6 +97,7 @@ void Program::menu() {
                         this->currentMenuPage = 0;
                     else
                         data.addRequestToQueue(Request(data.getStudents(), data.getSchedule(), option[0]));
+                    break;
                 default:
                     cond = true;
             }

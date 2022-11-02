@@ -12,7 +12,7 @@ public:
     string getWeekDay()const;
     string getType()const;
     pair<float,float> getLectureTime() const;
-    int getDuration()const;
+    float getDuration()const;
     void print()const;
     bool Overlaps(const Lecture aLecture) const;
     bool isOverlapableWith(const Lecture aLecture) const;

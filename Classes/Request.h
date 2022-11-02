@@ -2,6 +2,7 @@
 #define PROJETO_SCHEDULE_REQUEST_H
 
 #include "Student.h"
+#include <set>
 
 class Request {
 private:

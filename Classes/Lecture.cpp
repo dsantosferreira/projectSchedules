@@ -16,7 +16,7 @@ pair<float, float> Lecture::getLectureTime() const {
     return this->lectureTime;
 }
 
-int Lecture::getDuration() const {
+float Lecture::getDuration() const {
     return this->lectureTime.second - this->lectureTime.first;
 }
 

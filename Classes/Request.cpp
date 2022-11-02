@@ -27,6 +27,10 @@ Request::Request(set<Student> students, vector<UcClass> ucClasses, char option) 
             menu.draw();
 
     }
+    /*
+     * PARA ADICIONAR MENU PARA UCS E DEPOIS PARA TURMAS CORRESPONDENTES
+     * PARA ALTERAR MENU SÓ PARA AS TURMAS DA UC PARA REMOVER
+     */
 }
 
 void Request::handleRequest() {
@@ -45,6 +49,7 @@ void Request::handleRequest() {
         posForAdding = 0;
 
         if (toRemove != stuUcClasses.end()) {
+            // Change to indexes
             stuUcClasses.erase(toRemove);
         }
 
@@ -58,9 +63,8 @@ void Request::handleRequest() {
             else {
                 for (auto itrUcClasses = stuUcClasses.begin(); itrUcClasses != stuUcClasses.end(); itrUcClasses++) {
                     list<Lecture> lectures = itrUcClasses->getLectures();
-                    if (*toAdd < *itrUcClasses)
+                    if (*itrUcClasses < *toAdd)
                         posForAdding++;
-
                     for (auto itrLectures = lectures.begin(); itrLectures != lectures.end(); itrLectures++) {
                         for (auto itrToAddLectures = toAddLectures.begin(); itrToAddLectures != toAddLectures.end(); itrToAddLectures++) {
                             if (itrToAddLectures->Overlaps(*itrLectures) && !itrToAddLectures->isOverlapableWith(*itrLectures)) {
@@ -80,5 +84,7 @@ void Request::handleRequest() {
             break;
     }
     //Change the students set
-    this->student = newStudent;
+    if (Acceptable) {
+        //remover do set o estudante original e meter o novo
+    }
 }

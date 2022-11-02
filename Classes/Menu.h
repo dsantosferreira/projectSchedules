@@ -13,7 +13,6 @@ public:
     Menu(string file_);
     Menu(vector<UcClass> ucClasses);
     Menu(list<UcClass> ucClasses);
-    Menu(Student student);
     void draw()const;
 private:
     vector<string> buttons;
