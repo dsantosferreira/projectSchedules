@@ -4,12 +4,14 @@
 #include "Student.h"
 #include <set>
 
+class Database;
+
 class Request {
 private:
     Student student;
-    list<pair<list<UcClass>::iterator , UcClass*>> removeAdd; // Collection of pairs of iterators of UcClass to remove and UcClass to add
+    list<pair<UcClass*, UcClass*>> removeAdd; // Collection of pairs of iterators of UcClass to remove and UcClass to add
 public:
-    Request(set<Student> students, vector<UcClass> ucClasses, char option);
+    Request(Database &database, char option);
     void handleRequest();
 };
 

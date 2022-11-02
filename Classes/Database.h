@@ -10,7 +10,6 @@
 
 using namespace std;
 
-
 class Database {
 public:
     Database();
@@ -18,7 +17,7 @@ public:
     vector<UcClass> getSchedule() const;
     int getNumberUcClasses() const;
     void searchByUC(std::string ucCode);
-    UcClass findUc(string ucCode);
+    int findUc(string ucCode);
     void addRequestToQueue(Request request);
 
     /** Funcões para listagens

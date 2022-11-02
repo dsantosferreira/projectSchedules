@@ -26,6 +26,14 @@ Menu::Menu(list<UcClass> ucClasses) {
     }
 }
 
+vector<string> Menu::getButtons() const {
+    return buttons;
+}
+
+void Menu::setButtons(vector<std::string> buttons_) {
+    this->buttons = buttons_;
+}
+
 void Menu::draw() const {
     system("clear");
     string display;

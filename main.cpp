@@ -2,18 +2,21 @@
 #include "Classes/Program.h"
 using namespace std;
 int main() {
+
     Program p=Program();
     p.run() ; //test the menu
 
+
     /*
     Database database = Database();
-    set<Student> students = database.getStudents();
-    for (auto itr = students.begin(); itr != students.end(); itr++) {
-        list<UcClass> ucClasses = itr->getUcClasses();
-        cout << itr->getStudentCode() << ' ' << itr->getStudentName() << ":" << endl;
-        for (auto itr2 = ucClasses.begin(); itr2 != ucClasses.end(); itr2++) {
-            cout << '\t' << itr2->getUcCode() << ' ' << itr2->getClassCode() << endl;
+    vector<UcClass> ucClasses = database.getSchedule();
+    for (auto itr = ucClasses.begin(); itr != ucClasses.end(); itr++) {
+        list<Lecture> lectures = itr->getLectures();
+        cout << itr->getUcCode() << ' ' << itr->getClassCode() << ":" << endl;
+        for (auto itr2 = lectures.begin(); itr2 != lectures.end(); itr2++) {
+            cout << '\t' << itr2->getWeekDay() <<  ' ' << itr2->getType() << endl;
         }
-    }*/
+    }
+    */
     return 0;
 }

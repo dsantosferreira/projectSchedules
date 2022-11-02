@@ -93,10 +93,11 @@ void Program::menu() {
                     }
                     break;
                 case 2:
-                    if (option[0] == 4)
+                    if (option[0] == '4')
                         this->currentMenuPage = 0;
                     else
-                        data.addRequestToQueue(Request(data.getStudents(), data.getSchedule(), option[0]));
+                        data.addRequestToQueue(Request(this->data, option[0]));
+                        // Algo está errado... Falar com Cardoso
                     break;
                 default:
                     cond = true;
@@ -105,6 +106,7 @@ void Program::menu() {
         if (cond) cout << "\nInvalid input. Insert a valid option:"; //the input was invalid
     }
 }
+
 void Program::printSchedule() const {
     cout<<"Introduce Students code: ";
     int up;

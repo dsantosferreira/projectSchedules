@@ -141,14 +141,18 @@ UcClass* Database::findUcClass(string ucCode, string classCode) {
     }
 }
 
-// Ter a certeza que isto está no deles a funcionar
-/*
-void Database::searchByUC(std::string ucCode){
-    for(Student student : students){
-        if(student.hasUc(ucCode)){
-            student.print();
+int Database::findUc(string ucCode) {
+    int low = 0, high = schedule.size() - 1;
+    int middle;
+    while (low != high) {
+        middle = low + (high - low)/2;
+        if (schedule[middle].getUcCode() >= ucCode) {
+            high = middle;
+        }
+        else {
+            low = middle + 1;
         }
     }
+    return low;
 }
-*/
 
