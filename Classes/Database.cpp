@@ -131,3 +131,30 @@ void Database::searchByUC(std::string ucCode){
     }
 }
 
+/*bool*/ void Database::searchByYear(int year) const{
+    //bool flag = false;
+    for (Student student : students){
+        int maxYear = 1;
+        int classYear;
+        for(UcClass ucclass : student.getUcClasses()){
+            string classCode = ucclass.getClassCode();
+            classYear = classCode.at(0) - '1' + 1;
+            if(classYear > maxYear){
+                maxYear = classYear;
+            }
+        }
+        if(maxYear == year){
+            student.print();
+            //flag = true;
+        }
+    }
+    //return flag;
+ }
+
+/*bool*/ void Database::searchByYearAdmission(std::string year) const{
+    //bool flag = false;
+    for (Student student : students){
+        string upCode = student.getStudentCode();
+        if(std::copy(upCode.begin(), upCode.begin()+4,upCode))
+    }
+}
