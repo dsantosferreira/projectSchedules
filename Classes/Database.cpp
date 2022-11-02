@@ -118,17 +118,17 @@ UcClass* Database::findUcClass(string ucCode, string classCode) {
     }
 }
 
-bool Database::searchByUC(std::string ucCode)const{
+bool Database::searchByUC(std::string ucCode_)const{
     bool cond=false;
-    for(Student student : students){
-        if(student.hasUc(ucCode)){
-            student.print();
+    for(Student student_ : students){
+        if(student_.hasUc(ucCode_)){
+            student_.print();
             cond=true;
         }
     }
     if(cond) return cond;
     else{
-        cout<<"No student belonging to "+ ucCode+" was found\n";
+        cout<<"No student belonging to "+ ucCode_+" was found\n";
         return false;
     }
 }
