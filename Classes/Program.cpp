@@ -1,8 +1,5 @@
-//
-// Created by franciscocardoso on 26-10-2022.
-//
-
 #include "Program.h"
+#include <limits>
 
 Program::Program() {
     this->currentMenuPage=0;
@@ -11,8 +8,13 @@ Program::Program() {
 }
 void Program::createMenu() {
     this->menus.push_back(Menu("../Menus/mainMenu.txt"));//Inatialize main menu
+
     this->menus.push_back(Menu("../Menus/searchSubMenu.txt"));// Inatialize search submenu
     this->menus.push_back(Menu("../Menus/scheduleSubMenu.txt"));// Inatialize schedule submenu
+
+    this->menus.push_back(Menu("../Menus/requestsMenu"));
+    //third menu (Search sub menu)
+
     // ... to be implemented after deciding what we are going to do...
 }
 
@@ -57,10 +59,10 @@ void Program::menu() {
 
                             break;
                         case '3':
-                            //use func or change currentMenuPage
+                            this->currentMenuPage=3;
                             break;
                         case '4':
-                            //use func or change currentMenuPage
+                            this->currentMenuPage = 2;//????
                             break;
 
                         case '5':
@@ -96,6 +98,7 @@ void Program::menu() {
                     }
                     break;
                 case 2:
+
                     switch (option[0]) {
                         case '1':
                             printClassSchedule();
@@ -110,12 +113,19 @@ void Program::menu() {
                             cond=true;
                     }
                     break;
+                case 3:
+
+                    if (option[0] == 4)
+                        this->currentMenuPage = 0;
+                    else
+                        data.addRequestToQueue(Request(data.getStudents(), data.getSchedule(), option[0]));
+                    break;
 
                 default:
                     cond = true;
             }
         }
-        if (cond) cout << "\nInvalid intput. Insert a valid option:"; //the input was invalid
+        if (cond) cout << "\nInvalid input. Insert a valid option:"; //the input was invalid
     }
 }
 void Program::printStudentSchedule() const {

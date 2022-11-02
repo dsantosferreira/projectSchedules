@@ -1,6 +1,6 @@
-//
-// Created by franciscocardoso on 26-10-2022.
-//
+#ifndef PROJETO_SCHEDULE_PROGRAM_H
+#define PROJETO_SCHEDULE_PROGRAM_H
+
 #include <iostream>
 #include <vector>
 #include "Menu.h"
@@ -8,9 +8,6 @@
 #include "Database.h"
 #include "Student.h"
 using namespace std;
-#ifndef PROJETO_SCHEDULE_PROGRAM_H
-#define PROJETO_SCHEDULE_PROGRAM_H
-
 
 class Program {
 public:

@@ -17,6 +17,23 @@ set<Student> Database::getStudents() const {
     return students;
 }
 
+void Database::addRequestToQueue(Request request) {
+    mainQueue.push(request);
+}
+
+int Database::getNumberUcClasses() const {
+    int counter = 0;
+    set<string> alreadySeen;
+    for(UcClass ucClass : schedule) {
+        string ucCode = ucClass.getUcCode();
+        if (alreadySeen.find(ucCode) == alreadySeen.end()) {
+            alreadySeen.insert(ucCode);
+            counter++;
+        }
+    }
+    return counter;
+}
+
 void Database::readUcClasses() {
     vector<UcClass> ucClasses;
     set<UcClass> aux;
@@ -61,15 +78,17 @@ void Database::readUcClassesFile() {
 }
 
 void Database::readStudentClassesFile() {
-    int counter = 0;
     ifstream in("../files/students_classes.csv");
     string stuCode, stuName, ucCode, classCode, aLine, prevStuCode = "";
     list<UcClass> emptyList;
     Student currStudent;
     UcClass* aUcClass = NULL;
+
+    int currStudentsUC;
+
+
     getline(in, aLine);
     while(getline(in, aLine)) {
-        // Read a line
         istringstream inn(aLine);
         getline(inn, stuCode, ',');
         getline(inn, stuName, ',');
@@ -85,7 +104,10 @@ void Database::readStudentClassesFile() {
             currStudent.setUcClasses(emptyList);
         }
         aUcClass = findUcClass(ucCode, classCode);
-        currStudent.addUcClass(*aUcClass);
+        currStudentsUC = aUcClass->getNumberOfStudents();
+        aUcClass->setNumberOfStudents(++currStudentsUC);
+        aUcClass->setCapacity(currStudentsUC);
+        currStudent.addUcClass(*aUcClass, currStudent.getUcClasses().size());
         prevStuCode = stuCode;
     }
     students.insert(currStudent);
@@ -116,6 +138,7 @@ UcClass* Database::findUcClass(string ucCode, string classCode) {
             i = middle + 1;
         }
     }
+
 }
 
 bool Database::searchByUC(std::string ucCode_)const{
@@ -160,65 +183,70 @@ void Database::printClassDiagramSchedule(string classCode_)const{
 }
 
 void Database::printClassGraphicSchedule(std::string classCode_) const {
-    cout<<classCode_+" schedule\n";
-    string schedule_=" ________________________________________________________________________________________\n"
-                    "|     Hour    |    Monday    |   Tuesday    |   Wednesday  |   Thursday   |    Friday    |\n"
-                    "|________________________________________________________________________________________|\n";
+    cout << classCode_ + " schedule\n";
+    string schedule_ = " ________________________________________________________________________________________\n"
+                       "|     Hour    |    Monday    |   Tuesday    |   Wednesday  |   Thursday   |    Friday    |\n"
+                       "|________________________________________________________________________________________|\n";
 
 
     vector<string> periodOfTime;/*this vector will contain what has to be printed in each period of time
                                 (24 periods of time each day 5 days of the week and each period has a sperating line so times two)*/
-    for(int i=0;i<24*5*2;i+=2){
+    for (int i = 0; i < 24 * 5 * 2; i += 2) {
         periodOfTime.push_back("              |");
         periodOfTime.push_back("______________|");
     } //Initializing the vector with alternating lines;
 
-    for(UcClass ucClass_:schedule){
-        if(ucClass_.getClassCode()==classCode_){
-            for(Lecture lecture:ucClass_.getLectures()){
-                string weekday=lecture.getWeekDay();
+    for (UcClass ucClass_: schedule) {
+        if (ucClass_.getClassCode() == classCode_) {
+            for (Lecture lecture: ucClass_.getLectures()) {
+                string weekday = lecture.getWeekDay();
                 int weekDayPosition;
-                if(weekday=="Monday") weekDayPosition=0;
-                else if(weekday=="Tuesday") weekDayPosition=1;
-                else if( weekday=="Wednesday") weekDayPosition=2;
-                else if(weekday=="Thursday") weekDayPosition=3;
-                else weekDayPosition=4;
-                float duration=lecture.getDuration();
+                if (weekday == "Monday") weekDayPosition = 0;
+                else if (weekday == "Tuesday") weekDayPosition = 1;
+                else if (weekday == "Wednesday") weekDayPosition = 2;
+                else if (weekday == "Thursday") weekDayPosition = 3;
+                else weekDayPosition = 4;
+                float duration = lecture.getDuration();
 
-                int lectureStartPosition=24*2*weekDayPosition +(lecture.getLectureTime().first-8.00)*4;
-                periodOfTime[lectureStartPosition]=" "+ucClass_.getUcCode()+"("+lecture.getType()+")";
-                if(lecture.getType().length()==1) periodOfTime[lectureStartPosition]+="  |";
-                else  periodOfTime[lectureStartPosition]+=" |";
-                periodOfTime[++lectureStartPosition]="   "+ucClass_.getClassCode()+"    |";
-                duration-=0.5;
-                while(duration>0.5){
-                    duration-=0.5;
-                    periodOfTime[++lectureStartPosition]="              |";
-                    periodOfTime[++lectureStartPosition]="              |";
+                int lectureStartPosition = 24 * 2 * weekDayPosition + (lecture.getLectureTime().first - 8.00) * 4;
+                periodOfTime[lectureStartPosition] = " " + ucClass_.getUcCode() + "(" + lecture.getType() + ")";
+                if (lecture.getType().length() == 1) periodOfTime[lectureStartPosition] += "  |";
+                else periodOfTime[lectureStartPosition] += " |";
+                periodOfTime[++lectureStartPosition] = "   " + ucClass_.getClassCode() + "    |";
+                duration -= 0.5;
+                while (duration > 0.5) {
+                    duration -= 0.5;
+                    periodOfTime[++lectureStartPosition] = "              |";
+                    periodOfTime[++lectureStartPosition] = "              |";
                 }
-                periodOfTime[++lectureStartPosition]="              |";
+                periodOfTime[++lectureStartPosition] = "              |";
             }
+
         }
-    }
 
 
-    float time=8.0;
-    for(int i=0;i<24*2;i+=2) {
+        float time = 8.0;
+        for (int i = 0; i < 24 * 2; i += 2) {
 
-        if(time<10 ||(time+0.5<10)) schedule_+="|  ";
+            if (time < 10 || (time + 0.5 < 10)) schedule_ += "|  ";
 
-        else schedule_+="| ";
-        schedule_+=to_string((int)time)+':'+ to_string((int)((time-(int)time)*6))+"0-";
-        time+=0.5;
-        schedule_+=to_string((int)time)+':'+ to_string((int)((time-(int)time)*6))+"0";
-        if(time<10 &&(time-0.5<10)) schedule_+=' ';
-        schedule_+=" |"+periodOfTime[i]+periodOfTime[48*1+i]+periodOfTime[48*2+i]+periodOfTime[48*3+i]+periodOfTime[48*4+i]+'\n';
-        schedule_+="|_____________|"+periodOfTime[i+1]+periodOfTime[48*1+i+1]+periodOfTime[48*2+i+1]+periodOfTime[48*3+i+1]+periodOfTime[48*4+i+1]+'\n';
+            else schedule_ += "| ";
+            schedule_ += to_string((int) time) + ':' + to_string((int) ((time - (int) time) * 6)) + "0-";
+            time += 0.5;
+            schedule_ += to_string((int) time) + ':' + to_string((int) ((time - (int) time) * 6)) + "0";
+            if (time < 10 && (time - 0.5 < 10)) schedule_ += ' ';
+            schedule_ += " |" + periodOfTime[i] + periodOfTime[48 * 1 + i] + periodOfTime[48 * 2 + i] +
+                         periodOfTime[48 * 3 + i] + periodOfTime[48 * 4 + i] + '\n';
+            schedule_ += "|_____________|" + periodOfTime[i + 1] + periodOfTime[48 * 1 + i + 1] +
+                         periodOfTime[48 * 2 + i + 1] + periodOfTime[48 * 3 + i + 1] + periodOfTime[48 * 4 + i + 1] +
+                         '\n';
 
 
-    }
-    cout<<schedule_;
         }
+
+    }
+    cout << schedule_;
+}
 bool Database::searchByClass(std::string class_) const {
     bool cond=false;
     for(Student student : students){
@@ -233,6 +261,7 @@ bool Database::searchByClass(std::string class_) const {
         return false;
     }
 }
+
 
 
 
