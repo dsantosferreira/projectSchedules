@@ -223,13 +223,11 @@ void Database::printClassGraphicSchedule(std::string classCode_) const {
             }
 
         }
-
-
+    }
         float time = 8.0;
         for (int i = 0; i < 24 * 2; i += 2) {
 
             if (time < 10 || (time + 0.5 < 10)) schedule_ += "|  ";
-
             else schedule_ += "| ";
             schedule_ += to_string((int) time) + ':' + to_string((int) ((time - (int) time) * 6)) + "0-";
             time += 0.5;
@@ -240,11 +238,9 @@ void Database::printClassGraphicSchedule(std::string classCode_) const {
             schedule_ += "|_____________|" + periodOfTime[i + 1] + periodOfTime[48 * 1 + i + 1] +
                          periodOfTime[48 * 2 + i + 1] + periodOfTime[48 * 3 + i + 1] + periodOfTime[48 * 4 + i + 1] +
                          '\n';
-
-
         }
 
-    }
+    
     cout << schedule_;
 }
 bool Database::searchByClass(std::string class_) const {
