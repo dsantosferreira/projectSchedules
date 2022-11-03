@@ -1,6 +1,8 @@
 Student
 Students of a year
-Students of a Uc
+Students of an Uc
 Students of a class
 Students belonging to a class of a Uc
+Students with more than n UCs
+Students of admission year
 Go back

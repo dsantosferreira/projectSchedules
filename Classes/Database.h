@@ -22,11 +22,14 @@ public:
     bool searchStudent(int upCode)const;
     void printClassDiagramSchedule(string classCode_)const;
     void printClassGraphicSchedule(string classCode_)const;
+    bool searchMoreThan(int n) const;
+    bool searchByYear(int year)const;
+    bool searchByYearAdmission(int year) const;
 
 
     int getNumberUcClasses() const;
-    void searchByUC(std::string ucCode);
-    UcClass findUc(string ucCode);
+
+    int findUc(string ucCode)const;
     void addRequestToQueue(Request request);
 
 

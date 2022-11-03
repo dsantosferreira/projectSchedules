@@ -5,6 +5,7 @@ Program::Program() {
     this->currentMenuPage=0;
     createMenu();
     this->data=Database();
+    cout<<"Welcome to the Better Sigarra.\n";
 }
 void Program::createMenu() {
     this->menus.push_back(Menu("../Menus/mainMenu.txt"));//Inatialize main menu
@@ -59,13 +60,16 @@ void Program::menu() {
 
                             break;
                         case '3':
-                            this->currentMenuPage=3;
+                            vacancies();
                             break;
                         case '4':
-                            this->currentMenuPage = 2;//????
+                            this->currentMenuPage = 3;//????
+                            break;
+                        case '5':
+                            this->currentMenuPage=3;
                             break;
 
-                        case '5':
+                        case '6':
                             this->currentMenuPage = -1; //-1 indicates that it wants to leave
                             break;
                         default:
@@ -78,7 +82,7 @@ void Program::menu() {
                             searchStudent();
                             break;
                         case '2':
-
+                            searchByYear();
                             break;
                         case '3':
                            searchByUc();
@@ -89,8 +93,14 @@ void Program::menu() {
                         case '5':
                             searchByUcClass();
                             break;
-
                         case '6':
+                            moreThan();
+                            break;
+                        case '7':
+                            searchByAdmissionYear();
+                            break;
+
+                        case '8':
                             this->currentMenuPage = 0;// Go back to main menu
                             break;
                         default:
@@ -113,6 +123,7 @@ void Program::menu() {
                             cond=true;
                     }
                     break;
+
                 case 3:
 
                     if (option[0] == 4)
@@ -230,4 +241,57 @@ void Program::searchByUcClass() const {
     cin>>wait;
 }
 
+void Program::vacancies() const{
+    system("clear");
+    cout<<"Insert the Uc code:";
+    string ucCode;
+    cin>>ucCode;
+    system("clear");
 
+    int index;
+    index= data.findUc(ucCode);
+    cout<<ucCode+":\n";
+    while(this->data.getSchedule()[index].getUcCode()==ucCode){
+       cout<<"Class:"+this->data.getSchedule()[index].getClassCode()+"|Capacity:"<<this->data.getSchedule()[index].getCapacity()<<
+       "|Number of Students:"<<this->data.getSchedule()[index].getNumberOfStudents()<<"|Vacancies:"<<
+       this->data.getSchedule()[index].getCapacity()-this->data.getSchedule()[index].getNumberOfStudents()<<endl;
+        index++;
+    }
+    cout<<"\nEnter anything to go back";
+    string wait;
+    cin>>wait;
+
+}
+void Program::moreThan() const {
+    system("clear");
+    cout<<"Insert number of minimum Ucs Student should have:";
+    int n;
+    cin>>n;
+    if(!data.searchMoreThan(n)){
+        cout<<"No student with more than "<<n<<" UCs was found\n";
+    }
+    string wait;
+    cout<<"Enter anything to go back:";
+    cin>>wait;
+
+}
+void Program::searchByYear() const {
+    system("clear");
+    cout<<"Insert the year:";
+    int year;
+    cin>>year;
+    if(!data.searchByYear(year)) cout<<"No students found\n";
+    cout<<"Enter anything to go back:";
+    string wait;
+    cin>>wait;
+}
+void Program::searchByAdmissionYear() const {
+    system("clear");
+    cout<<"Insert the year:";
+    int year;
+    cin>>year;
+    if(!data.searchByYearAdmission(year)) cout<<"No students found\n";
+    cout<<"Enter anything to go back:";
+    string wait;
+    cin>>wait;
+}

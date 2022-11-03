@@ -83,7 +83,7 @@ void Database::readStudentClassesFile() {
     list<UcClass> emptyList;
     Student currStudent;
     UcClass* aUcClass = NULL;
-
+    int maxCapacity=0;
     int currStudentsUC;
 
 
@@ -106,17 +106,23 @@ void Database::readStudentClassesFile() {
         aUcClass = findUcClass(ucCode, classCode);
         currStudentsUC = aUcClass->getNumberOfStudents();
         aUcClass->setNumberOfStudents(++currStudentsUC);
+        if(currStudentsUC>maxCapacity) maxCapacity=currStudentsUC;
         aUcClass->setCapacity(currStudentsUC);
         currStudent.addUcClass(*aUcClass, currStudent.getUcClasses().size());
         prevStuCode = stuCode;
     }
     students.insert(currStudent);
+    for(UcClass &ucClass_: schedule){
+        ucClass_.setCapacity(maxCapacity);
+    }
+
 }
 
 UcClass* Database::findUcClass(string ucCode, string classCode) {
     int i, j, middle;
     i = 0;
     j = schedule.size() - 1;
+    UcClass* curr;
     while (i <= j) {
         middle = i + (j - i)/2;
         UcClass* curr = &schedule[middle];
@@ -138,7 +144,7 @@ UcClass* Database::findUcClass(string ucCode, string classCode) {
             i = middle + 1;
         }
     }
-
+return curr;
 }
 
 bool Database::searchByUC(std::string ucCode_)const{
@@ -165,6 +171,7 @@ bool Database::searchByUcClass(UcClass ucClass) const {
     }
     if(cond) return cond;
     else cout<<"No student belonging to the class "+ucClass.getClassCode()+" of "+ucClass.getUcCode()+'\n';
+    return cond;
 }
 
 bool Database::searchStudent(int upCode) const {
@@ -240,7 +247,7 @@ void Database::printClassGraphicSchedule(std::string classCode_) const {
                          '\n';
         }
 
-    
+
     cout << schedule_;
 }
 bool Database::searchByClass(std::string class_) const {
@@ -258,9 +265,58 @@ bool Database::searchByClass(std::string class_) const {
     }
 }
 
+int Database::findUc(std::string ucCode)const {
+    int begin=0, end= this->schedule.size()-1;
+    int midle;
+    while(begin<end){
+        midle=begin+(end-begin)/2;
+        if(schedule[midle].getUcCode()>=ucCode) end=midle;
+        else begin=midle+1;
+    }
+    return begin;
+}
+bool Database::searchMoreThan(int n) const {
+    bool cond =false;
+    for(Student student:students){
+        if(student.getUcClasses().size()>=n){
+            student.print();
+            cond=true;
 
+        }
+    }
+    return cond;
+}
+bool Database::searchByYear(int year) const{
+    bool flag = false;
+    for (Student student : students){
+        int maxYear = 1;
+        int classYear;
+        for(UcClass ucClass : student.getUcClasses()){
+            string classCode = ucClass.getClassCode();
+            classYear = classCode.at(0) - '1' + 1;
+            if(classYear > maxYear){
+                maxYear = classYear;
+            }
+        }
+        if(maxYear == year){
+            student.print();
+            flag = true;
+        }
+    }
+    return flag;
+}
 
-
-
+ bool Database::searchByYearAdmission(int year) const{
+    bool flag = false;
+    for (Student student : students){
+        int upCode = student.getStudentCode();
+        int studentYear = upCode/100000;
+        if(studentYear == year){
+            student.print();
+            flag = true;
+        }
+    }
+    return flag;
+}
 
 
