@@ -2,11 +2,8 @@
 #include "Classes/Program.h"
 using namespace std;
 int main() {
-
     Program p=Program();
     p.run() ; //test the menu
-
-
     /*
     Database database = Database();
     vector<UcClass> ucClasses = database.getSchedule();

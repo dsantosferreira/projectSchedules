@@ -106,7 +106,6 @@ Request::Request(set<Student> &students, vector<UcClass> &ucClasses, char option
         }
         case '3':
             set<UcClass> alreadySeen;
-            Menu menu =
     }
     /*
      * PARA ADICIONAR MENU PARA UCS E DEPOIS PARA TURMAS CORRESPONDENTES

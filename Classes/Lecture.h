@@ -11,8 +11,9 @@ public:
     Lecture(string weekDay_, float start_, float duration_, string type_);
     string getWeekDay()const;
     string getType()const;
-    pair<float,float> getLectureTime() const;
-    float getDuration()const;
+
+    pair<float,float> getLectureTime()const;
+    float getDuration()const;//changed to float because duration is a float
     void print()const;
     bool Overlaps(const Lecture aLecture) const;
     bool isOverlapableWith(const Lecture aLecture) const;

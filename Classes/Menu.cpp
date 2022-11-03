@@ -37,16 +37,16 @@ void Menu::setButtons(vector<std::string> buttons_) {
 void Menu::draw() const {
     system("clear");
     string display;
-    display =" ________________________________________ \n"
-             "|<<<<<<<<<<<<<<<<< Menu >>>>>>>>>>>>>>>>>|\n"
-             "|----------------------------------------|\n";
+    display =" ____________________________________________ \n"
+             "|<<<<<<<<<<<<<<<<<>  Menu  <>>>>>>>>>>>>>>>>>|\n"
+             "|--------------------------------------------|\n";
 
     for(int i=0; i<this->buttons.size();i++){
         display+="| ["+to_string(i+1)+"] "+this->buttons[i];
-        for(int j=0; j<(35-this->buttons[i].length());j++) display+=" "; //adding spaces to format the menu
+        for(int j=0; j<(39-this->buttons[i].length());j++) display+=" "; //adding spaces to format the menu
         display+="|\n";
     }
-    display+="|________________________________________|\n"
+    display+="|____________________________________________|\n"
               ;
     cout<<display<<endl;
     cout<<"Choose an option: ";

@@ -15,6 +15,14 @@ public:
     Database();
     set<Student> getStudents() const;
     vector<UcClass> getSchedule() const;
+    bool searchByUC(std::string ucCode)const;
+    bool searchByUcClass(UcClass ucClass)const;
+    bool searchByClass(string class_) const;
+    bool searchStudent(int upCode)const;
+    void printClassDiagramSchedule(string classCode_)const;
+    void printClassGraphicSchedule(string classCode_)const;
+
+
     int getNumberUcClasses() const;
     void searchByUC(std::string ucCode);
     /*bool*/void searchByYear(int year) const;
@@ -22,6 +30,7 @@ public:
     int findUc(string ucCode);
     void pushRequestToQueue(Request request);
     Request popRequestFromQueue();
+
 
     /** Funcões para listagens
      * Funcões para pesquisa
@@ -37,7 +46,6 @@ private:
     void readUcClassesFile();
     void readStudentClassesFile();
     UcClass* findUcClass(string ucCode, string classCode);
-    //set<Unkownstructer> IDK; set para varias ordenações de estudante
     set<Student> students;
     vector<UcClass> schedule;
     queue<Request> mainQueue;

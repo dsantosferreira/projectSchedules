@@ -51,3 +51,14 @@ void UcClass::setCapacity(int newCapacity) {
 void UcClass::addALecture(Lecture aLecture) {
     lectures.push_back(aLecture);
 }
+
+void UcClass::print() const {
+    cout<<'\t'<<this->getUcCode()<<":\n";
+    for(Lecture lecture_: lectures){
+            cout<<"\t\t -> Weekday:"+lecture_.getWeekDay()+"|Start:"<<(int)lecture_.getLectureTime().first
+                <<':'<< (lecture_.getLectureTime().first-(int)lecture_.getLectureTime().first)*6<<"0|End:"<<(int)lecture_.getLectureTime().second
+                <<':'<< (lecture_.getLectureTime().second-(int)lecture_.getLectureTime().second)*6<<"0|Type:"+lecture_.getType()<<endl;
+        }
+
+
+}

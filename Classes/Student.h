@@ -25,7 +25,8 @@ public:
     bool hasClass(string classCode_)const;
     bool hasUc(string ucCode_)const;
     bool operator< (const Student & student) const; // para o set conseguir comparar os estudantes;
-    void printGraficalSchedule() const;
+    void printGraphicalSchedule() const;
+    void printDiagramSchedule() const;
     bool hasUcClass(UcClass ucClass_) const;
     void print()const;
 
