@@ -19,6 +19,40 @@ Menu::Menu(vector<UcClass> ucClasses) {
         }
     }
 }
+Menu::Menu(vector<UcClass>ucClasses,string ucCode){
+    int begin=0, end= ucClasses.size()-1;
+    int middle;
+    while(begin<end){
+        middle=begin+(end-begin)/2;
+        if(ucClasses[middle].getUcCode()>=ucCode) end=middle;
+        else begin=middle+1;
+    }
+    while(ucClasses[begin].getUcCode()==ucCode){
+        this->buttons.push_back(ucClasses[begin].getClassCode());
+        begin++;
+    }
+
+}
+
+Menu::Menu(vector<UcClass>ucClasses,char year){
+    set<string> alreadySeen;
+    int begin=0, end= ucClasses.size()-1;
+    int middle;
+    while(begin<end){
+        middle=begin+(end-begin)/2;
+        if(ucClasses[middle].getClassCode()[0]>=year) end=middle;
+        else begin=middle+1;
+    }
+    while(ucClasses[begin].getClassCode()[0]==year){
+        if (alreadySeen.find(ucClasses[begin].getClassCode()) == alreadySeen.end()) {
+            alreadySeen.insert(ucClasses[begin].getClassCode());
+            this->buttons.push_back(ucClasses[begin].getClassCode());
+
+        }
+        begin++;
+    }
+
+}
 
 Menu::Menu(list<UcClass> ucClasses) {
     for (UcClass ucClass : ucClasses) {
@@ -44,7 +78,7 @@ void Menu::draw() const {
     for(int i=0; i<this->buttons.size();i++){
         display+="| ["+to_string(i+1)+"] "+this->buttons[i];
         for(int j=0; j<(39-this->buttons[i].length());j++) display+=" "; //adding spaces to format the menu
-        if(i<10) display+=' ';
+        if(i<9) display+=' ';
         display+="|\n";
     }
     display+="|_____________________________________________|\n";

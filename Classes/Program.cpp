@@ -1,12 +1,17 @@
 #include "Program.h"
 #include <limits>
-
+/**
+ * The constructor of Program
+ */
 Program::Program() {
     this->currentMenuPage=0;
     createMenu();
     this->data=Database();
     cout<<"Welcome to the Better Sigarra.\n";
 }
+/**
+ * Auxiliary function of the constructor Program(),this function is used for creating the menus the program needs
+ */
 void Program::createMenu() {
     this->menus.push_back(Menu("../Menus/mainMenu.txt"));//Inatialize main menu
 
@@ -20,18 +25,31 @@ void Program::createMenu() {
 }
 
 //basic functions get and set
+/**
+ *This Function is used to get the current page of the menu we are in
+ * @return The current Page Of the Menu
+ */
 int Program::getCurrentPage() const {
     return this->currentMenuPage;
 }
-
+/**
+ *
+ * @param newCurrentPage
+ * This function receive the index of the new menu page we are in and set it as the current menu page
+ */
 void Program::setCurrentPage(int newCurrentPage)  {
     this->currentMenuPage=newCurrentPage;
 }
-
+/**
+ * This function draw the current page of the menu we are in
+ */
 void Program::draw() const {
     this->menus[this->currentMenuPage].draw(); //draw the current menu
 }
-
+/**
+ * This function is what is going to make our program run, it will draw the current menu pages get the inputs the user give and decide what
+ * the program should do next
+ */
 void Program:: run(){
     int option;
     while(this->currentMenuPage!=-1){
@@ -150,18 +168,35 @@ void Program::menu() {
 
     }
 
-
+/**
+ * This function will draw the menu page corresponding to the schedule option and then it will ask the user to choose between
+ */
 void Program::printStudentSchedule() const {
-    system("clear");
-    Menu menu("../Menus/scheduleSubMenu2.txt");
-    menu.draw();
 
-    string option;
-    cin >> option;
-    while (option != "1" and option != "2") {
-        cout << "Invalid input.Please enter a valid option: ";
-        cin >> option;
-    }
+        system("clear");
+        Menu menu("../Menus/scheduleSubMenu2.txt");
+        menu.draw();
+
+        string option;
+        cin >>option;
+        while( option!="1" and option!="2"){
+            cout<<"Invalid input.Please enter a valid option: ";
+            cin>>option;
+        }
+        cout<<"Introduce Students code: ";
+        int upCode;
+        while(getInput(upCode))cout<<"Invalid input please insert a number:";
+        list<UcClass>emptyList;
+        set<Student> students= data.getStudents();
+        auto itr=students.find(Student("Irrelevant",upCode,emptyList));
+        if(itr!=students.end()){
+            if(option=="1")itr->printGraphicalSchedule();
+            else itr->printDiagramSchedule();
+        }else {
+            cout<<"Student not found\n";
+        }
+
+        wait();
 
 }
 
@@ -170,34 +205,34 @@ void Program::printClassSchedule() const {
     system("clear");
     Menu menu("../Menus/scheduleSubMenu2.txt");
     menu.draw();
-
     string option;
     cin >>option;
     while( option!="1" and option!="2"){
         cout<<"Invalid input.Please enter a valid option: ";
         cin>>option;
     }
+    system("clear");
+    cout<<"Insert the  year which the class belongs:";
+    char year;
+    while(getInput(year)|| (year-'1'>2 || year-'1'<0))cout<<"Invalid input please insert a number between 1-3:";
+    system("clear");
+    Menu secondaryMenu(data.getSchedule(),year);
+    secondaryMenu.draw();
+    vector<string> options=secondaryMenu.getButtons();
     cout<<"Insert the class:";
-    string class_;
-    cin>>class_;
+    int secondOption;
+    while(getInput(secondOption)|| (year-'1'>2 || year-'1'<0))cout<<"Invalid input please insert a number between 1-3:";
+    string  class_=options[secondOption-1];
     if(option=="1") data.printClassGraphicSchedule(class_);
     else data.printClassDiagramSchedule(class_);
-    cout<< "\n\nEnter anything to go back:";
-    string wait;
-    cin>>wait;
+    wait();
 }
 
 void Program::searchStudent() const {
     system("clear");
     cout<<"Insert Student code (up):";
     int upCode;
-    cin>>upCode;
-    while(cin.fail()){
-        cin.clear();
-        cin.ignore(numeric_limits<streamsize>::max(), '\n');
-        cout<<"Invalid input please insert a number:";
-        cin>>upCode;
-    }
+    while(getInput(upCode))cout<<"Invalid input please insert a number:";
     list<UcClass>emptyList;
     set<Student> students= data.getStudents();
     auto itr=students.find(Student("Irrelevant",upCode,emptyList));
@@ -206,44 +241,66 @@ void Program::searchStudent() const {
     }else {
         cout<<"Student not found\n";
     }
-    cout<< "Enter anything to go back:";
-    string wait;
-    cin>>wait;
-
+    wait();
 }
 void Program::searchByClass() const {
+
     system("clear");
+    cout<<"Insert the  year which the class belongs:";
+    char year;
+    while(getInput(year)|| (year-'1'>2 || year-'1'<0))cout<<"Invalid input please insert a number between 1-3:";
+    system("clear");
+    Menu menu(data.getSchedule(),year);
+    menu.draw();
+    vector<string> options=menu.getButtons();
     cout<<"Insert the class:";
-    string class_;
-    cin>>class_;
-    this->data.searchByClass(class_);
-    cout<< "Enter anything to go back:";
-    string wait;
-    cin>>wait;
+    int option;
+    cin>>option;
+    this->data.searchByClass(options[option]);
+
+    wait();
+
 }
 void Program::searchByUc() const {
     system("clear");
+    Menu menu(this->data.getSchedule());
+    menu.draw();
+    vector<string> options=menu.getButtons();
     cout<<"Insert the Uc:";
-    string uc_;
-    cin>>uc_;
-    this->data.searchByUC(uc_);
-    cout<<"Enter anything to go back:";
-    string wait;
-    cin>>wait;
+    int option;
+    while(getInput(option))cout<<"Invalid input please insert a number:";
+    string ucCode=options[option-1];
+    this->data.searchByUC(ucCode);
+    wait();
 }
 void Program::searchByUcClass() const {
     system("clear");
+    system("clear");
+    Menu menu(this->data.getSchedule());
+    menu.draw();
+    vector<string> options=menu.getButtons();
     cout<<"Insert the uc:";
-    string uc_;
-    cin>>uc_;
-    cout<< "Insert the class:";
-    string class_;
-    cin>>class_;
+    int option;
+    while(getInput(option))cout<<"Invalid input please insert a number between 1-"<<options.size()<<':';
+
+    string ucCode=options[option-1];
+    Menu secondMenu(this->data.getSchedule(),options[option]);
+    system("clear");
+    secondMenu.draw();
+    options=secondMenu.getButtons();
+    cout<<"Insert the class:";
+    cin>>option;
+    while(cin.fail() || option>options.size()){
+        cin.clear();
+        cin.ignore(numeric_limits<streamsize>::max(), '\n');
+        cout<<"Invalid input please insert a number between 1-"<<options.size()<<':';
+        cin>>option;
+    }
+    string class_=options[option-1];
     list<Lecture> empty;
-    this->data.searchByUcClass(UcClass(uc_,class_,empty));
-    cout<<"Enter anything to go back:";
-    string wait;
-    cin>>wait;
+    this->data.searchByUcClass(UcClass(ucCode,class_,empty));
+
+    wait();
 }
 
 void Program::vacancies() const{
@@ -262,59 +319,51 @@ void Program::vacancies() const{
        this->data.getSchedule()[index].getCapacity()-this->data.getSchedule()[index].getNumberOfStudents()<<endl;
         index++;
     }
-    cout<<"\nEnter anything to go back";
-    string wait;
-    cin>>wait;
+    wait();
 
 }
 void Program::moreThan() const {
     system("clear");
     cout<<"Insert number of minimum Ucs Student should have:";
     int n;
-    cin>>n;
-    while(cin.fail()){
-        cin.clear();
-        cin.ignore(numeric_limits<streamsize>::max(), '\n');
-        cout<<"Invalid input please insert a number:";
-        cin>>n;
-    }
+    while(getInput(n))cout<<"Invalid input please insert a number:";
     if(!data.searchMoreThan(n)){
         cout<<"No student with more than "<<n<<" UCs was found\n";
     }
-    string wait;
-    cout<<"Enter anything to go back:";
-    cin>>wait;
+    wait();
 
 }
 void Program::searchByYear() const {
     system("clear");
     cout<<"Insert the year:";
     int year;
-    cin>>year;
-    while(cin.fail()){
-        cin.clear();
-        cin.ignore(numeric_limits<streamsize>::max(), '\n');
-        cout<<"Invalid input please insert a number:";
-        cin>>year;
-    }
+    while(getInput(year))cout<<"Invalid input please insert a number:";
     if(!data.searchByYear(year)) cout<<"No students found\n";
-    cout<<"Enter anything to go back:";
-    string wait;
-    cin>>wait;
+    wait();
 }
 void Program::searchByAdmissionYear() const {
     system("clear");
     cout<<"Insert the year:";
     int year;
-    cin>>year;
-    while(cin.fail()){
-        cin.clear();
-        cin.ignore(numeric_limits<streamsize>::max(), '\n');
-        cout<<"Invalid input please insert a number:";
-        cin>>year;
-    }
+    while(getInput(year))cout<<"Invalid input please insert a number:";
     if(!data.searchByYearAdmission(year)) cout<<"No students found\n";
-    cout<<"Enter anything to go back:";
+    wait();
+
+}
+
+void Program::wait() const {
+    cout<<"\nEnter anything to go back:";
     string wait;
     cin>>wait;
+}
+
+template<typename type>
+bool Program::getInput(type &input) const {
+    cin>>input;
+    if(cin.fail()){
+        cin.clear();
+        cin.ignore(numeric_limits<streamsize>::max(), '\n');
+        return true;
+    }
+    return false;
 }

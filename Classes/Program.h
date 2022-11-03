@@ -33,6 +33,12 @@ public:
     void moreThan() const;
     void searchByYear() const;
     void searchByAdmissionYear()const;
+    void wait() const;
+
+    template<typename type >
+    bool getInput(type &input) const;
+
+
 
 private:
     int currentMenuPage;

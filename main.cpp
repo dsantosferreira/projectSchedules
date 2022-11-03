@@ -5,6 +5,9 @@ int main() {
 
 
     Program p=Program();
+    cout<<p.getData().getStudents().size()<<endl;
+
+
     p.run() ; //test the menu
 
 

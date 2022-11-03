@@ -295,6 +295,7 @@ bool Database::searchMoreThan(int n) const {
 }
 bool Database::searchByYear(int year) const{
     bool flag = false;
+
     for (Student student : students){
         int maxYear = 1;
         int classYear;
@@ -341,5 +342,4 @@ int Database::findUc(string ucCode) {
     }
     return low;
 }
-
 

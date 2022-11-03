@@ -14,6 +14,10 @@ class Database {
 public:
     Database();
     set<Student> getStudents() const;
+    /**
+     *
+     * @return
+     */
     vector<UcClass> getSchedule() const;
     bool searchByUC(std::string ucCode)const;
     bool searchByUcClass(UcClass ucClass)const;
@@ -25,7 +29,7 @@ public:
     bool searchByYear(int year)const;
     bool searchByYearAdmission(int year) const;
     int getNumberUcClasses() const;
-
+    void debug()const;
 
     int findUc(string ucCode)const;
     void addRequestToQueue(Request request);
