@@ -63,10 +63,10 @@ void Program::menu() {
                             vacancies();
                             break;
                         case '4':
-                            this->currentMenuPage = 3;//????
+                            this->currentMenuPage = 3;
                             break;
                         case '5':
-                            this->currentMenuPage=3;
+                            this->currentMenuPage=3;//????
                             break;
 
                         case '6':
@@ -107,6 +107,7 @@ void Program::menu() {
                             cond = true;
                     }
                     break;
+
                 case 2:
 
                     switch (option[0]) {
@@ -126,46 +127,44 @@ void Program::menu() {
 
                 case 3:
 
-                    if (option[0] == 4)
+
+                    if (option[0] == '4')
                         this->currentMenuPage = 0;
-                    else
-                        data.addRequestToQueue(Request(data.getStudents(), data.getSchedule(), option[0]));
+                    else{
+                        set<Student> students = data.getStudents();
+                        vector<UcClass> ucClasses = data.getSchedule();
+                        Request newRequest = Request(students, ucClasses, option[0]);
+                        data.pushRequestToQueue(newRequest);
+                    }
                     break;
+
 
                 default:
                     cond = true;
+                }
+
+
             }
-        }
         if (cond) cout << "\nInvalid input. Insert a valid option:"; //the input was invalid
+        }
+
     }
-}
+
+
 void Program::printStudentSchedule() const {
     system("clear");
     Menu menu("../Menus/scheduleSubMenu2.txt");
     menu.draw();
 
     string option;
-    cin >>option;
-    while( option!="1" and option!="2"){
-        cout<<"Invalid input.Please enter a valid option: ";
-        cin>>option;
+    cin >> option;
+    while (option != "1" and option != "2") {
+        cout << "Invalid input.Please enter a valid option: ";
+        cin >> option;
     }
-    cout<<"Introduce Students code: ";
-    int upCode;
-    cin>>upCode;
-    list<UcClass>emptyList;
-    set<Student> students= data.getStudents();
-    auto itr=students.find(Student("Irrelevant",upCode,emptyList));
-    if(itr!=students.end()){
-        if(option=="1")itr->printGraphicalSchedule();
-        else itr->printDiagramSchedule();
-    }else {
-        cout<<"Student not found\n";
-    }
-    cout<< "\n\nEnter anything to go back:";
-    string wait;
-    cin>>wait;
+
 }
+
 
 void Program::printClassSchedule() const {
     system("clear");
@@ -193,6 +192,12 @@ void Program::searchStudent() const {
     cout<<"Insert Student code (up):";
     int upCode;
     cin>>upCode;
+    while(cin.fail()){
+        cin.clear();
+        cin.ignore(numeric_limits<streamsize>::max(), '\n');
+        cout<<"Invalid input please insert a number:";
+        cin>>upCode;
+    }
     list<UcClass>emptyList;
     set<Student> students= data.getStudents();
     auto itr=students.find(Student("Irrelevant",upCode,emptyList));
@@ -267,6 +272,12 @@ void Program::moreThan() const {
     cout<<"Insert number of minimum Ucs Student should have:";
     int n;
     cin>>n;
+    while(cin.fail()){
+        cin.clear();
+        cin.ignore(numeric_limits<streamsize>::max(), '\n');
+        cout<<"Invalid input please insert a number:";
+        cin>>n;
+    }
     if(!data.searchMoreThan(n)){
         cout<<"No student with more than "<<n<<" UCs was found\n";
     }
@@ -280,6 +291,12 @@ void Program::searchByYear() const {
     cout<<"Insert the year:";
     int year;
     cin>>year;
+    while(cin.fail()){
+        cin.clear();
+        cin.ignore(numeric_limits<streamsize>::max(), '\n');
+        cout<<"Invalid input please insert a number:";
+        cin>>year;
+    }
     if(!data.searchByYear(year)) cout<<"No students found\n";
     cout<<"Enter anything to go back:";
     string wait;
@@ -290,6 +307,12 @@ void Program::searchByAdmissionYear() const {
     cout<<"Insert the year:";
     int year;
     cin>>year;
+    while(cin.fail()){
+        cin.clear();
+        cin.ignore(numeric_limits<streamsize>::max(), '\n');
+        cout<<"Invalid input please insert a number:";
+        cin>>year;
+    }
     if(!data.searchByYearAdmission(year)) cout<<"No students found\n";
     cout<<"Enter anything to go back:";
     string wait;

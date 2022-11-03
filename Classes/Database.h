@@ -10,7 +10,6 @@
 
 using namespace std;
 
-
 class Database {
 public:
     Database();
@@ -25,12 +24,15 @@ public:
     bool searchMoreThan(int n) const;
     bool searchByYear(int year)const;
     bool searchByYearAdmission(int year) const;
-
-
     int getNumberUcClasses() const;
+
 
     int findUc(string ucCode)const;
     void addRequestToQueue(Request request);
+    int findUc(string ucCode);
+    void pushRequestToQueue(Request request);
+    Request popRequestFromQueue();
+
 
 
     /** Funcões para listagens

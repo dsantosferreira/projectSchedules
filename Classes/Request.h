@@ -7,9 +7,11 @@
 class Request {
 private:
     Student student;
-    list<pair<list<UcClass>::iterator , UcClass*>> removeAdd; // Collection of pairs of iterators of UcClass to remove and UcClass to add
+    list<pair<UcClass*, UcClass*>> removeAdd; // Collection of pairs of iterators of UcClass to remove and UcClass to add
+    int findUc(string ucCode, vector<UcClass> ucClasses);
 public:
-    Request(set<Student> students, vector<UcClass> ucClasses, char option);
+    Request(set<Student> &students, vector<UcClass> &ucClasses, char option);
+    list<pair<UcClass*, UcClass*>> getPairs() const;
     void handleRequest();
 };
 

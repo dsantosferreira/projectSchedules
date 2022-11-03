@@ -7,6 +7,7 @@
 #include <string>
 #include "Database.h"
 #include "Student.h"
+#include "Request.h"
 using namespace std;
 
 class Program {

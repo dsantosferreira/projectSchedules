@@ -17,8 +17,14 @@ set<Student> Database::getStudents() const {
     return students;
 }
 
-void Database::addRequestToQueue(Request request) {
+void Database::pushRequestToQueue(Request request) {
     mainQueue.push(request);
+}
+
+Request Database::popRequestFromQueue() {
+    Request toReturn = mainQueue.front();
+    //mainQueue.pop();
+    return toReturn;
 }
 
 int Database::getNumberUcClasses() const {
@@ -146,6 +152,7 @@ UcClass* Database::findUcClass(string ucCode, string classCode) {
     }
 return curr;
 }
+
 
 bool Database::searchByUC(std::string ucCode_)const{
     bool cond=false;
@@ -317,6 +324,22 @@ bool Database::searchByYear(int year) const{
         }
     }
     return flag;
+}
+
+
+int Database::findUc(string ucCode) {
+    int low = 0, high = schedule.size() - 1;
+    int middle;
+    while (low != high) {
+        middle = low + (high - low)/2;
+        if (schedule[middle].getUcCode() >= ucCode) {
+            high = middle;
+        }
+        else {
+            low = middle + 1;
+        }
+    }
+    return low;
 }
 
 

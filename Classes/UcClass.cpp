@@ -4,7 +4,8 @@ UcClass::UcClass(std::string ucCode_, std::string classCode_, list<Lecture> lect
     this->ucCode=ucCode_;
     this->classCode=classCode_;
     this->lectures=lectures_;
-    numberOfStudents = 0;
+    this->numberOfStudents = 0;
+    this->capacity = 0;
 }
 
 bool UcClass::operator<(const UcClass secondUcClass) const {
