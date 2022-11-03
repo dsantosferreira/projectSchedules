@@ -17,8 +17,14 @@ set<Student> Database::getStudents() const {
     return students;
 }
 
-void Database::addRequestToQueue(Request request) {
+void Database::pushRequestToQueue(Request request) {
     mainQueue.push(request);
+}
+
+Request Database::popRequestFromQueue() {
+    Request toReturn = mainQueue.front();
+    //mainQueue.pop();
+    return toReturn;
 }
 
 int Database::getNumberUcClasses() const {

@@ -92,13 +92,17 @@ void Program::menu() {
                             cond = true;
                     }
                     break;
-                case 2:
+                case 2: {
                     if (option[0] == '4')
                         this->currentMenuPage = 0;
-                    else
-                        data.addRequestToQueue(Request(this->data, option[0]));
-                        // Algo está errado... Falar com Cardoso
+                    else{
+                        set<Student> students = data.getStudents();
+                        vector<UcClass> ucClasses = data.getSchedule();
+                        Request newRequest = Request(students, ucClasses, option[0]);
+                        data.pushRequestToQueue(newRequest);
+                    }
                     break;
+                }
                 default:
                     cond = true;
             }

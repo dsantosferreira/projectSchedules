@@ -18,7 +18,8 @@ public:
     int getNumberUcClasses() const;
     void searchByUC(std::string ucCode);
     int findUc(string ucCode);
-    void addRequestToQueue(Request request);
+    void pushRequestToQueue(Request request);
+    Request popRequestFromQueue();
 
     /** Funcões para listagens
      * Funcões para pesquisa

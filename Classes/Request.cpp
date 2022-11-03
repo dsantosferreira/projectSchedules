@@ -2,11 +2,27 @@
 #include <set>
 #include "Request.h"
 #include "Menu.h"
-#include "Database.h"
 
-Request::Request(Database &database, char option) {
-    set<Student> students = database.getStudents();
-    vector<UcClass> ucClasses = database.getSchedule();
+list<pair<UcClass *, UcClass *>> Request::getPairs() const {
+    return removeAdd;
+}
+
+int Request::findUc(string ucCode, vector<UcClass> ucClasses) {
+    int low = 0, high = ucClasses.size() - 1;
+    int middle;
+    while (low != high) {
+        middle = low + (high - low)/2;
+        if (ucClasses[middle].getUcCode() >= ucCode) {
+            high = middle;
+        }
+        else {
+            low = middle + 1;
+        }
+    }
+    return low;
+}
+
+Request::Request(set<Student> &students, vector<UcClass> &ucClasses, char option) {
     int studentCode, ucIndex;
     string subMenuOption;
     vector<string> buttons;
@@ -63,7 +79,7 @@ Request::Request(Database &database, char option) {
             }
             buttons.clear();
             string aUcCode = buttons[stoi(subMenuOption) - 1];
-            ucIndex = database.findUc(aUcCode);
+            ucIndex = findUc(aUcCode, ucClasses);
             for (int i = ucIndex; ucClasses[i].getUcCode() == aUcCode; i++) {
                 buttons.push_back(ucClasses[i].getClassCode());
             }
@@ -81,10 +97,16 @@ Request::Request(Database &database, char option) {
                 cout << "Please insert a valid option: ";
             }
             UcClass* toAdd = &ucClasses[ucIndex + stoi(subMenuOption) - 1];
+            list<Lecture> test = toAdd->getLectures();
+            for (auto itr = test.begin(); itr != test.end(); itr++)
+                cout << itr->getType() << ' ' << itr->getWeekDay() << endl;
             pair<UcClass*, UcClass*> p(nullptr, toAdd);
             this->removeAdd.push_back(p);
             break;
         }
+        case '3':
+            set<UcClass> alreadySeen;
+            Menu menu =
     }
     /*
      * PARA ADICIONAR MENU PARA UCS E DEPOIS PARA TURMAS CORRESPONDENTES
