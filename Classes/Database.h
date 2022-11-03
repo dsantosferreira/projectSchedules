@@ -17,6 +17,8 @@ public:
     vector<UcClass> getSchedule() const;
     int getNumberUcClasses() const;
     void searchByUC(std::string ucCode);
+    /*bool*/void searchByYear(int year) const;
+    /*bool*/void searchByYearAdmission(int year) const;
     int findUc(string ucCode);
     void pushRequestToQueue(Request request);
     Request popRequestFromQueue();

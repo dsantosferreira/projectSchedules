@@ -162,3 +162,35 @@ int Database::findUc(string ucCode) {
     return low;
 }
 
+/*bool*/ void Database::searchByYear(int year) const{
+    //bool flag = false;
+    for (Student student : students){
+        int maxYear = 1;
+        int classYear;
+        for(UcClass ucclass : student.getUcClasses()){
+            string classCode = ucclass.getClassCode();
+            classYear = classCode.at(0) - '1' + 1;
+            if(classYear > maxYear){
+                maxYear = classYear;
+            }
+        }
+        if(maxYear == year){
+            student.print();
+            //flag = true;
+        }
+    }
+    //return flag;
+ }
+
+/*bool*/ void Database::searchByYearAdmission(int year) const{
+    //bool flag = false;
+    for (Student student : students){
+        int upCode = student.getStudentCode();
+        int studentYear = upCode/100000;
+        if(studentYear == year){
+            student.print();
+            //flag = true;
+        }
+    }
+    //return flag;
+}
