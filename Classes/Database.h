@@ -14,23 +14,25 @@ class Database {
 public:
     Database();
     set<Student> getStudents() const;
+    set<Student>* getStudentsReference();
     vector<UcClass> getSchedule() const;
+    vector<UcClass>* getScheduleReference();
+    void setStudents(set<Student> students_);
+    void setSchedule(vector<UcClass> schedule_);
+    UcClass* getUcClass(int i);
     bool searchByUC(std::string ucCode)const;
     bool searchByUcClass(UcClass ucClass)const;
     bool searchByClass(string class_) const;
     bool searchStudent(int upCode)const;
     void printClassDiagramSchedule(string classCode_)const;
     void printClassGraphicSchedule(string classCode_)const;
-
-
     int getNumberUcClasses() const;
     void searchByUC(std::string ucCode);
     /*bool*/void searchByYear(int year) const;
     /*bool*/void searchByYearAdmission(int year) const;
     int findUc(string ucCode);
+    void handleRequests();
     void pushRequestToQueue(Request request);
-    Request popRequestFromQueue();
-
 
     /** Funcões para listagens
      * Funcões para pesquisa

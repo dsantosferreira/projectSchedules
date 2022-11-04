@@ -60,7 +60,7 @@ void Program::menu() {
                             this->currentMenuPage=3;
                             break;
                         case '4':
-                            this->currentMenuPage = 2;//????
+                            data.handleRequests();
                             break;
 
                         case '5':
@@ -113,14 +113,14 @@ void Program::menu() {
                     break;
                 case 3:
                 {
-
-                    if (option[0] == 4)
+                    if (option[0] == '4')
                         this->currentMenuPage = 0;
                     else{
-                        set<Student> students = data.getStudents();
-                        vector<UcClass> ucClasses = data.getSchedule();
+                        set<Student>* students = data.getStudentsReference();
+                        vector<UcClass>* ucClasses = data.getScheduleReference();
                         Request newRequest = Request(students, ucClasses, option[0]);
-                        data.pushRequestToQueue(newRequest);
+                        if (!newRequest.getPairs().empty())
+                            data.pushRequestToQueue(newRequest);
                     }
                     break;
                 }
@@ -128,7 +128,7 @@ void Program::menu() {
                     cond = true;
             }
         }
-        if (cond) cout << "\nInvalid input. Insert a valid option:"; //the input was invalid
+        if (cond) cout << "\nInvalid input. Insert a valid option: "; //the input was invalid
     }
 }
 

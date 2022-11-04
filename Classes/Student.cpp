@@ -20,10 +20,20 @@ void Student::setUcClasses(list<UcClass> ucClasses_) {
     ucClasses = ucClasses_;
 }
 
-void Student::addUcClass(UcClass aUcClass, int pos) {
+void Student::addUcClass(UcClass* aUcClass, int pos) {
     auto itr = ucClasses.begin();
     advance(itr, pos);
-    ucClasses.insert(itr, aUcClass);
+    ucClasses.insert(itr, *aUcClass);
+}
+
+void Student::removeUcClass(UcClass aUcClass) {
+    auto itr = ucClasses.begin();
+    for (; itr != ucClasses.end(); itr++) {
+        if (!(*itr < aUcClass) && !(aUcClass < *itr)) {
+            ucClasses.erase(itr);
+            break;
+        }
+    }
 }
 
 Student::Student(string studentName_, int studentCode_, list<UcClass> ucClasses_){

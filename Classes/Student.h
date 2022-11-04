@@ -17,7 +17,8 @@ public:
     void setStudentName(string studentName_);
     void setStudentCode(int studentCode_);
     void setUcClasses(list<UcClass> ucClasses_);
-    void addUcClass(UcClass aUcClass, int pos);
+    void addUcClass(UcClass* aUcClass, int pos);
+    void removeUcClass(UcClass aUcClass);
     string getStudentName() const;
     int getStudentCode() const;
     string classOfUc(string ucCode_)const;

@@ -17,14 +17,24 @@ set<Student> Database::getStudents() const {
     return students;
 }
 
-void Database::pushRequestToQueue(Request request) {
-    mainQueue.push(request);
+set<Student>* Database::getStudentsReference() {
+    return &students;
 }
 
-Request Database::popRequestFromQueue() {
-    Request toReturn = mainQueue.front();
-    mainQueue.pop();
-    return toReturn;
+vector<UcClass>* Database::getScheduleReference() {
+    return &schedule;
+}
+
+UcClass* Database::getUcClass(int i) {
+    return &schedule[i];
+}
+
+void Database::setStudents(set<Student> students_) {
+    this->students = students_;
+}
+
+void Database::setSchedule(vector<UcClass> schedule_) {
+    this->schedule = schedule_;
 }
 
 int Database::getNumberUcClasses() const {
@@ -113,7 +123,7 @@ void Database::readStudentClassesFile() {
         currStudentsUC = aUcClass->getNumberOfStudents();
         aUcClass->setNumberOfStudents(++currStudentsUC);
         aUcClass->setCapacity(currStudentsUC);
-        currStudent.addUcClass(*aUcClass, currStudent.getUcClasses().size());
+        currStudent.addUcClass(aUcClass, currStudent.getUcClasses().size());
         prevStuCode = stuCode;
     }
     students.insert(currStudent);
@@ -310,4 +320,56 @@ bool Database::searchByClass(std::string class_) const {
         }
     }
     //return flag;
+}
+
+void Database::pushRequestToQueue(Request request) {
+    mainQueue.push(request);
+}
+
+void Database::handleRequests() {
+    for (int i = 0; i < schedule.size(); i++) {
+        schedule[i].setCapacity(50);
+    }
+    int size = mainQueue.size();
+    bool addStudent;
+    list<pair<bool, bool>> changeNumberStudents;
+    list<pair<UcClass, UcClass*>> ucPairs;
+    pair<bool, bool> aChange;
+
+    // Goes through all requests
+    for (int i = 0; i < size; i++) {
+        addStudent = true;
+        Request request = mainQueue.front(); // Loads next request
+        ucPairs = request.getPairs();
+        auto itrR = ucPairs.begin();
+        changeNumberStudents = request.handleRequest(&students,schedule);
+        if(changeNumberStudents.size()==0)
+            addStudent=false;
+
+        for (auto itrC = changeNumberStudents.begin(); itrC != changeNumberStudents.end(); itrC++) {
+            aChange = *itrC;
+            if (aChange.first == false && aChange.second == false) {
+                addStudent = false;
+                break;
+            }
+            if (aChange.first == true) {
+                UcClass removed = (*itrR).first;
+                UcClass* originalUc = findUcClass(removed.getUcCode(), removed.getClassCode());
+                originalUc->setNumberOfStudents(originalUc->getNumberOfStudents() - 1);
+            }
+            if (aChange.second == true) {
+                UcClass* added = (*itrR).second;
+                UcClass* originalUc = findUcClass(added->getUcCode(), added->getClassCode());
+                originalUc->setNumberOfStudents(originalUc->getNumberOfStudents() + 1);
+            }
+            itrR++;
+        }
+        if (addStudent) {
+            Student studentToAdd = request.getStudent();
+            auto itr = students.find(studentToAdd);
+            students.erase(itr);
+            students.insert(studentToAdd);
+        }
+        mainQueue.pop();
+    }
 }
