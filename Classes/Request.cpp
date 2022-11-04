@@ -62,7 +62,7 @@ Request::Request(set<Student>* students, vector<UcClass>* ucClasses, char option
     ucClassesList = this->student.getUcClasses();
 
     switch (option) {
-        case '1': {
+        case '3': {
             Menu menu = Menu(ucClassesList);
             buttons = menu.getButtons();
             menu.draw();
@@ -80,7 +80,7 @@ Request::Request(set<Student>* students, vector<UcClass>* ucClasses, char option
             this->removeAdd.push_back(p);
             break;
         }
-        case '2': {
+        case '4': {
             Menu menu = Menu(*ucClasses);
             menu.draw();
             while (true) {
@@ -119,7 +119,7 @@ Request::Request(set<Student>* students, vector<UcClass>* ucClasses, char option
             break;
         }
 
-        case '3': {
+        case '5': {
             list<UcClass> ucClassesAvailable = student.getUcClasses();
             bool done = false;
 

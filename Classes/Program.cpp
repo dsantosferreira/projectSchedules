@@ -63,11 +63,9 @@ void Program:: run(){
     if(data.getMainRequest().size()>0 || data.getArchiveRequest().size()>0){
         cout<< "Do you want to save the stored requests?[y/n]: ";
         char answer;
-        cin>>answer;
-        while(getInput(answer)|| (tolower(answer)!='y' && tolower(answer)!='n'))cout<<"Invalid input please enter y(yes) or n(no)";
+        while(getInput(answer) || (tolower(answer)!='y' && tolower(answer)!='n'))cout<<"Invalid input please enter y(yes) or n(no)";
         if(tolower(answer)=='y'){
             data.handleRequests();
-
         }
     }
     data.updateStudents();
@@ -163,15 +161,7 @@ void Program::menu() {
                     break;
                 case 3:
                 {
-                    if (option[0] == '4')
-                        this->currentMenuPage = 0;
-                    else{
-                        set<Student>* students = data.getStudentsReference();
-                        vector<UcClass>* ucClasses = data.getScheduleReference();
-                        Request newRequest = Request(students, ucClasses, option[0]);
-                        if (!newRequest.getPairs().empty())
-                            data.pushRequestToQueue(newRequest);
-                    }
+                    handleRequestOption(option[0]);
                     break;
                 }
                 default:
@@ -436,12 +426,56 @@ void Program::wait() const {
     cin>>wait;
 }
 
+void Program::handleRequestOption(char option) {
+    set<Student> students = data.getStudents();
+    int studentCode;
+    string studentName;
+    // Exiting the menu
+    if (option == '6')
+        this->currentMenuPage = 0;
+
+    // Removing a student
+    else if (option == '1') {
+        cout << "Insert the student code from the student you want to remove: ";
+        while (getInput(studentCode) || students.find(Student("Irrelevant", studentCode, {})) == students.end())
+            cout << "Invalid input. Please insert a valid student code: ";
+        data.removeStudent(studentCode);
+    }
+
+    // Adding a student
+    else if (option == '2') {
+        cout << "Insert a student code, that doesn't already exist, for the student you want to add: ";
+        while (getInput(studentCode) || !validateStudentCode(studentCode) || students.find(Student("Irrelevant", studentCode, {})) != students.end())
+            cout << "Invalid input. Please insert a valid student code: ";
+        cout << "Insert the name of the student to add: ";
+        cin.get();
+        getline(cin, studentName);
+        data.addStudent(studentCode, studentName);
+    }
+
+    // Adding a request to push to queue
+    else {
+        set<Student>* students = data.getStudentsReference();
+        vector<UcClass>* ucClasses = data.getScheduleReference();
+        Request newRequest = Request(students, ucClasses, option);
+        if (!newRequest.getPairs().empty())
+            data.pushRequestToQueue(newRequest);
+    }
+}
+
+bool Program::validateStudentCode(int studentCode) {
+    int year = studentCode / 100000;
+    if (studentCode / 100000000 > 0 && studentCode / 1000000000 == 0 && year > 1926)
+        return true;
+    return false;
+}
+
 /**Functionality: Get the input in a safer way,that is, checking if the input given by the user is valid. If it is it will return true, otherwise
  * it will return false.
  *
  * Description: This is an auxiliary function, it will have a parameter passed by reference which will be the variable in which we are going to store the input
  * (the use of the template will make this function useful for every type of variable) then it will ask the user to give an input and after that will check
- * if the input is valid for the type of the variable. If it not valid it will clear the input and return false, otherwise ir will return true. As the
+ * if the input is valid for the type of the variable. If it not valid it will clear the i nput and return false, otherwise ir will return true. As the
  * variable is passed by reference it will keep the value of the input.
  * @tparam type input
  * @return bool

@@ -34,6 +34,7 @@ public:
     void searchByYear() const;
     void searchByAdmissionYear()const;
     void wait() const;
+    void handleRequestOption(char option);
 
     template<typename type >
     bool getInput(type &input) const;
@@ -41,6 +42,7 @@ public:
 
 
 private:
+    bool validateStudentCode(int studentCode);
     int currentMenuPage;
     vector<Menu> menus;
     Database data;

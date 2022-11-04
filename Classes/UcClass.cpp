@@ -1,5 +1,7 @@
 #include "UcClass.h"
 
+UcClass::UcClass() {}
+
 UcClass::UcClass(std::string ucCode_, std::string classCode_, list<Lecture> lectures_) {
     this->ucCode=ucCode_;
     this->classCode=classCode_;
@@ -7,11 +9,7 @@ UcClass::UcClass(std::string ucCode_, std::string classCode_, list<Lecture> lect
     this->numberOfStudents = 0;
     this->capacity = 0;
 }
-/**
- *
- * @param secondUcClass
- * @return
- */
+
 bool UcClass::operator<(const UcClass secondUcClass) const {
     if (this->ucCode < secondUcClass.ucCode)
         return true;

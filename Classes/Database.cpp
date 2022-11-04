@@ -61,6 +61,7 @@ void Database::readArchive() {
     list<pair<UcClass, UcClass*>> pairs;
     ifstream file("../files/archive.csv");
     string line;
+    UcClass ucClass1, *ucClass2;
     string studentCode, ucCode1, classCode1, ucCode2, classCode2;
     while(getline(file,line)){
         istringstream words(line);
@@ -71,8 +72,14 @@ void Database::readArchive() {
             getline(words, classCode1, ',');
             getline(words, ucCode2, ',');
             getline(words, classCode2, ',');
-            UcClass ucClass1 = *(findUcClass(ucCode1, classCode1));
-            UcClass* ucClass2 = findUcClass(ucCode2, classCode2);
+            if (ucCode1 == "-")
+                ucClass1 = UcClass("-1", "-1", {});
+            else
+                ucClass1 = *(findUcClass(ucCode1, classCode1));
+            if (ucCode2 == "-")
+                ucClass2 = nullptr;
+            else
+                ucClass2 = findUcClass(ucCode2, classCode2);
             pairs.push_back({ucClass1, ucClass2});
         }
         Request request(student, pairs);
@@ -510,6 +517,14 @@ void Database::handleRequests() {
     }
 }
 
+void Database::addStudent(int studentCode, string studentName) {
+     students.insert(Student(studentName, studentCode, {}));
+ }
+
+void Database::removeStudent(int studentCode) {
+     students.erase(Student("Irrelevant", studentCode, {}));
+ }
+
 void Database::updateStudents() const {
      ofstream file("../files/students_classes.csv",ios::trunc);
      file<<"StudentCode,StudentName,UcCode,ClassCode"<<endl;
@@ -521,7 +536,7 @@ void Database::updateStudents() const {
      file.close();
  }
 
-void Database::updateArchive()  {
+void Database::updateArchive() {
      ofstream file("../files/archive.csv",ios::trunc);
      while(!archive.empty()){
          Request request=archive.front();
@@ -547,6 +562,4 @@ void Database::updateArchive()  {
 
      }
      file.close();
-
  }
-

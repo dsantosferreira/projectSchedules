@@ -39,7 +39,8 @@ public:
     queue<Request> getArchiveRequest() const;
     void updateStudents()const;
     void updateArchive();
-
+    void addStudent(int studentCode, string studentName);
+    void removeStudent(int studentCode);
 
 private:
     void readArchive();
