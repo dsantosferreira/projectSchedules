@@ -29,6 +29,15 @@ public:
     void searchByClass() const;
     void searchByUc() const;
     void searchByUcClass() const;
+    void vacancies()const;
+    void moreThan() const;
+    void searchByYear() const;
+    void searchByAdmissionYear()const;
+    void wait() const;
+
+    template<typename type >
+    bool getInput(type &input) const;
+
 
 
 private:

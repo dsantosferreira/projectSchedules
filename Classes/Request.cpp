@@ -70,7 +70,6 @@ Request::Request(set<Student>* students, vector<UcClass>* ucClasses, char option
         }
         case '2': {
             Menu menu = Menu(*ucClasses);
-            buttons = menu.getButtons();
             menu.draw();
             while (true) {
                 menu = Menu(*ucClasses);
@@ -107,6 +106,7 @@ Request::Request(set<Student>* students, vector<UcClass>* ucClasses, char option
             this->removeAdd.push_back(p);
             break;
         }
+
         case '3': {
             list<UcClass> ucClassesAvailable = student.getUcClasses();
             bool done = false;
@@ -139,7 +139,6 @@ Request::Request(set<Student>* students, vector<UcClass>* ucClasses, char option
                 UcClass toRemove = intermediate;
 
                 Menu menu2 = Menu(*ucClasses);
-                buttons = menu2.getButtons();
                 menu2.draw();
                 while (true) {
                     menu2 = Menu(*ucClasses);

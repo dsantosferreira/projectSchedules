@@ -2,7 +2,9 @@
 #include <fstream>
 #include <sstream>
 #include <iostream>
-
+/**
+ *
+ */
 Database::Database() {
     readUcClasses();
     readUcClassesFile();
@@ -99,7 +101,7 @@ void Database::readStudentClassesFile() {
     list<UcClass> emptyList;
     Student currStudent;
     UcClass* aUcClass = NULL;
-
+    int maxCapacity=0;
     int currStudentsUC;
 
 
@@ -122,17 +124,23 @@ void Database::readStudentClassesFile() {
         aUcClass = findUcClass(ucCode, classCode);
         currStudentsUC = aUcClass->getNumberOfStudents();
         aUcClass->setNumberOfStudents(++currStudentsUC);
+        if(currStudentsUC>maxCapacity) maxCapacity=currStudentsUC;
         aUcClass->setCapacity(currStudentsUC);
         currStudent.addUcClass(aUcClass, currStudent.getUcClasses().size());
         prevStuCode = stuCode;
     }
     students.insert(currStudent);
+    for(UcClass &ucClass_: schedule){
+        ucClass_.setCapacity(maxCapacity);
+    }
+
 }
 
 UcClass* Database::findUcClass(string ucCode, string classCode) {
     int i, j, middle;
     i = 0;
     j = schedule.size() - 1;
+    UcClass* curr;
     while (i <= j) {
         middle = i + (j - i)/2;
         UcClass* curr = &schedule[middle];
@@ -154,57 +162,39 @@ UcClass* Database::findUcClass(string ucCode, string classCode) {
             i = middle + 1;
         }
     }
-
+return curr;
 }
 
-int Database::findUc(string ucCode) {
-    int low = 0, high = schedule.size() - 1;
+
+
+
+/**Functionality: Find the lowerbound of an Uc in the vector of UcClasses and return its index
+ *
+ * Description: This Function is going to receive as parameter a string which will be a UC code, and then will search for the first occurrence of the UC
+ * in the vector, returning when finding it the index of that Uc in the vector.
+ *
+ * @param ucCode string with the code of the UC
+ * @return The index of the first occurrence of the Uc in the vector
+ */
+int Database::findUc(std::string ucCode)const {
+    int begin=0, end= this->schedule.size()-1;
     int middle;
-    while (low != high) {
-        middle = low + (high - low)/2;
-        if (schedule[middle].getUcCode() >= ucCode) {
-            high = middle;
-        }
-        else {
-            low = middle + 1;
-        }
+    while(begin<end){
+        middle=begin+(end-begin)/2;
+        if(schedule[middle].getUcCode()>=ucCode) end=middle;
+        else begin=middle+1;
+
     }
-    return low;
+    return begin;
 }
 
-bool Database::searchByUC(std::string ucCode_)const{
-    bool cond=false;
-    for(Student student_ : students){
-        if(student_.hasUc(ucCode_)){
-            student_.print();
-            cond=true;
-        }
-    }
-    if(cond) return cond;
-    else{
-        cout<<"No student belonging to "+ ucCode_+" was found\n";
-        return false;
-    }
-}
-bool Database::searchByUcClass(UcClass ucClass) const {
-    bool cond=false;
-    for(Student student : students){
-        if(student.hasUcClass(ucClass)){
-            student.print();
-            cond =true;
-        }
-    }
-    if(cond) return cond;
-    else cout<<"No student belonging to the class "+ucClass.getClassCode()+" of "+ucClass.getUcCode()+'\n';
-}
-
-bool Database::searchStudent(int upCode) const {
-    list<UcClass> empty;
-    auto itr= this->students.find(Student("Irrelevant",upCode,empty));
-    if(itr!=this->students.end()) {itr->print(); return true;}
-    else cout<<"Student not found\n";
-    return false;
-}
+/**Functionality: Print the class schedule in the form of a Diagram
+ *
+ * Description: This Function will receive as a parameter a string which will have a class code, then it will search for all the lectures of this class and
+ * print them with the use of the UcClass method print, forming a pleasant schedule.
+ *
+ * @param classCode_ string with a class code
+ */
 void Database::printClassDiagramSchedule(string classCode_)const{
     cout<<classCode_<<":\n";
     for(UcClass ucClass_:schedule){
@@ -213,6 +203,13 @@ void Database::printClassDiagramSchedule(string classCode_)const{
 
 }
 
+/**Functionality: Print the class schedule in a more graphical way
+ *
+ * Description: This Function will receive as a parameter a string which will have a class code, then it will search for all the lectures of this class and
+ * format them in a string, then printing them forming a pleasant schedule.
+ *
+ * @param classCode_ string with a class code
+ */
 void Database::printClassGraphicSchedule(std::string classCode_) const {
     cout << classCode_ + " schedule\n";
     string schedule_ = " ________________________________________________________________________________________\n"
@@ -271,9 +268,81 @@ void Database::printClassGraphicSchedule(std::string classCode_) const {
                          '\n';
         }
 
-    
+
     cout << schedule_;
 }
+
+/**Functionality: search Students belonging to a class of an UC
+ *
+ * Description:This function will receive as a parameter an UcClass, then it will search for all the Students that belong to the class of that UC
+ * displaying them using Student method print. the function will give a warning if no student was found as well as returning false,otherwise it
+ * will return true.
+ *
+ * @param ucClass UcClass
+ * @return return false if no student was found and true if at least one student was found
+ */
+bool Database::searchByUcClass(UcClass ucClass) const {
+    bool cond=false;
+    for(Student student : students){
+        if(student.hasUcClass(ucClass)){
+            student.print();
+            cond =true;
+        }
+    }
+    if(cond) return cond;
+    else cout<<"No student belonging to the class "+ucClass.getClassCode()+" of "+ucClass.getUcCode()+'\n';
+    return cond;
+}
+
+/**Functionality: Search for a Student
+ *
+ * Description: This function will receive as a parameter an int with a up code of a student,then it will search for the Student and display him
+ * using Student method print.The function will give a warning if no student was found as well as returning false,otherwise it
+ * will return true.
+ *
+ * @param upCode int with the Students up code
+ * @return return false if no student was found and true otherwise
+ */
+bool Database::searchStudent(int upCode) const {
+    list<UcClass> empty;
+    auto itr= this->students.find(Student("Irrelevant",upCode,empty));
+    if(itr!=this->students.end()) {itr->print(); return true;}
+    else cout<<"Student not found\n";
+    return false;
+}
+
+/**Functionality: Search Students of an UC
+ * Description: This function will receive as a parameter a string with an Uc code, then it will search for the Students of that Uc and display them
+ * using the Student method print.The function will give a warning if no student was found as well as returning false,otherwise it
+ * will return true.
+ *
+ * @param ucCode_ string with UC code
+ * @return return false if no student was found and true otherwise
+ */
+bool Database::searchByUC(std::string ucCode_)const{
+    bool cond=false;
+    for(Student student_ : students){
+        if(student_.hasUc(ucCode_)){
+            student_.print();
+            cond=true;
+        }
+    }
+    if(cond) return cond;
+    else{
+        cout<<"No student belonging to "+ ucCode_+" was found\n";
+        return false;
+    }
+}
+
+/**Function: Search students of a class
+ *
+ * Description: This function will receive as a parameter a string with an class code, then it will search for the Students of that class and display them
+ * using the Student method print.The function will give a warning if no student was found as well as returning false,otherwise it
+ * will return true.
+ *
+ * @param class_ string with class code
+ * @return return false if no student was found and true otherwise
+ */
 bool Database::searchByClass(std::string class_) const {
     bool cond=false;
     for(Student student : students){
@@ -289,13 +358,45 @@ bool Database::searchByClass(std::string class_) const {
     }
 }
 
-/*bool*/ void Database::searchByYear(int year) const{
-    //bool flag = false;
+
+/**Function: Search Students with more than N UCs
+ *
+ * Description: This function will receive as a parameter an int with a number of minimum UCs the Students should have, then it will search for the
+ * Students that met that condition and display them using the Student method print.The function will give a warning if no student was found as well as
+ * returning false,otherwise it will return true.
+ *
+ * @param n int with the minimum of Ucs the Student should have
+ * @return return false if no student was found and true otherwise
+ */
+bool Database::searchMoreThan(int n) const {
+    bool cond =false;
+    for(Student student:students){
+        if(student.getUcClasses().size()>=n){
+            student.print();
+            cond=true;
+
+        }
+    }
+    return cond;
+}
+
+/**Functionality: Search Students of an academic year
+ *
+ * Description: This function will receive as a parameter an int with an academic year, then it will search for the Students which belong to that
+ * academic year and display them using the Student method print.The function will return false if no Student was found,otherwise it will return true.
+ *
+ * @param year int with an academic year
+ * @return  return false if no student was found and true otherwise
+ */
+bool Database::searchByYear(int year) const{
+    bool flag = false;
+
+
     for (Student student : students){
         int maxYear = 1;
         int classYear;
-        for(UcClass ucclass : student.getUcClasses()){
-            string classCode = ucclass.getClassCode();
+        for(UcClass ucClass : student.getUcClasses()){
+            string classCode = ucClass.getClassCode();
             classYear = classCode.at(0) - '1' + 1;
             if(classYear > maxYear){
                 maxYear = classYear;
@@ -303,23 +404,32 @@ bool Database::searchByClass(std::string class_) const {
         }
         if(maxYear == year){
             student.print();
-            //flag = true;
+            flag = true;
         }
     }
-    //return flag;
- }
 
-/*bool*/ void Database::searchByYearAdmission(int year) const{
-    //bool flag = false;
+    return flag;
+}
+
+/**Functionality: Search Students who entered in a year
+ *
+ * Description: This function will receive as a parameter an int with a year, then it will search for the Students which entered the university
+ * that year and display them using the Student method print.The function will return false if no Student was found,otherwise it will return true.
+ *
+ * @param year int with a year
+ * @return  return false if no student was found and true otherwise
+ */
+ bool Database::searchByYearAdmission(int year) const{
+    bool flag = false;
     for (Student student : students){
         int upCode = student.getStudentCode();
         int studentYear = upCode/100000;
         if(studentYear == year){
             student.print();
-            //flag = true;
+            flag = true;
         }
     }
-    //return flag;
+    return flag;
 }
 
 void Database::pushRequestToQueue(Request request) {
@@ -327,9 +437,6 @@ void Database::pushRequestToQueue(Request request) {
 }
 
 void Database::handleRequests() {
-    for (int i = 0; i < schedule.size(); i++) {
-        schedule[i].setCapacity(50);
-    }
     int size = mainQueue.size();
     bool addStudent;
     list<pair<bool, bool>> changeNumberStudents;
@@ -348,19 +455,10 @@ void Database::handleRequests() {
 
         for (auto itrC = changeNumberStudents.begin(); itrC != changeNumberStudents.end(); itrC++) {
             aChange = *itrC;
-            if (aChange.first == false && aChange.second == false) {
-                addStudent = false;
-                break;
-            }
             if (aChange.first == true) {
                 UcClass removed = (*itrR).first;
                 UcClass* originalUc = findUcClass(removed.getUcCode(), removed.getClassCode());
                 originalUc->setNumberOfStudents(originalUc->getNumberOfStudents() - 1);
-            }
-            if (aChange.second == true) {
-                UcClass* added = (*itrR).second;
-                UcClass* originalUc = findUcClass(added->getUcCode(), added->getClassCode());
-                originalUc->setNumberOfStudents(originalUc->getNumberOfStudents() + 1);
             }
             itrR++;
         }
@@ -373,3 +471,4 @@ void Database::handleRequests() {
         mainQueue.pop();
     }
 }
+
