@@ -1,5 +1,8 @@
 #include "UcClass.h"
 
+UcClass::UcClass(){
+
+}
 UcClass::UcClass(std::string ucCode_, std::string classCode_, list<Lecture> lectures_) {
     this->ucCode=ucCode_;
     this->classCode=classCode_;

@@ -9,11 +9,11 @@ Database::Database() {
     readArchive();
 }
 
- queue<Request> Database::getMainRequest() const {
+ queue<Request2> Database::getMainRequest() const {
     return this->mainQueue;
 }
 
-queue<Request> Database::getArchiveRequest() const {
+queue<Request2> Database::getArchiveRequest() const {
     return this->archive;
 }
 
@@ -61,6 +61,7 @@ void Database::readArchive() {
     list<pair<UcClass, UcClass*>> pairs;
     ifstream file("../files/archive.csv");
     string line;
+    UcClass ucClass1,*ucClass2;
     string studentCode, ucCode1, classCode1, ucCode2, classCode2;
     while(getline(file,line)){
         istringstream words(line);
@@ -71,11 +72,22 @@ void Database::readArchive() {
             getline(words, classCode1, ',');
             getline(words, ucCode2, ',');
             getline(words, classCode2, ',');
-            UcClass ucClass1 = *(findUcClass(ucCode1, classCode1));
-            UcClass* ucClass2 = findUcClass(ucCode2, classCode2);
+            if(ucCode1=="-"){
+                ucClass1=UcClass("-1","-1",{});
+            }
+            else{
+                UcClass ucClass1 = *(findUcClass(ucCode1, classCode1));
+            }
+            if(ucCode2=="-"){
+                ucClass2= nullptr;
+            }
+            else{
+                UcClass* ucClass2 = findUcClass(ucCode2, classCode2);
+            }
+
             pairs.push_back({ucClass1, ucClass2});
         }
-        Request request(student, pairs);
+        Request2 request(student, pairs);
         archive.push(request);
     }
 }
@@ -460,7 +472,7 @@ bool Database::searchByYear(int year) const{
     return flag;
 }
 
-void Database::pushRequestToQueue(Request request) {
+void Database::pushRequestToQueue(Request2 request) {
     mainQueue.push(request);
 }
 
@@ -475,7 +487,7 @@ void Database::handleRequests() {
     // Goes through all requests
     for (int i = 0; i < sizeMain+sizeArchive ; i++) {
         addStudent = true;
-        Request request;
+        Request2 request;
         if(i<sizeArchive){
             request=archive.front();
             archive.pop();
@@ -524,7 +536,7 @@ void Database::updateStudents() const {
 void Database::updateArchive()  {
      ofstream file("../files/archive.csv",ios::trunc);
      while(!archive.empty()){
-         Request request=archive.front();
+         Request2 request=archive.front();
          archive.pop();
          file<<request.getStudent().getStudentCode();
          for(pair<UcClass,UcClass*> p:request.getPairs()){

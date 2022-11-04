@@ -7,7 +7,7 @@
 #include <string>
 #include "Database.h"
 #include "Student.h"
-#include "Request.h"
+#include "Request2.h"
 using namespace std;
 
 class Program {
@@ -34,7 +34,7 @@ public:
     void searchByYear() const;
     void searchByAdmissionYear()const;
     void wait() const;
-
+    void requests();
     template<typename type >
     bool getInput(type &input) const;
 

@@ -3,7 +3,7 @@
 
 #include "Student.h"
 #include "UcClass.h"
-#include "Request.h"
+#include "Request2.h"
 #include <vector>
 #include <set>
 #include <queue>
@@ -34,9 +34,9 @@ public:
     int getNumberUcClasses() const;
     int findUc(string ucCode)const;
     void handleRequests();
-    void pushRequestToQueue(Request request);
-    queue<Request> getMainRequest() const;
-    queue<Request> getArchiveRequest() const;
+    void pushRequestToQueue(Request2 request);
+    queue<Request2> getMainRequest() const;
+    queue<Request2> getArchiveRequest() const;
     void updateStudents()const;
     void updateArchive();
 
@@ -49,8 +49,8 @@ private:
     UcClass* findUcClass(string ucCode, string classCode);
     set<Student> students;
     vector<UcClass> schedule;
-    queue<Request> mainQueue;
-    queue<Request> archive;
+    queue<Request2> mainQueue;
+    queue<Request2> archive;
 };
 
 

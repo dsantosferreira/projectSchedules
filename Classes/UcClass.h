@@ -9,6 +9,7 @@ using namespace std;
 
 class UcClass {
 public:
+    UcClass();
     UcClass(string ucCode_, string classCode_, list<Lecture> lectures_);
     string getUcCode() const;
     string getClassCode() const;
