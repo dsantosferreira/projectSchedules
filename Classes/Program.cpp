@@ -60,6 +60,19 @@ void Program:: run(){
         menu();
 // runs until quit option is selected
     }
+    if(data.getMainRequest().size()>0 || data.getArchiveRequest().size()>0){
+        cout<< "Do you want to save the stored requests?[y/n]: ";
+        char answer;
+        cin>>answer;
+        while(getInput(answer)|| (tolower(answer)!='y' && tolower(answer)!='n'))cout<<"Invalid input please enter y(yes) or n(no)";
+        if(tolower(answer)=='y'){
+            data.handleRequests();
+
+        }
+    }
+    data.updateStudents();
+    data.updateArchive();
+
 }
 
 /**Functionality: Makes the Program work, calls the functions and deals with the majority of the inputs and with the current menu page.

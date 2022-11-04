@@ -3,6 +3,18 @@
 #include "Request.h"
 #include "Menu.h"
 
+Request::Request() {}
+
+Request::Request(const Request &request) {
+    this->student = request.student;
+    this->removeAdd = request.removeAdd;
+}
+
+Request::Request(Student student_, list<pair<UcClass, UcClass *>> pairs_) {
+    this->student = student_;
+    this->removeAdd = pairs_;
+}
+
 list<pair<UcClass, UcClass *>> Request::getPairs() const {
     return this->removeAdd;
 }
@@ -220,8 +232,7 @@ list<pair<bool, bool>> Request::handleRequest(set<Student>* students,vector<UcCl
                 } else {
                     return {};
                 }
-            }
-            else
+            }else
                 return {};
         }
         changeNumberStudents.push_back(aChange);
@@ -236,7 +247,7 @@ list<pair<bool, bool>> Request::handleRequest(set<Student>* students,vector<UcCl
         if (toAdd != nullptr) {
 
             if (toAdd->getNumberOfStudents() >= toAdd->getCapacity()) {
-                return {};
+                return {{false,false}};
             }
             else if (newStudent.hasUcClass(*toAdd))
                 return {};
@@ -253,7 +264,7 @@ list<pair<bool, bool>> Request::handleRequest(set<Student>* students,vector<UcCl
                         toAddLectures = toAdd->getLectures();
                         for (auto itrToAddLectures = toAddLectures.begin(); itrToAddLectures != toAddLectures.end(); itrToAddLectures++) {
                             if (itrToAddLectures->Overlaps(*itrLectures) && !itrToAddLectures->isOverlapableWith(*itrLectures)) {
-                                return {};
+                                return {{false,false}};
                             }
                         }
                     }

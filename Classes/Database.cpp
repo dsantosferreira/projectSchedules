@@ -1,14 +1,20 @@
 #include "Database.h"
-#include <fstream>
-#include <sstream>
+
 #include <iostream>
-/**
- *
- */
+
 Database::Database() {
     readUcClasses();
     readUcClassesFile();
     readStudentClassesFile();
+    readArchive();
+}
+
+ queue<Request> Database::getMainRequest() const {
+    return this->mainQueue;
+}
+
+queue<Request> Database::getArchiveRequest() const {
+    return this->archive;
 }
 
 vector<UcClass> Database::getSchedule() const {
@@ -50,6 +56,28 @@ int Database::getNumberUcClasses() const {
         }
     }
     return counter;
+}
+void Database::readArchive() {
+    list<pair<UcClass, UcClass*>> pairs;
+    ifstream file("../files/archive.csv");
+    string line;
+    string studentCode, ucCode1, classCode1, ucCode2, classCode2;
+    while(getline(file,line)){
+        istringstream words(line);
+        getline(words,studentCode,',');
+        Student student = *(students.find(Student("Irrelevant", stoi(studentCode), {})));
+        while(!words.eof()){
+            getline(words, ucCode1, ',');
+            getline(words, classCode1, ',');
+            getline(words, ucCode2, ',');
+            getline(words, classCode2, ',');
+            UcClass ucClass1 = *(findUcClass(ucCode1, classCode1));
+            UcClass* ucClass2 = findUcClass(ucCode2, classCode2);
+            pairs.push_back({ucClass1, ucClass2});
+        }
+        Request request(student, pairs);
+        archive.push(request);
+    }
 }
 
 void Database::readUcClasses() {
@@ -437,16 +465,23 @@ void Database::pushRequestToQueue(Request request) {
 }
 
 void Database::handleRequests() {
-    int size = mainQueue.size();
+    int sizeMain = mainQueue.size();
+    int sizeArchive=archive.size();
     bool addStudent;
     list<pair<bool, bool>> changeNumberStudents;
     list<pair<UcClass, UcClass*>> ucPairs;
     pair<bool, bool> aChange;
 
     // Goes through all requests
-    for (int i = 0; i < size; i++) {
+    for (int i = 0; i < sizeMain+sizeArchive ; i++) {
         addStudent = true;
-        Request request = mainQueue.front(); // Loads next request
+        Request request;
+        if(i<sizeArchive){
+            request=archive.front();
+            archive.pop();
+        }
+        else {request = mainQueue.front(); mainQueue.pop();}// Loads next request
+
         ucPairs = request.getPairs();
         auto itrR = ucPairs.begin();
         changeNumberStudents = request.handleRequest(&students,schedule);
@@ -455,6 +490,9 @@ void Database::handleRequests() {
 
         for (auto itrC = changeNumberStudents.begin(); itrC != changeNumberStudents.end(); itrC++) {
             aChange = *itrC;
+            if(aChange.first==false && aChange.second==false){
+                archive.push(request);
+            }
             if (aChange.first == true) {
                 UcClass removed = (*itrR).first;
                 UcClass* originalUc = findUcClass(removed.getUcCode(), removed.getClassCode());
@@ -468,7 +506,47 @@ void Database::handleRequests() {
             students.erase(itr);
             students.insert(studentToAdd);
         }
-        mainQueue.pop();
+
     }
 }
+
+void Database::updateStudents() const {
+     ofstream file("../files/students_classes.csv",ios::trunc);
+     file<<"StudentCode,StudentName,UcCode,ClassCode"<<endl;
+     for(Student student: students){
+        for(UcClass ucClass: student.getUcClasses()){
+            file<<student.getStudentCode()<<','<<student.getStudentName()<<','<<ucClass.getUcCode()<<','<<ucClass.getClassCode()<<endl;
+        }
+     }
+     file.close();
+ }
+
+void Database::updateArchive()  {
+     ofstream file("../files/archive.csv",ios::trunc);
+     while(!archive.empty()){
+         Request request=archive.front();
+         archive.pop();
+         file<<request.getStudent().getStudentCode();
+         for(pair<UcClass,UcClass*> p:request.getPairs()){
+             file << ',';
+             if(p.first.getUcCode()=="-1"){
+                 file<<"-,-";
+             }
+             else{
+                 file<<p.first.getUcCode()<<','<<p.first.getClassCode();
+             }
+             file<<",";
+             if(p.second== nullptr){
+                 file<<"-,-";
+             }else{
+                 file<<p.second->getUcCode()<<','<<p.second->getClassCode();
+             }
+
+         }
+         file<<endl;
+
+     }
+     file.close();
+
+ }
 

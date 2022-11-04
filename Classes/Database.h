@@ -7,6 +7,8 @@
 #include <vector>
 #include <set>
 #include <queue>
+#include <fstream>
+#include <sstream>
 
 using namespace std;
 
@@ -14,9 +16,7 @@ class Database {
 public:
     Database();
     set<Student> getStudents() const;
-
     set<Student>* getStudentsReference();
-
     vector<UcClass> getSchedule() const;
     vector<UcClass>* getScheduleReference();
     void setStudents(set<Student> students_);
@@ -28,31 +28,21 @@ public:
     bool searchStudent(int upCode)const;
     void printClassDiagramSchedule(string classCode_)const;
     void printClassGraphicSchedule(string classCode_)const;
-
     bool searchMoreThan(int n) const;
     bool searchByYear(int year)const;
     bool searchByYearAdmission(int year) const;
-
     int getNumberUcClasses() const;
-
-
     int findUc(string ucCode)const;
-    void addRequestToQueue(Request request);
-
     void handleRequests();
     void pushRequestToQueue(Request request);
+    queue<Request> getMainRequest() const;
+    queue<Request> getArchiveRequest() const;
+    void updateStudents()const;
+    void updateArchive();
 
 
-    /** Funcões para listagens
-     * Funcões para pesquisa
-     * Funçoes dos pedidos
-     * Funcões de inicialização de estruturas
-     * funcões gerais
-     * Funções de leitura
-     * Funcões print
-     * Funções de escrita em ficheiros
-      */
 private:
+    void readArchive();
     void readUcClasses();
     void readUcClassesFile();
     void readStudentClassesFile();
