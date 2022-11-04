@@ -453,6 +453,7 @@ bool Program::getInput(type &input) const {
 
 
 void Program::requests() {
+    Request request();
     this->draw();
     int option;
     set<Student> students=data.getStudents();
@@ -473,6 +474,10 @@ void Program::requests() {
                 auto itr=ucClasses.begin();
                 advance(itr,option - 1);
                 UcClass toRemove = *itr;
+                pair<UcClass, UcClass > p(toRemove, UcClass("-1","-1",{}));
+
+
+                break;
 
 
             }

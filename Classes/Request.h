@@ -14,6 +14,7 @@
 
 class Request {
 public:
+    Request(){};
     Request(set<Student>students,pair<UcClass,UcClass>,vector<UcClass>ucClasses);
 private:
     Student student;
