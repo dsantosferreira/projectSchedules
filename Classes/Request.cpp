@@ -5,24 +5,47 @@
 
 Request::Request() {}
 
+/**
+ * @brief Copy constructor
+ * @param request a request to be copied
+ */
 Request::Request(const Request &request) {
     this->student = request.student;
     this->removeAdd = request.removeAdd;
 }
 
+/**
+ * @brief Parametrized constructor
+ * @param student_ the student on which the changes are to be made
+ * @param pairs_ list of pairs. Each pair is a UcClass to remove and a UcClass to add
+ */
 Request::Request(Student student_, list<pair<UcClass, UcClass *>> pairs_) {
     this->student = student_;
     this->removeAdd = pairs_;
 }
 
+/**
+ * @brief Pairs getter
+ * @return a list of pairs of UcClasses
+ */
 list<pair<UcClass, UcClass *>> Request::getPairs() const {
     return this->removeAdd;
 }
 
+/**
+ * @brief Student getter
+ * @return a student
+ */
 Student Request::getStudent() const {
     return this->student;
 }
 
+/**
+ * @brief Finds the first class from a Curricular Unit
+ * @param ucCode name of the Curricular Unit
+ * @param ucClasses vector of all classes to be searched
+ * @return
+ */
 int Request::findUc(string ucCode, vector<UcClass> ucClasses) {
     int low = 0, high = ucClasses.size() - 1;
     int middle;
