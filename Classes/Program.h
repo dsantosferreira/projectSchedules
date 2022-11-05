@@ -35,6 +35,7 @@ public:
     void searchByAdmissionYear()const;
     void wait() const;
     void handleRequestOption(char option);
+    void showSearch(vector<Student> search) const;
 
     template<typename type >
     bool getInput(type &input) const;

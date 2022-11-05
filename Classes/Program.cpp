@@ -331,7 +331,7 @@ void Program::searchByUcClass() const {
     while(getInput(option)|| option>options.size() || option<1)cout<<"Invalid input please insert a number between 1-"<<options.size()<<':';
     string class_=options[option-1];
     list<Lecture> empty;
-    this->data.searchByUcClass(UcClass(ucCode,class_,empty));
+    vector<Student> search = this->data.searchByUcClass(UcClass(ucCode,class_,empty));
 
     wait();
 }
@@ -377,7 +377,7 @@ void Program::moreThan() const {
     cout<<"Insert number of minimum Ucs Student should have:";
     int n;
     while(getInput(n))cout<<"Invalid input please insert a number:";
-    if(!data.searchMoreThan(n)){
+    if(data.searchMoreThan(n).empty()){
         cout<<"No student with more than "<<n<<" UCs was found\n";
     }
     wait();
@@ -395,7 +395,7 @@ void Program::searchByYear() const {
     cout<<"Insert the year:";
     int year;
     while(getInput(year))cout<<"Invalid input please insert a number:";
-    if(!data.searchByYear(year)) cout<<"No students found\n";
+    if(data.searchByYear(year).empty()) cout<<"No students found\n";
     wait();
 }
 
@@ -409,8 +409,12 @@ void Program::searchByAdmissionYear() const {
     system("clear");
     cout<<"Insert the year:";
     int year;
-    while(getInput(year))cout<<"Invalid input please insert a number:";
-    if(!data.searchByYearAdmission(year)) cout<<"No students found\n";
+    while(getInput(year)) cout << "Invalid input please insert a number:";
+    vector<Student> search = data.searchByYearAdmission(year);
+    if(search.empty()) cout<<"No students found\n";
+    else{
+        showSearch(search);
+    }
     wait();
 
 }
@@ -489,4 +493,50 @@ bool Program::getInput(type &input) const {
         return true;
     }
     return false;
+}
+
+void Program::showSearch(vector<Student> search) const {
+    system("clear");
+    int start = 0;
+    vector<int> starts;
+    int previous_start = -1;
+    int end;
+    while(start>=0 && start < search.size()){
+        system("clear");
+        bool cond = false;
+        for(int s : starts){
+            if(s == start) cond = true;
+        }
+        if(!cond) starts.push_back(start);
+        end = start + 20;
+        if(end >= search.size()) end = search.size();
+        while(start < end){
+            search.at(start).print();
+            start++;
+        }
+        start++;
+        char option;
+        bool c = true;
+        cout << "[1] Next page\n[2] Previous page\n[3] Go back\nChoose an option: ";
+        while (c) {
+            cin >> option;
+            switch (option) {
+                case '1':
+                    previous_start++;
+                    c = false;
+                    break;
+                case '2':
+                    if (previous_start < 0) start = -1;
+                    else start = starts.at(previous_start);
+                    previous_start--;
+                    c = false;
+                    break;
+                case '3':
+                    start = -1;
+                    c = false;
+                    break;
+            }
+            if(c) cout << "Choose a valid option: ";
+        }
+    }
 }
