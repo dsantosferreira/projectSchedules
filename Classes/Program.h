@@ -34,7 +34,7 @@ public:
     void searchByYear() const;
     void searchByAdmissionYear()const;
     void wait() const;
-    void requests();
+    void requests(char option);
     template<typename type >
     bool getInput(type &input) const;
 

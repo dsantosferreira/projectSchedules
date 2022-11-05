@@ -6,14 +6,14 @@ Database::Database() {
     readUcClasses();
     readUcClassesFile();
     readStudentClassesFile();
-    readArchive();
+    //readArchive();
 }
 
- queue<Request2> Database::getMainRequest() const {
+ queue<Request> Database::getMainRequest() const {
     return this->mainQueue;
 }
 
-queue<Request2> Database::getArchiveRequest() const {
+queue<Request> Database::getArchiveRequest() const {
     return this->archive;
 }
 
@@ -57,8 +57,9 @@ int Database::getNumberUcClasses() const {
     }
     return counter;
 }
+/*
 void Database::readArchive() {
-    list<pair<UcClass, UcClass*>> pairs;
+    list<pair<UcClass, UcClass>> pairs;
     ifstream file("../files/archive.csv");
     string line;
     UcClass ucClass1,*ucClass2;
@@ -87,11 +88,11 @@ void Database::readArchive() {
 
             pairs.push_back({ucClass1, ucClass2});
         }
-        Request2 request(student, pairs);
+        Request request(student, pairs);
         archive.push(request);
     }
 }
-
+*/
 void Database::readUcClasses() {
     vector<UcClass> ucClasses;
     set<UcClass> aux;
@@ -472,7 +473,7 @@ bool Database::searchByYear(int year) const{
     return flag;
 }
 
-void Database::pushRequestToQueue(Request2 request) {
+void Database::pushRequestToQueue(Request request) {
     mainQueue.push(request);
 }
 
@@ -481,19 +482,26 @@ void Database::handleRequests() {
     int sizeArchive=archive.size();
     bool addStudent;
     list<pair<bool, bool>> changeNumberStudents;
-    list<pair<UcClass, UcClass*>> ucPairs;
+    list<pair<UcClass, UcClass>> ucPairs;
     pair<bool, bool> aChange;
 
     // Goes through all requests
     for (int i = 0; i < sizeMain+sizeArchive ; i++) {
         addStudent = true;
-        Request2 request;
-        if(i<sizeArchive){
-            request=archive.front();
+        Request request;
+        if (i < sizeArchive) {
+            request = archive.front();
             archive.pop();
-        }
-        else {request = mainQueue.front(); mainQueue.pop();}// Loads next request
+        } else {
+            request = mainQueue.front();
+            mainQueue.pop();
+        }// Loads next request
 
+       //request.handleRequest();
+
+
+    }
+/*
         ucPairs = request.getPairs();
         auto itrR = ucPairs.begin();
         changeNumberStudents = request.handleRequest(&students,schedule);
@@ -519,8 +527,9 @@ void Database::handleRequests() {
             students.insert(studentToAdd);
         }
 
-    }
+    }*/
 }
+
 
 void Database::updateStudents() const {
      ofstream file("../files/students_classes.csv",ios::trunc);
@@ -532,7 +541,7 @@ void Database::updateStudents() const {
      }
      file.close();
  }
-
+/*
 void Database::updateArchive()  {
      ofstream file("../files/archive.csv",ios::trunc);
      while(!archive.empty()){
@@ -562,3 +571,4 @@ void Database::updateArchive()  {
 
  }
 
+*/

@@ -15,10 +15,22 @@
 class Request {
 public:
     Request(){};
-    Request(set<Student>students,pair<UcClass,UcClass>,vector<UcClass>ucClasses);
+    Request(Student student,list<pair<UcClass,UcClass>> pairs);
+    void print(){
+        this->student.print();
+        for(pair<UcClass,UcClass>p:removeAdd){
+            cout<<p.first.getUcCode() +'-'+p.first.getClassCode()+'\n'+p.second.getUcCode()+'-'+p.second.getClassCode()+'\n';
+        }
+
+    }
+    list<pair<UcClass,UcClass>> getPairs() const;
+    Student getStudent()const;
+    bool handleRequest(set<Student>* students, vector<UcClass> ucClasses);
+    bool checkUnbalance(vector<UcClass> ucClasses, UcClass ucClass, int type);
+
 private:
     Student student;
-    list<pair<UcClass,UcClass>> pairs;
+    list<pair<UcClass,UcClass>> removeAdd;
 
 
 };

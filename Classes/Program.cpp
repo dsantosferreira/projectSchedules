@@ -65,12 +65,17 @@ void Program:: run(){
         char answer;
         while(getInput(answer)|| (tolower(answer)!='y' && tolower(answer)!='n'))cout<<"Invalid input please enter y(yes) or n(no)";
         if(tolower(answer)=='y'){
-            data.handleRequests();
+           // data.handleRequests();
 
         }
     }
-    data.updateStudents();
-    data.updateArchive();
+    queue<Request> q=data.getMainRequest();
+    while(!q.empty()){
+        q.front().print();
+        q.pop();
+    }
+  //  data.updateStudents();
+    //data.updateArchive();
 
 }
 
@@ -82,6 +87,7 @@ void Program:: run(){
  */
 void Program::menu() {
     draw(); //draw the current menu
+    cout<<"Choose an option: ";
     string option;
     bool cond = true;
     while (cond) {
@@ -104,7 +110,7 @@ void Program::menu() {
                             this->currentMenuPage = 3;
                             break;
                         case '5':
-                            data.handleRequests();
+                            //data.handleRequests();
                             break;
                         case '6':
                             this->currentMenuPage = -1; //-1 indicates that it wants to leave
@@ -162,7 +168,11 @@ void Program::menu() {
                     break;
                 case 3:
                 {
-                    requests();
+                    if(option[0]=='6'){
+                        currentMenuPage=0;
+                    }else requests(option[0]);
+
+                    break;
                 }
                 default:
                     cond = true;
@@ -182,6 +192,7 @@ void Program::printStudentSchedule() const {
     system("clear");
     Menu menu("../Menus/scheduleSubMenu2.txt");
     menu.draw();
+    cout<<"Choose an option: ";
     string option;
     cin >>option;
     while( option!="1" and option!="2"){
@@ -214,6 +225,7 @@ void Program::printClassSchedule() const {
     system("clear");
     Menu menu("../Menus/scheduleSubMenu2.txt");
     menu.draw();
+    cout<<"Choose an option: ";
     string option;
     cin >>option;
     while( option!="1" and option!="2"){
@@ -227,6 +239,7 @@ void Program::printClassSchedule() const {
     system("clear");
     Menu secondaryMenu(data.getSchedule(),year);
     secondaryMenu.draw();
+    cout<<"Choose a class: ";
     vector<string> options=secondaryMenu.getButtons();
     cout<<"Insert the class:";
     int secondOption;
@@ -275,6 +288,7 @@ void Program::searchByClass() const {
     system("clear");
     Menu menu(data.getSchedule(),year);
     menu.draw();
+    cout<<"Choose an option: ";
     vector<string> options=menu.getButtons();
     cout<<"Insert the class:";
     int option;
@@ -295,6 +309,7 @@ void Program::searchByUc() const {
     system("clear");
     Menu menu(this->data.getSchedule());
     menu.draw();
+    cout<<"Choose an option: ";
     vector<string> options=menu.getButtons();
     cout<<"Insert the Uc:";
     int option;
@@ -316,6 +331,7 @@ void Program::searchByUcClass() const {
     system("clear");
     Menu menu(this->data.getSchedule());
     menu.draw();
+    cout<<"Choose an Uc: ";
     vector<string> options=menu.getButtons();
     cout<<"Insert the uc:";
     int option;
@@ -325,6 +341,7 @@ void Program::searchByUcClass() const {
     Menu secondMenu(this->data.getSchedule(),ucCode);
     system("clear");
     secondMenu.draw();
+    cout<<"Now choose a class: ";
     options=secondMenu.getButtons();
     cout<<"Insert the class:";
 
@@ -347,6 +364,7 @@ void Program::vacancies() const{
     system("clear");
     Menu menu(this->data.getSchedule());
     menu.draw();
+    cout<<"Choose an Uc: ";
     vector<string> options=menu.getButtons();
     cout<<"Insert the Uc:";
     int option;
@@ -452,92 +470,118 @@ bool Program::getInput(type &input) const {
 
 
 
-void Program::requests() {
-    list<pair<UcClass,UcClass>> pairs;
-    set<Student> students=data.getStudents();
+void Program::requests(char option) {
+    list<pair<UcClass, UcClass>> pairs;
+    set<Student> students = data.getStudents();
     int upCode;
+
     system("clear");
-    while (getInput(upCode))cout<<"Invalid input please enter a number:";
-    auto itr= (students.find(Student("Irrelevant",upCode,{})));
-    if(itr!=students.end()) {
-        this->draw();
-        int option;
-        Student student=*itr;
-        while (getInput(option)) cout << "Invalid input, please insert a valid option:";
-        while (option != 4) {
+    cout<<"Insert Students code:";
+    while (getInput(upCode))cout << "Invalid input please enter a number:";
+    auto itr = (students.find(Student("Irrelevant", upCode, {})));
+    if (itr != students.end()) {
+        Student student = *itr;
+        switch (option) {
+            case '1': {
 
-            switch (option) {
-                case 1: {
+                list<UcClass> ucClasses = student.getUcClasses();
+                Menu menu(ucClasses);
+                menu.draw();
+                cout<<"Choose an Uc to remove: ";
+                vector<string> options = menu.getButtons();
+                int option;
+                while (getInput(option) || option < 1 || option > options.size())
+                    cout << "Invalid input please insert a number between 1-" << options.size() << ':';
+                auto itr = ucClasses.begin();
+                advance(itr, option - 1);
+                UcClass toRemove = *itr;
+                pair<UcClass, UcClass> p(toRemove, UcClass("-1", "-1", {}));
+                pairs.push_back(p);
 
-                    list<UcClass> ucClasses = student.getUcClasses();
-                    Menu menu(ucClasses);
+            }
+                break;
+            case '2': {
+
+                Menu menu(data.getSchedule());
+                vector<string> options = menu.getButtons();
+                menu.draw();
+                cout<<"Choose an Uc to add: ";
+                int option;
+                while (getInput(option) || option < 1 || option > options.size())
+                    cout << "Invalid input please insert a number between 1-" << options.size() << ':';
+                string uc = options[option - 1];
+                int index = data.findUc(uc);
+                Menu menu2(data.getSchedule(), uc);
+                menu2.draw();
+                cout<<"Now choose the class you would like to belong: ";
+                options = menu2.getButtons();
+                while (getInput(option) || option < 1 || option > options.size())
+                    cout << "Invalid input please insert a number between 1-" << options.size() << ':';
+                UcClass ucClass = data.getSchedule()[index + option - 1];
+                pair<UcClass, UcClass> p(UcClass("-1", "-1", {}), ucClass);
+                pairs.push_back(p);
+
+            }
+                break;
+            case '3': {
+
+                while(true) {
+                    list<UcClass> studentUcClasses = student.getUcClasses();
+                    Menu menu(studentUcClasses);
                     menu.draw();
+                    cout<<"Choose an Uc you would like to switch :";
                     vector<string> options = menu.getButtons();
                     int option;
                     while (getInput(option) || option < 1 || option > options.size())
                         cout << "Invalid input please insert a number between 1-" << options.size() << ':';
-                    auto itr = ucClasses.begin();
+                    auto itr = studentUcClasses.begin();
                     advance(itr, option - 1);
                     UcClass toRemove = *itr;
-                    pair<UcClass, UcClass> p(toRemove, UcClass("-1", "-1", {}));
-                    pairs.push_back(p);
-
-                }
-                    break;
-                case 2: {
-
-                    Menu menu(data.getSchedule());
-                    vector<string> options = menu.getButtons();
-                    menu.draw();
-                    int option;
-                    while (getInput(option) || option < 1 || option > options.size())
-                        cout << "Invalid input please insert a number between 1-" << options.size() << ':';
-                    string uc = options[option - 1];
-                    int index = data.findUc(uc);
-                    Menu menu2(data.getSchedule(), uc);
+                    string uc = toRemove.getUcCode();
+                    Menu menu2(data.getSchedule());
                     menu2.draw();
+                    cout<<"Now choose the UC you want to switch it for: ";
                     options = menu2.getButtons();
                     while (getInput(option) || option < 1 || option > options.size())
                         cout << "Invalid input please insert a number between 1-" << options.size() << ':';
-                    UcClass ucClass=data.getSchedule()[index + option-1];
-                    pair<UcClass, UcClass> p( UcClass("-1", "-1", {}), ucClass);
-                    pairs.push_back(p);
-
-                }
-                    break;
-                case 3:{
-                    list<UcClass> ucClasses = student.getUcClasses();
-                    Menu menu(ucClasses);
-                    menu.draw();
-                    vector<string> options = menu.getButtons();
-                    int option;
-                    while (getInput(option) || option < 1 || option > options.size())
-                        cout << "Invalid input please insert a number between 1-" << options.size() << ':';
-                    auto itr = ucClasses.begin();
-                    advance(itr, option - 1);
-                    UcClass toRemove = *itr;
-                    string uc=toRemove.getUcCode();
-                    Menu menu2(data.getSchedule(),uc);
-                    menu2.draw();
-                    options=menu2.getButtons();
-                    while (getInput(option) || option < 1 || option > options.size())
-                        cout << "Invalid input please insert a number between 1-" << options.size() << ':';
                     int index = data.findUc(uc);
-                    UcClass ucClass=data.getSchedule()[index + option-1];
+                    uc=options[option-1];
+                    Menu menu3(data.getSchedule(),uc);
+                    options=menu3.getButtons();
+                    menu3.draw();
+                    cout<<"Choose the class you would like to belong";
+                    while (getInput(option) || option < 1 || option > options.size())
+                        cout << "Invalid input please insert a number between 1-" << options.size() << ':';
+                    UcClass ucClass = data.getSchedule()[index + option - 1];
                     pair<UcClass, UcClass> p(toRemove, ucClass);
                     pairs.push_back(p);
+                    system("clear");
+                    cout<<"Do you want to switch any other class?[y/n]";
+                    char answer;
+                    while(getInput(answer)|| (tolower(answer)!='y' && tolower(answer)!='n'))cout<<"Invalid input please enter y(yes) or n(no)";
+                    if(tolower(answer)=='n'){
+                        break;
+
+                    }
                 }
-
-                    break;
-
+            }
+            case '6':{
 
             }
+
+                break;
+
+
         }
-    }else{
-        cout<<"Student not found";
+        Request request(student,pairs);
+        data.pushRequestToQueue(request);
+
+    } else {
+        cout << "Student not found";
         wait();
     }
 }
+
 
 
 
