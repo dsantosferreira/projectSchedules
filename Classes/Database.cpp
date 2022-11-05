@@ -400,6 +400,7 @@ vector<Student> Database::searchMoreThan(int n) const {
             result.push_back(student);
         }
     }
+    if(result.empty()) cout << "No student with " << n << " UCs or more\n";
     return result;
 }
 
@@ -427,7 +428,7 @@ vector<Student> Database::searchByYear(int year) const{
             result.push_back(student);
         }
     }
-
+    if(result.empty()) cout << "No student in the " << year << " year\n";
     return result;
 }
 
@@ -448,7 +449,7 @@ vector<Student> Database::searchByYearAdmission(int year) const{
             result.push_back(student);
         }
     }
-    if(result.empty()) cout << "No student admitted in " << year << "was found\n";
+    if(result.empty()) cout << "No student admitted in " << year << " was found\n";
     return result;
 }
 
