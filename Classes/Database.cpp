@@ -453,6 +453,37 @@ vector<Student> Database::searchByYearAdmission(int year) const{
     return result;
 }
 
+vector<Student> Database::allStudents() const{
+    vector<Student> result;
+    for(Student student : students){
+        result.push_back(student);
+    }
+    return result;
+}
+
+vector<UcClass> Database::allUcs() const{
+    set<string> alreadySeen;
+    vector<UcClass> result;
+    for(UcClass ucClass : schedule) {
+        if (alreadySeen.find(ucClass.getUcCode()) == alreadySeen.end()){
+            alreadySeen.insert(ucClass.getUcCode());
+            result.push_back(ucClass);
+        }
+    }
+    return result;
+}
+
+vector<UcClass> Database::allClasses() const {
+    set<string> alreadySeen;
+    vector<UcClass> result;
+    for(UcClass ucClass : schedule){
+        if (alreadySeen.find(ucClass.getClassCode()) == alreadySeen.end()){
+            alreadySeen.insert(ucClass.getClassCode());
+            result.push_back(ucClass);
+        }
+    }
+    return result;
+}
 void Database::pushRequestToQueue(Request request) {
     mainQueue.push(request);
 }

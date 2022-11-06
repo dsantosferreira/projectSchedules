@@ -232,16 +232,16 @@ bool Student::hasUcClass(UcClass ucClass_) const {
  * Description: Gives cout of the Student code and the student name
  */
 void Student::print() const{
-    int max = 4;
+    int n = 4;
     int count = 1;
     for(char c : studentName){
         count++;
         if(count%8 == 0){
-            max--;
+            n--;
         }
     }
     string t = "\t";
-    for(int c = 0; c < max; c++){
+    for(int c = 0; c < n; c++){
         t = t + "\t";
     }
     std::cout << "|  Name: " + studentName << t <<"| Code: up" << studentCode << "\t|" << endl;

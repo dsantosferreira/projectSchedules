@@ -21,12 +21,15 @@ public:
     void addALecture(Lecture aLecture);
     bool operator<(const UcClass secondUcClass) const;
     void print() const;
+    void printUcCode() const;
+    void printClassCode() const;
 private:
     string ucCode;
     string classCode;
     list<Lecture> lectures;
     int capacity;
     int numberOfStudents;
+
 };
 
 #endif

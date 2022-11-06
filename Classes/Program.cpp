@@ -106,6 +106,8 @@ void Program::menu() {
                             data.handleRequests();
                             break;
                         case '6':
+                            this->currentMenuPage = 4;
+                        case '7':
                             this->currentMenuPage = -1; //-1 indicates that it wants to leave
                             break;
                         default:
@@ -509,6 +511,32 @@ bool Program::getInput(type &input) const {
         return true;
     }
     return false;
+}
+
+void Program::showStudents() const{
+    showSearch(data.allStudents());
+}
+
+void Program::showUcs() const{
+    vector<UcClass> search = data.allUcs();
+    cout << " _______________________\n";
+    cout << "|                       |\n";
+    for(UcClass ucClass : search){
+        ucClass.printUcCode();
+    }
+    cout << "|_______________________|\n";
+    wait();
+}
+
+void Program::showClasses() const{
+    vector<UcClass> search = data.allClasses();
+    cout << " _______________________\n";
+    cout << "|                       |\n";
+    for(UcClass ucClass : search){
+        ucClass.printClassCode();
+    }
+    cout << "|_______________________|\n";
+    wait();
 }
 
 void Program::showSearch(vector<Student> search) const {
