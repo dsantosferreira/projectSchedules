@@ -21,6 +21,8 @@ public:
     list<pair<UcClass, UcClass*>> getPairs() const;
     list<pair<bool, bool>> handleRequest(set<Student>* students,vector<UcClass>ucClasses);
     bool checkUnbalance(vector<UcClass> ucClasses,UcClass ucClass, int type);
+    UcClass getUcClassToRemove();
+    UcClass* getUcClassToAdd(vector<UcClass>* ucClasses);
 };
 
 #endif
