@@ -132,5 +132,5 @@ void Menu::draw() const {
     }
     display+="|_____________________________________________|\n";
     cout<<display<<endl;
-    cout<<"Choose an option: ";
+
 }

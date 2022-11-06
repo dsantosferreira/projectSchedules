@@ -108,6 +108,7 @@ Request::Request(set<Student>* students, vector<UcClass>* ucClasses, char option
                 buttons.push_back("Quit");
                 menu1.setButtons(buttons);
                 menu1.draw();
+                cout<<"Choose an option: ";
                 while (true) {
                     cin >> subMenuOption;
                     if (checkRequestInput(buttons, subMenuOption)) {
@@ -152,6 +153,7 @@ UcClass Request::getUcClassToRemove() {
     Menu menu = Menu(ucClassesList);
     buttons = menu.getButtons();
     menu.draw();
+    cout<<"Choose an UC to remove: ";
     while (true) {
         cin >> subMenuOption;
         if (checkRequestInput(buttons, subMenuOption)) {
@@ -173,31 +175,39 @@ UcClass *Request::getUcClassToAdd(vector<UcClass>* ucClasses) {
 
     Menu menu = Menu(*ucClasses);
     menu.draw();
+    cout<<"Choose an UC to add: ";
     while (true) {
         menu = Menu(*ucClasses);
         buttons = menu.getButtons();
         cin >> subMenuOption;
-        if (checkRequestInput(buttons, subMenuOption)) {
-            string aUcCode = buttons[stoi(subMenuOption) - 1];
-            buttons.clear();
-            ucIndex = findUc(aUcCode, *ucClasses);
-            for (int i = ucIndex; (*ucClasses)[i].getUcCode() == aUcCode; i++) {
-                buttons.push_back((*ucClasses)[i].getClassCode());
-            }
-            menu.setButtons(buttons);
-            menu.draw();
-            while (true) {
-                cin >> subMenuOption;
-                if (checkRequestInput(buttons, subMenuOption)) {
-                    toAdd = &(*ucClasses)[ucIndex + stoi(subMenuOption) - 1];
-                    if (!this->student.hasUcClass(*toAdd)) {
-                        choseUcClass = true;
+        if(!student.hasUc(buttons[stoi(subMenuOption)-1])) {
+            if (checkRequestInput(buttons, subMenuOption)) {
+                string aUcCode = buttons[stoi(subMenuOption) - 1];
+
+                buttons.clear();
+                ucIndex = findUc(aUcCode, *ucClasses);
+                for (int i = ucIndex; (*ucClasses)[i].getUcCode() == aUcCode; i++) {
+                    buttons.push_back((*ucClasses)[i].getClassCode());
+                }
+                menu.setButtons(buttons);
+                menu.draw();
+                cout << "Now choose a class for the UC: ";
+                while (true) {
+                    cin >> subMenuOption;
+                    if (checkRequestInput(buttons, subMenuOption)) {
+                        toAdd = &(*ucClasses)[ucIndex + stoi(subMenuOption) - 1];
+                        if (!this->student.hasUcClass(*toAdd)) {
+                            choseUcClass = true;
+                        } else
+                            cout << "You are already part of this class." << endl;
+                        break;
                     }
-                    else
-                        cout << "You are already part of this class." << endl;
-                    break;
                 }
             }
+        }
+        else{
+            choseUcClass=false;
+            cout<<"You already have this UC!";
         }
         if (choseUcClass)
             break;
