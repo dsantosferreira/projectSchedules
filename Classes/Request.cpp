@@ -4,11 +4,11 @@
 
 #include "Request.h"
 
-Request::Request(Student student_, list<pair<UcClass, UcClass>> pairs_) {
+Request::Request(Student student_, list<pair<UcClass*, UcClass*>> pairs_) {
     this->student=student_;
     this->removeAdd=pairs_;
 }
-list<pair<UcClass,UcClass>> Request::getPairs() const {
+list<pair<UcClass*,UcClass*>> Request::getPairs() const {
     return this->removeAdd;
 }
 Student Request::getStudent()const{
@@ -25,11 +25,11 @@ bool Request::handleRequest(set<Student>* students, vector<UcClass>* ucClasses) 
     int posForAdding;//posição onde adicionar
 
     /**Removing the ucClasses*/
-    for(pair<UcClass,UcClass> p:removeAdd){
-        string uc=p.first.getUcCode();
+    for(pair<UcClass*,UcClass*> p:removeAdd){
+        string uc=p.first->getUcCode();
         if(uc!="-1"){
             if(student.hasUc(uc)){
-                if (!checkUnbalance(ucClassesCopy, p.first, 0)) {
+                if (!checkUnbalance(ucClassesCopy, *p.first, 0)) {
                     newStudent.removeUcClass(p.first);
                     int index= findUc(uc,ucClassesCopy);
                     ucClassesCopy[index].setNumberOfStudents(ucClassesCopy[index].getNumberOfStudents()-1);/**decreasing the number of students in a uc class*/
@@ -46,30 +46,30 @@ bool Request::handleRequest(set<Student>* students, vector<UcClass>* ucClasses) 
         }
 
     /**Adding the UcClasses*/
-    for(pair<UcClass,UcClass> p:removeAdd){
-        string uc=p.second.getUcCode();
-        string class_=p.second.getClassCode();
+    for(pair<UcClass*,UcClass*> p:removeAdd){
+        string uc=p.second->getUcCode();
+        string class_=p.second->getClassCode();
         int index= findUc(uc,ucClassesCopy);
-        UcClass ucClassToAdd=ucClassesCopy[index];
+        UcClass* ucClassToAdd=&ucClassesCopy[index];
         if(uc!="-1"){
             if(!student.hasUc(uc)){
-                if (checkUnbalance(ucClassesCopy, p.second, 1)) {
+                if (checkUnbalance(ucClassesCopy, *p.second, 1)) {
                     cout<<"Failed!Change would case unbalance!";
                     return false;
                 }
-                if(ucClassToAdd.getNumberOfStudents()>=ucClassToAdd.getCapacity()){
+                if(ucClassToAdd->getNumberOfStudents()>=ucClassToAdd->getCapacity()){
                     cout<<"Failed! The Class "+class_+" in the UC "+uc+" is already full!";
                     return false;
                 }else{
-                    for(UcClass ucClass:newStudent.getUcClasses() ){
+                    for(UcClass* ucClass:newStudent.getUcClasses() ){
                         if(ucClassToAdd<ucClass) {
                             posForAdding++;
                         }
-                        for(Lecture lecture:ucClass.getLectures()){
-                            for(Lecture lectureToAdd:ucClassToAdd.getLectures()){
+                        for(Lecture lecture:ucClass->getLectures()){
+                            for(Lecture lectureToAdd:ucClassToAdd->getLectures()){
                                 if(lectureToAdd.isOverlapableWith(lecture)){
-                                    cout<<"Failed!"+ucClassToAdd.getUcCode()+'-'+ucClassToAdd.getClassCode()+" lectures would overlap with"+
-                                    ucClass.getUcCode()+'-'+ucClass.getClassCode()+" lectures!";
+                                    cout<<"Failed!"+ucClassToAdd->getUcCode()+'-'+ucClassToAdd->getClassCode()+" lectures would overlap with"+
+                                    ucClass->getUcCode()+'-'+ucClass->getClassCode()+" lectures!";
                                     return false;
                                 }
                             }

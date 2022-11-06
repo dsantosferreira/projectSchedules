@@ -202,9 +202,10 @@ void Program::printStudentSchedule() const {
     cout<<"Introduce Students code: ";
     int upCode;
     while(getInput(upCode))cout<<"Invalid input please insert a number:";
-    list<UcClass>emptyList;
+
     set<Student> students= data.getStudents();
-    auto itr=students.find(Student("Irrelevant",upCode,emptyList));
+    Student student(upCode);
+    auto itr=students.find(Student(upCode));
     if(itr!=students.end()){
         if(option=="1")itr->printGraphicalSchedule();
         else itr->printDiagramSchedule();
@@ -261,9 +262,8 @@ void Program::searchStudent() const {
     cout<<"Insert Student code (up):";
     int upCode;
     while(getInput(upCode))cout<<"Invalid input please insert a number:";
-    list<UcClass>emptyList;
     set<Student> students= data.getStudents();
-    auto itr=students.find(Student("Irrelevant",upCode,emptyList));
+    auto itr=students.find(Student(upCode));
     if(itr!=students.end()){
        itr->print();
     }else {
@@ -467,7 +467,7 @@ bool Program::getInput(type &input) const {
 
 
 void Program::requests(char option) {
-    list<pair<UcClass, UcClass>> pairs;
+    list<pair<UcClass*, UcClass*>> pairs;
     set<Student> students = data.getStudents();
     int upCode;
 
@@ -475,7 +475,7 @@ void Program::requests(char option) {
         switch (option) {
             case '1': {
                 cout << "Insert the student code from the student you want to remove: ";
-                while (getInput(upCode) || students.find(Student("Irrelevant", upCode, {})) == students.end())
+                while (getInput(upCode) || students.find(Student(upCode)) == students.end())
                     cout << "Invalid input. Please insert a valid student code: ";
                 data.removeStudent(upCode);
             }
@@ -483,7 +483,7 @@ void Program::requests(char option) {
             case '2':{
                 cout << "Insert a student code, that doesn't already exist, for the student you want to add: ";
                 while (getInput(upCode) || !validateStudentCode(upCode) ||
-                       students.find(Student("Irrelevant", upCode, {})) != students.end())
+                       students.find(Student(upCode)) != students.end())
                     cout << "Invalid input. Please insert a valid student code: ";
                 cout << "Insert the name of the student to add: ";
                 cin.get();
@@ -493,16 +493,17 @@ void Program::requests(char option) {
             }
                 break;
             case '3': {
+
                 cout<<"Insert Students code:";
                 while (getInput(upCode))cout << "Invalid input please enter a number:";
-                auto itr = (students.find(Student("Irrelevant", upCode, {})));
+                auto itr = (students.find(Student(upCode)));
                 if(itr==students.end()){
                     cout<<"Student not found";
                     wait();
                     break;
                 }
                 Student student = *itr;
-                list<UcClass> ucClasses = student.getUcClasses();
+                list<UcClass*> ucClasses = student.getUcClasses();
                 Menu menu(ucClasses);
                 menu.draw();
                 cout<<"Choose an Uc to remove: ";
@@ -512,8 +513,9 @@ void Program::requests(char option) {
                     cout << "Invalid input please insert a number between 1-" << options.size() << ':';
                 auto iter = ucClasses.begin();
                 advance(itr, option - 1);
-                UcClass toRemove = *iter;
-                pair<UcClass, UcClass> p(toRemove, UcClass("-1", "-1", {}));
+                UcClass* toRemove = *iter;
+                UcClass dumb("-1", "-1", {});
+                pair<UcClass*, UcClass*> p(toRemove, &dumb);
                 pairs.push_back(p);
                 Request request(student,pairs);
                 data.pushRequestToQueue(request);
@@ -523,7 +525,7 @@ void Program::requests(char option) {
             case '4': {
                 cout<<"Insert Students code:";
                 while (getInput(upCode))cout << "Invalid input please enter a number:";
-                auto itr = (students.find(Student("Irrelevant", upCode, {})));
+                auto itr = (students.find(Student(upCode)));
                 if(itr==students.end()){
                     cout<<"Student not found";
                     wait();
@@ -545,8 +547,9 @@ void Program::requests(char option) {
                 options = menu2.getButtons();
                 while (getInput(option) || option < 1 || option > options.size())
                     cout << "Invalid input please insert a number between 1-" << options.size() << ':';
-                UcClass ucClass = data.getSchedule()[index + option - 1];
-                pair<UcClass, UcClass> p(UcClass("-1", "-1", {}), ucClass);
+                UcClass* ucClass = &data.getSchedule()[index + option - 1];
+                UcClass dumb("-1", "-1", {});
+                pair<UcClass*, UcClass*> p( &dumb, ucClass);
                 pairs.push_back(p);
                 Request request(student,pairs);
                 data.pushRequestToQueue(request);
@@ -555,7 +558,7 @@ void Program::requests(char option) {
             case '5': {
                 cout<<"Insert Students code:";
                 while (getInput(upCode))cout << "Invalid input please enter a number:";
-                auto itr = (students.find(Student("Irrelevant", upCode, {})));
+                auto itr = (students.find(Student(upCode)));
                 if(itr==students.end()){
                     cout<<"Student not found";
                     wait();
@@ -563,7 +566,7 @@ void Program::requests(char option) {
                 }
                 Student student = *itr;
                 while(true) {
-                    list<UcClass> studentUcClasses = student.getUcClasses();
+                    list<UcClass*> studentUcClasses = student.getUcClasses();
                     Menu menu(studentUcClasses);
                     menu.draw();
                     cout<<"Choose an Uc you would like to switch :";
@@ -573,8 +576,8 @@ void Program::requests(char option) {
                         cout << "Invalid input please insert a number between 1-" << options.size() << ':';
                     auto itr = studentUcClasses.begin();
                     advance(itr, option - 1);
-                    UcClass toRemove = *itr;
-                    string uc = toRemove.getUcCode();
+                    UcClass* toRemove = *itr;
+                    string uc = toRemove->getUcCode();
                     Menu menu2(data.getSchedule());
                     menu2.draw();
                     cout<<"Now choose the UC you want to switch it for: ";
@@ -589,8 +592,8 @@ void Program::requests(char option) {
                     cout<<"Choose the class you would like to belong";
                     while (getInput(option) || option < 1 || option > options.size())
                         cout << "Invalid input please insert a number between 1-" << options.size() << ':';
-                    UcClass ucClass = data.getSchedule()[index + option - 1];
-                    pair<UcClass, UcClass> p(toRemove, ucClass);
+                    UcClass* ucClass = &data.getSchedule()[index + option - 1];
+                    pair<UcClass*, UcClass*> p(toRemove, ucClass);
                     pairs.push_back(p);
                     system("clear");
                     cout<<"Do you want to switch any other class?[y/n]";

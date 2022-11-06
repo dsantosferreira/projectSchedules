@@ -37,6 +37,7 @@ public:
     int findUc(string ucCode)const;
     void handleRequests();
     void pushRequestToQueue(Request request);
+
     queue<Request> getMainRequest() const;
     queue<Request> getArchiveRequest() const;
     void updateStudents()const;

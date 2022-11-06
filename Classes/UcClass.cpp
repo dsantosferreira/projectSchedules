@@ -9,6 +9,21 @@ UcClass::UcClass(std::string ucCode_, std::string classCode_, list<Lecture> lect
     this->lectures=lectures_;
     this->numberOfStudents = 0;
     this->capacity = 0;
+    this->students={};
+}
+void UcClass::operator=(const UcClass &ucClass) {
+    this->ucCode=ucClass.getUcCode();
+    this->classCode=ucClass.getClassCode();
+    this->lectures=ucClass.getLectures();
+    this->numberOfStudents=ucClass.getNumberOfStudents();
+    this->capacity=ucClass.getCapacity();
+    this->students=ucClass.getStudents();
+}
+vector<Student*>UcClass::getStudents() const {
+    return this->students;
+}
+void UcClass::addStudent(Student *student) {
+    this->students.push_back(Student);
 }
 /**
  *

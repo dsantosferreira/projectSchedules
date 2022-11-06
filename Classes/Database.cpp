@@ -26,6 +26,7 @@ set<Student> Database::getStudents() const {
 }
 
 void Database::removeStudent(int studentCode) {
+
     students.erase(Student("Irrelevant", studentCode, {}));
 }
 void Database::addStudent(int studentCode, string studentName) {
@@ -47,9 +48,7 @@ void Database::setStudents(set<Student> students_) {
     this->students = students_;
 }
 
-void Database::setSchedule(vector<UcClass> schedule_) {
-    this->schedule = schedule_;
-}
+
 
 int Database::getNumberUcClasses() const {
     int counter = 0;
@@ -65,10 +64,11 @@ int Database::getNumberUcClasses() const {
 }
 
 void Database::readArchive() {
-    list<pair<UcClass, UcClass>> pairs;
+    list<pair<UcClass*, UcClass*>> pairs;
     ifstream file("../files/archive.csv");
     string line;
-    UcClass ucClass1,ucClass2;
+    UcClass* ucClass1,*ucClass2;
+
     string studentCode, ucCode1, classCode1, ucCode2, classCode2;
     while(getline(file,line)){
         istringstream words(line);
@@ -80,13 +80,13 @@ void Database::readArchive() {
             getline(words, ucCode2, ',');
             getline(words, classCode2, ',');
             if(ucCode1=="-"){
-                ucClass1=UcClass("-1","-1",{});
+                ucClass1= &getSchedule()[0];
             }
             else{
                 UcClass ucClass1 = *(findUcClass(ucCode1, classCode1));
             }
             if(ucCode2=="-"){
-                ucClass2=UcClass("-1","-1",{});
+                ucClass2=&getSchedule()[0];
             }
             else{
                 UcClass* ucClass2 = findUcClass(ucCode2, classCode2);
@@ -101,6 +101,7 @@ void Database::readArchive() {
 
 void Database::readUcClasses() {
     vector<UcClass> ucClasses;
+    ucClasses.push_back(UcClass("-1","-1",{}));
     set<UcClass> aux;
     ifstream in("../files/classes.csv");
     string aLine, ucCode, classCode;
@@ -145,7 +146,7 @@ void Database::readUcClassesFile() {
 void Database::readStudentClassesFile() {
     ifstream in("../files/students_classes.csv");
     string stuCode, stuName, ucCode, classCode, aLine, prevStuCode = "";
-    list<UcClass> emptyList;
+    list<UcClass*> emptyList;
     Student currStudent;
     UcClass* aUcClass = NULL;
     int maxCapacity=0;
@@ -174,6 +175,7 @@ void Database::readStudentClassesFile() {
         if(currStudentsUC>maxCapacity) maxCapacity=currStudentsUC;
         aUcClass->setCapacity(currStudentsUC);
         currStudent.addUcClass(aUcClass, currStudent.getUcClasses().size());
+        aUcClass->addStudent(&currStudent);
         prevStuCode = stuCode;
     }
     students.insert(currStudent);
@@ -351,7 +353,7 @@ bool Database::searchByUcClass(UcClass ucClass) const {
  * @return return false if no student was found and true otherwise
  */
 bool Database::searchStudent(int upCode) const {
-    list<UcClass> empty;
+    list<UcClass*> empty;
     auto itr= this->students.find(Student("Irrelevant",upCode,empty));
     if(itr!=this->students.end()) {itr->print(); return true;}
     else cout<<"Student not found\n";
@@ -442,8 +444,8 @@ bool Database::searchByYear(int year) const{
     for (Student student : students){
         int maxYear = 1;
         int classYear;
-        for(UcClass ucClass : student.getUcClasses()){
-            string classCode = ucClass.getClassCode();
+        for(UcClass* ucClass : student.getUcClasses()){
+            string classCode = ucClass->getClassCode();
             classYear = classCode.at(0) - '1' + 1;
             if(classYear > maxYear){
                 maxYear = classYear;
@@ -514,8 +516,8 @@ void Database::updateStudents() const {
      ofstream file("../files/students_classes.csv",ios::trunc);
      file<<"StudentCode,StudentName,UcCode,ClassCode"<<endl;
      for(Student student: students){
-        for(UcClass ucClass: student.getUcClasses()){
-            file<<student.getStudentCode()<<','<<student.getStudentName()<<','<<ucClass.getUcCode()<<','<<ucClass.getClassCode()<<endl;
+        for(UcClass* ucClass: student.getUcClasses()){
+            file<<student.getStudentCode()<<','<<student.getStudentName()<<','<<ucClass->getUcCode()<<','<<ucClass->getClassCode()<<endl;
         }
      }
      file.close();

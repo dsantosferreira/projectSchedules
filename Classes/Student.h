@@ -1,9 +1,10 @@
+
 #ifndef PROJETO_SCHEDULE_STUDENT_H
 #define PROJETO_SCHEDULE_STUDENT_H
-
+#include "UcClass.h"
 #include <string>
 #include <list>
-#include "UcClass.h"
+
 #include <vector>
 
 using namespace std;
@@ -12,14 +13,15 @@ class Student {
 public:
     Student();
     Student(const Student &student);
-    Student(string studentName_, int studentCode_, list<UcClass> ucClasses_);
-    list<UcClass> getUcClasses() const;
+    Student(string studentName_, int studentCode_, list<UcClass*> ucClasses_);
+    Student(int upCode);
+    list<UcClass *> getUcClasses() const;
     void setStudentName(string studentName_);
     void setStudentCode(int studentCode_);
-    void setUcClasses(list<UcClass> ucClasses_);
-    void addUcClass(UcClass aUcClass, int pos);
+    void setUcClasses(list<UcClass*> ucClasses_);
     void addUcClass(UcClass* aUcClass, int pos);
-    void removeUcClass(UcClass aUcClass);
+    void addUcClass(UcClass* aUcClass, int pos);
+    void removeUcClass(UcClass* aUcClass);
     string getStudentName() const;
     int getStudentCode() const;
     string classOfUc(string ucCode_)const;
@@ -30,12 +32,15 @@ public:
     void printGraphicalSchedule() const;
     void printDiagramSchedule() const;
     bool hasUcClass(UcClass ucClass_) const;
+
     void print()const;
 
 private:
     string studentName;
     int studentCode;
     list<UcClass*> ucClasses;
+
+
 };
 
 

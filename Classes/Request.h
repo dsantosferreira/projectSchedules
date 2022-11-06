@@ -16,7 +16,7 @@
 class Request {
 public:
     Request(){};
-    Request(Student student,list<pair<UcClass,UcClass>> pairs);
+    Request(Student student,list<pair<UcClass*,UcClass*>> pairs);
     void print(){
         this->student.print();
         for(pair<UcClass,UcClass>p:removeAdd){
@@ -24,7 +24,7 @@ public:
         }
 
     }
-    list<pair<UcClass,UcClass>> getPairs() const;
+    list<pair<UcClass*,UcClass*>> getPairs() const;
     Student getStudent()const;
     bool handleRequest(set<Student>* students, vector<UcClass>* ucClasses);
     bool checkUnbalance(vector<UcClass> ucClasses, UcClass ucClass, int type);
@@ -32,7 +32,7 @@ public:
 
 private:
     Student student;
-    list<pair<UcClass,UcClass>> removeAdd;
+    list<pair<UcClass*,UcClass*>> removeAdd;
 
 
 };

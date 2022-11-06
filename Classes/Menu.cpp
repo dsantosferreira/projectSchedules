@@ -91,9 +91,9 @@ Menu::Menu(vector<UcClass>ucClasses,char year){
  *
  * @param ucClasses list of UcClasses
  */
-Menu::Menu(list<UcClass> ucClasses) {
-    for (UcClass ucClass : ucClasses) {
-        this->buttons.push_back(ucClass.getUcCode() + ' ' + ucClass.getClassCode());
+Menu::Menu(list<UcClass*> ucClasses) {
+    for (UcClass* ucClass : ucClasses) {
+        this->buttons.push_back(ucClass->getUcCode() + ' ' + ucClass->getClassCode());
     }
 }
 /**Functionality: Getter of the Menu attribute buttons

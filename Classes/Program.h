@@ -8,6 +8,8 @@
 #include "Database.h"
 #include "Student.h"
 #include "Request.h"
+#include "UcClass.h"
+#include <list>
 using namespace std;
 
 class Program {

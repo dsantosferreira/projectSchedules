@@ -8,7 +8,7 @@ Student::Student() {}
 
 
 
-void Student::removeUcClass(UcClass aUcClass) {
+void Student::removeUcClass(UcClass* aUcClass) {
     auto itr = ucClasses.begin();
     for (; itr != ucClasses.end(); itr++) {
         if (!(*itr < aUcClass) && !(aUcClass < *itr)) {
@@ -25,10 +25,15 @@ void Student::removeUcClass(UcClass aUcClass) {
 * @param studentCode_ student's code
 * @param ucClasses_ student's classes
 */
-Student::Student(string studentName_, int studentCode_, list<UcClass> ucClasses_){
+Student::Student(string studentName_, int studentCode_, list< UcClass*> ucClasses_){
     this->studentCode=studentCode_;
     this->studentName= studentName_;
     this->ucClasses=ucClasses_;
+}
+Student::Student(int upCode) {
+    this->ucClasses={};
+    this->studentCode=upCode;
+    this->studentName="Irrelevant";
 }
 
 /** Functionality: Student's copy constructor
@@ -61,7 +66,7 @@ void Student::setStudentName(string studentName_) {
  * Setter for student's classes
  * @param ucClasses_
  */
-void Student::setUcClasses(list<UcClass> ucClasses_) {
+void Student::setUcClasses(list<UcClass*> ucClasses_) {
     ucClasses = ucClasses_;
 }
 
@@ -70,16 +75,12 @@ void Student::setUcClasses(list<UcClass> ucClasses_) {
  * @param aUcClass UcClass to add
  * @param pos position of UcClass to which "aUcClass" is going to be inserted before
  */
-void Student::addUcClass(UcClass aUcClass, int pos) {
+void Student::addUcClass(UcClass* aUcClass, int pos) {
     auto itr = ucClasses.begin();
     advance(itr, pos);
     ucClasses.insert(itr, aUcClass);
 }
-void Student::addUcClass(UcClass* aUcClass, int pos) {
-    auto itr = ucClasses.begin();
-    advance(itr, pos);
-    ucClasses.insert(itr, *aUcClass);
-}
+
 
 /**
  * Getter for student's name
@@ -101,7 +102,8 @@ int Student::getStudentCode() const {
  * Getter for student's classes
  * @return
  */
-list<UcClass> Student::getUcClasses() const {
+
+list<UcClass*> Student::getUcClasses() const {
     return this->ucClasses;
 }
 
@@ -115,16 +117,16 @@ bool Student::operator<(const Student &student) const {
 }
 
 string Student::classOfUc(string ucCode_) const {
-    for(UcClass ucClass: this->ucClasses){
-        if(ucClass.getUcCode()==ucCode_) return ucClass.getClassCode();
+    for(UcClass* ucClass: this->ucClasses){
+        if(ucClass->getUcCode()==ucCode_) return ucClass->getClassCode();
     }
     string s=0;
     return s;
 }
 
 string Student::ucOfClass(std::string classCode_) const {
-    for(UcClass ucClass: this->ucClasses){
-        if(ucClass.getClassCode()==classCode_) return ucClass.getUcCode();
+    for(UcClass *ucClass: this->ucClasses){
+        if(ucClass->getClassCode()==classCode_) return ucClass->getUcCode();
     }
     string s=0;
     return s;
@@ -136,8 +138,8 @@ string Student::ucOfClass(std::string classCode_) const {
  * @return true if student is part of the class to be checked. Return false otherwise
  */
 bool Student::hasClass(string classCode_) const {
-    for(UcClass ucClass: this->ucClasses){
-        if(ucClass.getClassCode()==classCode_) return true;
+    for(UcClass* ucClass: this->ucClasses){
+        if(ucClass->getClassCode()==classCode_) return true;
     }
     return false;
 }
@@ -148,8 +150,8 @@ bool Student::hasClass(string classCode_) const {
  * @return
  */
 bool Student::hasUc(string ucCode_) const {
-    for(UcClass ucClass: this->ucClasses){
-        if(ucClass.getUcCode()==ucCode_) return true;
+    for(UcClass* ucClass: this->ucClasses){
+        if(ucClass->getUcCode()==ucCode_) return true;
     }
     return false;
 }
@@ -173,8 +175,8 @@ void Student::printGraphicalSchedule() const {
         periodOfTime.push_back("______________|");
     } //Initializing the vector with alternating lines;
 
-    for(UcClass aux:this->ucClasses){
-        for(Lecture lecture:aux.getLectures()){
+    for(UcClass* aux:this->ucClasses){
+        for(Lecture lecture:aux->getLectures()){
             string weekday=lecture.getWeekDay();
             int weekDayPosition;
             if(weekday=="Monday") weekDayPosition=0;
@@ -185,10 +187,10 @@ void Student::printGraphicalSchedule() const {
             float duration=lecture.getDuration();
 
             int lectureStartPosition=24*2*weekDayPosition +(lecture.getLectureTime().first-8.00)*4;
-            periodOfTime[lectureStartPosition]=" "+aux.getUcCode()+"("+lecture.getType()+")";
+            periodOfTime[lectureStartPosition]=" "+aux->getUcCode()+"("+lecture.getType()+")";
             if(lecture.getType().length()==1) periodOfTime[lectureStartPosition]+="  |";
             else  periodOfTime[lectureStartPosition]+=" |";
-            periodOfTime[++lectureStartPosition]="   "+aux.getClassCode()+"    |";
+            periodOfTime[++lectureStartPosition]="   "+aux->getClassCode()+"    |";
             duration-=0.5;
             while(duration>0.5){
                 duration-=0.5;
@@ -226,8 +228,8 @@ cout<<schedule;
  * @return true if it has the class for the Uc, false otherwise
  */
 bool Student::hasUcClass(UcClass ucClass_) const {
-    for (UcClass ucClass: ucClasses) {
-        if (ucClass.getUcCode() == ucClass_.getUcCode() && ucClass.getClassCode() == ucClass_.getClassCode()) {
+    for (UcClass* ucClass: ucClasses) {
+        if (ucClass->getUcCode() == ucClass_.getUcCode() && ucClass->getClassCode() == ucClass_.getClassCode()) {
             return true;
         }
     }
@@ -248,9 +250,9 @@ void Student::print() const{
  */
 void Student::printDiagramSchedule() const {
     cout<<this->studentName<<" Schedule"<<endl;
-    for(UcClass ucClass_:this->ucClasses){
-        cout<<"\tUc:"+ucClass_.getUcCode()+"|Class:"+ucClass_.getClassCode()+'\n';
-        for(Lecture lecture_: ucClass_.getLectures()){
+    for(UcClass* ucClass_:this->ucClasses){
+        cout<<"\tUc:"+ucClass_->getUcCode()+"|Class:"+ucClass_->getClassCode()+'\n';
+        for(Lecture lecture_: ucClass_->getLectures()){
             cout<<"\t\t -> Weekday:"+lecture_.getWeekDay()+"|Start:"<<(int)lecture_.getLectureTime().first
             <<':'<< (lecture_.getLectureTime().first-(int)lecture_.getLectureTime().first)*6<<"0|End:"<<(int)lecture_.getLectureTime().second
             <<':'<< (lecture_.getLectureTime().second-(int)lecture_.getLectureTime().second)*6<<"0|Type:"+lecture_.getType()<<endl;
@@ -258,3 +260,5 @@ void Student::printDiagramSchedule() const {
 
     }
 }
+
+

@@ -1,17 +1,22 @@
+
 #ifndef PROJETO_SCHEDULE_UCCLASS_H
+
 #define PROJETO_SCHEDULE_UCCLASS_H
 
+#include <iostream>
 #include <string>
 #include "Lecture.h"
 #include <list>
 #include <vector>
 #include "Student.h"
-
 using namespace std;
+
 
 class UcClass {
 public:
     UcClass();
+    vector<Student*> getStudents()const;
+    void addStudent(Student* student);
     UcClass(string ucCode_, string classCode_, list<Lecture> lectures_);
     string getUcCode() const;
     string getClassCode() const;
@@ -23,6 +28,8 @@ public:
     void addALecture(Lecture aLecture);
     bool operator<(const UcClass secondUcClass) const;
     void print() const;
+    void operator= (const UcClass & ucClass);
+
 private:
     string ucCode;
     string classCode;
