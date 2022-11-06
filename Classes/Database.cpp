@@ -316,17 +316,15 @@ void Database::printClassGraphicSchedule(std::string classCode_) const {
  * @param ucClass UcClass
  * @return return false if no student was found and true if at least one student was found
  */
-bool Database::searchByUcClass(UcClass ucClass) const {
-    bool cond=false;
+vector<Student> Database::searchByUcClass(UcClass ucClass) const {
+    vector<Student> result;
     for(Student student : students){
         if(student.hasUcClass(ucClass)){
-            student.print();
-            cond =true;
+            result.push_back(student);
         }
     }
-    if(cond) return cond;
-    else cout<<"No student belonging to the class "+ucClass.getClassCode()+" of "+ucClass.getUcCode()+'\n';
-    return cond;
+    if(result.empty()) cout<<"No student belonging to the class "+ucClass.getClassCode()+" of "+ucClass.getUcCode()+'\n';
+    return result;
 }
 
 /**Functionality: Search for a Student
@@ -354,19 +352,15 @@ bool Database::searchStudent(int upCode) const {
  * @param ucCode_ string with UC code
  * @return return false if no student was found and true otherwise
  */
-bool Database::searchByUC(std::string ucCode_)const{
-    bool cond=false;
-    for(Student student_ : students){
-        if(student_.hasUc(ucCode_)){
-            student_.print();
-            cond=true;
+vector<Student> Database::searchByUC(std::string ucCode_)const{
+    vector<Student> result;
+    for(Student student : students){
+        if(student.hasUc(ucCode_)){
+            result.push_back(student);
         }
     }
-    if(cond) return cond;
-    else{
-        cout<<"No student belonging to "+ ucCode_+" was found\n";
-        return false;
-    }
+    if(result.empty()) cout<<"No student belonging to "+ ucCode_+" was found\n";
+    return result;
 }
 
 /**Function: Search students of a class
@@ -378,19 +372,15 @@ bool Database::searchByUC(std::string ucCode_)const{
  * @param class_ string with class code
  * @return return false if no student was found and true otherwise
  */
-bool Database::searchByClass(std::string class_) const {
-    bool cond=false;
+vector<Student> Database::searchByClass(std::string class_) const {
+    vector<Student> result;
     for(Student student : students){
         if(student.hasClass(class_)){
-            student.print();
-            cond=true;
+            result.push_back(student);
         }
     }
-    if(cond) return cond;
-    else{
-        cout<<"No student belonging to "+ class_+" was found\n";
-        return false;
-    }
+    if(result.empty()) cout<<"No student belonging to "+ class_+" was found\n";
+    return result;
 }
 
 
@@ -403,16 +393,15 @@ bool Database::searchByClass(std::string class_) const {
  * @param n int with the minimum of Ucs the Student should have
  * @return return false if no student was found and true otherwise
  */
-bool Database::searchMoreThan(int n) const {
-    bool cond =false;
+vector<Student> Database::searchMoreThan(int n) const {
+    vector<Student> result;
     for(Student student:students){
         if(student.getUcClasses().size()>=n){
-            student.print();
-            cond=true;
-
+            result.push_back(student);
         }
     }
-    return cond;
+    if(result.empty()) cout << "No student with " << n << " UCs or more\n";
+    return result;
 }
 
 /**Functionality: Search Students of an academic year
@@ -423,10 +412,8 @@ bool Database::searchMoreThan(int n) const {
  * @param year int with an academic year
  * @return  return false if no student was found and true otherwise
  */
-bool Database::searchByYear(int year) const{
-    bool flag = false;
-
-
+vector<Student> Database::searchByYear(int year) const{
+    vector<Student> result;
     for (Student student : students){
         int maxYear = 1;
         int classYear;
@@ -438,12 +425,11 @@ bool Database::searchByYear(int year) const{
             }
         }
         if(maxYear == year){
-            student.print();
-            flag = true;
+            result.push_back(student);
         }
     }
-
-    return flag;
+    if(result.empty()) cout << "No student in the " << year << " year\n";
+    return result;
 }
 
 /**Functionality: Search Students who entered in a year
@@ -454,17 +440,17 @@ bool Database::searchByYear(int year) const{
  * @param year int with a year
  * @return  return false if no student was found and true otherwise
  */
- bool Database::searchByYearAdmission(int year) const{
-    bool flag = false;
+vector<Student> Database::searchByYearAdmission(int year) const{
+    vector<Student> result;
     for (Student student : students){
         int upCode = student.getStudentCode();
         int studentYear = upCode/100000;
         if(studentYear == year){
-            student.print();
-            flag = true;
+            result.push_back(student);
         }
     }
-    return flag;
+    if(result.empty()) cout << "No student admitted in " << year << " was found\n";
+    return result;
 }
 
 void Database::pushRequestToQueue(Request request) {
