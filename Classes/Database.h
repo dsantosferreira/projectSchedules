@@ -31,6 +31,7 @@ public:
     vector<Student> searchMoreThan(int n) const;
     vector<Student> searchByYear(int year)const;
     vector<Student> searchByYearAdmission(int year) const;
+    vector<UcClass> allUcs() const;
     int getNumberUcClasses() const;
     int findUc(string ucCode)const;
     void handleRequests();
@@ -41,6 +42,8 @@ public:
     void updateArchive();
     void addStudent(int studentCode, string studentName);
     void removeStudent(int studentCode);
+    vector<Student> allStudents() const;
+    vector<UcClass> allClasses() const;
 
 private:
     void readArchive();
