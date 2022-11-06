@@ -60,6 +60,7 @@ void Program:: run(){
         menu();
 // runs until quit option is selected
     }
+
     if(data.getMainRequest().size()>0 || data.getArchiveRequest().size()>0){
         cout<< "Do you want to save the stored requests?[y/n]: ";
         char answer;
@@ -68,6 +69,7 @@ void Program:: run(){
             data.handleRequests();
         }
     }
+
     data.updateStudents();
     data.updateArchive();
 
@@ -541,7 +543,7 @@ void Program::showSearch(vector<Student> search) const {
             search.at(start).print();
             start++;
         }
-        start++;
+
         string option;
         bool c = true;
         cout << "|-----------------------------------------------------------------------|\n";

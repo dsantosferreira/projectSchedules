@@ -253,10 +253,13 @@ list<pair<bool, bool>> Request::handleRequest(set<Student>* students,vector<UcCl
                     newStudent.removeUcClass(toRemove);
                     aChange.first = true;
                 } else {
+                    cout<<"Failed! Change would cause unbalance!\n";
                     return {};
                 }
-            }else
+            }else{
+                cout<<"Failed!Student does not have the UC "+toRemove.getUcCode()+", thus is not able to remove it!\n";
                 return {};
+            }
         }
         changeNumberStudents.push_back(aChange);
     }
@@ -270,13 +273,17 @@ list<pair<bool, bool>> Request::handleRequest(set<Student>* students,vector<UcCl
         if (toAdd != nullptr) {
 
             if (toAdd->getNumberOfStudents() >= toAdd->getCapacity()) {
+                cout<<"Failed!Class "+toAdd->getClassCode()+" in the UC"+toAdd->getUcCode()+" is already full\n";
                 return {{false,false}};
             }
-            else if (newStudent.hasUcClass(*toAdd))
+            else if (newStudent.hasUcClass(*toAdd)){
+                cout<<"Failed!Student already has "+toAdd->getUcCode()+" has an UC!\n";
                 return {};
+            }
             else {
                 toAdd->setNumberOfStudents(toAdd->getNumberOfStudents() + 1);
                 if (checkUnbalance(ucClasses, *toAdd, 1)) {
+                    cout<<"Failed! Change would cause unbalance!\n";
                     return {};
                 }
                 for (auto itrUcClasses = stuUcClasses.begin(); itrUcClasses != stuUcClasses.end(); itrUcClasses++) {
@@ -287,6 +294,7 @@ list<pair<bool, bool>> Request::handleRequest(set<Student>* students,vector<UcCl
                         toAddLectures = toAdd->getLectures();
                         for (auto itrToAddLectures = toAddLectures.begin(); itrToAddLectures != toAddLectures.end(); itrToAddLectures++) {
                             if (itrToAddLectures->Overlaps(*itrLectures) && !itrToAddLectures->isOverlapableWith(*itrLectures)) {
+                                cout<<"Failed!" +toAdd->getUcCode()+'-'+toAdd->getClassCode()+" overlaps with"+itrUcClasses->getUcCode()+'-'+itrUcClasses->getClassCode()+"\n";
                                 return {{false,false}};
                             }
                         }
@@ -299,6 +307,7 @@ list<pair<bool, bool>> Request::handleRequest(set<Student>* students,vector<UcCl
         itrChanges++;
     }
     this->student = newStudent;
+    cout<<"Passed!\n";
     return changeNumberStudents;
 }
 
