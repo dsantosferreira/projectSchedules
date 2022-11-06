@@ -25,6 +25,12 @@ set<Student> Database::getStudents() const {
     return students;
 }
 
+void Database::removeStudent(int studentCode) {
+    students.erase(Student("Irrelevant", studentCode, {}));
+}
+void Database::addStudent(int studentCode, string studentName) {
+    students.insert(Student(studentName, studentCode, {}));
+}
 set<Student>* Database::getStudentsReference() {
     return &students;
 }

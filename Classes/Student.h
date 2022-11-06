@@ -35,7 +35,7 @@ public:
 private:
     string studentName;
     int studentCode;
-    list<UcClass> ucClasses;
+    list<UcClass*> ucClasses;
 };
 
 

@@ -7,6 +7,7 @@ Student::Student() {}
 
 
 
+
 void Student::removeUcClass(UcClass aUcClass) {
     auto itr = ucClasses.begin();
     for (; itr != ucClasses.end(); itr++) {

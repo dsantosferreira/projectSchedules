@@ -35,6 +35,7 @@ public:
     void searchByAdmissionYear()const;
     void wait() const;
     void requests(char option);
+    bool validateStudentCode(int studentCode) ;
     template<typename type >
     bool getInput(type &input) const;
 

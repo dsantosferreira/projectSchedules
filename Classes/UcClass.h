@@ -4,6 +4,8 @@
 #include <string>
 #include "Lecture.h"
 #include <list>
+#include <vector>
+#include "Student.h"
 
 using namespace std;
 
@@ -25,8 +27,10 @@ private:
     string ucCode;
     string classCode;
     list<Lecture> lectures;
+    vector<Student*>students;
     int capacity;
     int numberOfStudents;
+
 };
 
 #endif

@@ -18,6 +18,8 @@ public:
     set<Student> getStudents() const;
     set<Student>* getStudentsReference();
     vector<UcClass> getSchedule() const;
+    void removeStudent(int studentCode);
+    void addStudent(int studentCode, string studentName);
     vector<UcClass>* getScheduleReference();
     void setStudents(set<Student> students_);
     void setSchedule(vector<UcClass> schedule_);
