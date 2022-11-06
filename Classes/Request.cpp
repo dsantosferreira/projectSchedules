@@ -68,8 +68,8 @@ Request::Request(set<Student>* students, vector<UcClass>* ucClasses, char option
     set<UcClass> alreadyAdded;
     list<UcClass> ucClassesList;
     UcClass *toAdd;
-    bool choseUcClass = false;
 
+    // Get student code of student to change
     system("clear");
     cout << "Write your student code: ";
     cin >> studentCode;
@@ -82,61 +82,16 @@ Request::Request(set<Student>* students, vector<UcClass>* ucClasses, char option
         cin >> studentCode;
     }
     this->student = *(students->find(Student("", studentCode, ucClassesList)));
-    ucClassesList = this->student.getUcClasses();
 
     switch (option) {
         case '3': {
-            Menu menu = Menu(ucClassesList);
-            buttons = menu.getButtons();
-            menu.draw();
-            while (true) {
-                cin >> subMenuOption;
-                if (checkRequestInput(buttons, subMenuOption)) {
-                    break;
-                }
-                cout << "Please insert a valid option: ";
-            }
-            auto itr = ucClassesList.begin();
-            advance(itr, stoi(subMenuOption) - 1);
-            UcClass toRemove = *itr;
+            UcClass toRemove = getUcClassToRemove();
             pair<UcClass, UcClass *> p(toRemove, nullptr);
             this->removeAdd.push_back(p);
             break;
         }
         case '4': {
-            Menu menu = Menu(*ucClasses);
-            menu.draw();
-            while (true) {
-                menu = Menu(*ucClasses);
-                buttons = menu.getButtons();
-                cin >> subMenuOption;
-                if (checkRequestInput(buttons, subMenuOption)) {
-                    string aUcCode = buttons[stoi(subMenuOption) - 1];
-                    buttons.clear();
-                    ucIndex = findUc(aUcCode, *ucClasses);
-                    for (int i = ucIndex; (*ucClasses)[i].getUcCode() == aUcCode; i++) {
-                        buttons.push_back((*ucClasses)[i].getClassCode());
-                    }
-                    menu.setButtons(buttons);
-                    menu.draw();
-                    while (true) {
-                        cin >> subMenuOption;
-                        if (checkRequestInput(buttons, subMenuOption)) {
-                            toAdd = &(*ucClasses)[ucIndex + stoi(subMenuOption) - 1];
-                            if (!this->student.hasUcClass(*toAdd)) {
-                                choseUcClass = true;
-                            }
-                            else
-                                cout << "You are already part of this class." << endl;
-                            break;
-                        }
-                    }
-                }
-                if (choseUcClass)
-                    break;
-                cout << "Please insert a valid option: ";
-            }
-
+            toAdd = getUcClassToAdd(ucClasses);
             pair<UcClass, UcClass *> p(UcClass("-1", "-1", {}), toAdd);
             this->removeAdd.push_back(p);
             break;
@@ -146,8 +101,8 @@ Request::Request(set<Student>* students, vector<UcClass>* ucClasses, char option
             list<UcClass> ucClassesAvailable = student.getUcClasses();
             bool done = false;
 
+            // Get the class to Remove
             while (ucClassesAvailable.size() > 0) {
-                choseUcClass = false;
                 Menu menu1(ucClassesAvailable);
                 buttons = menu1.getButtons();
                 buttons.push_back("Quit");
@@ -166,44 +121,20 @@ Request::Request(set<Student>* students, vector<UcClass>* ucClasses, char option
                 if (done)
                     break;
 
-                // Remove from available to choose from
+                // Remove class chosen from available to choose from
                 auto itr1 = ucClassesAvailable.begin();
                 advance(itr1, stoi(subMenuOption) - 1);
                 UcClass intermediate = *itr1;
                 ucClassesAvailable.erase(itr1);
                 UcClass toRemove = intermediate;
 
-                Menu menu2 = Menu(*ucClasses);
-                menu2.draw();
+                // Get the class to add
                 while (true) {
-                    menu2 = Menu(*ucClasses);
-                    buttons = menu2.getButtons();
-                    cin >> subMenuOption;
-                    if (checkRequestInput(buttons, subMenuOption)) {
-                        string aUcCode = buttons[stoi(subMenuOption) - 1];
-                        buttons.clear();
-                        ucIndex = findUc(aUcCode, *ucClasses);
-                        for (int i = ucIndex; (*ucClasses)[i].getUcCode() == aUcCode; i++) {
-                            buttons.push_back((*ucClasses)[i].getClassCode());
-                        }
-                        menu2.setButtons(buttons);
-                        menu2.draw();
-                        while (true) {
-                            cin >> subMenuOption;
-                            if (checkRequestInput(buttons, subMenuOption)) {
-                                toAdd = &(*ucClasses)[ucIndex + stoi(subMenuOption) - 1];
-                                if (!this->student.hasUcClass(*toAdd) && alreadyAdded.find(*toAdd) == alreadyAdded.end()) {
-                                    choseUcClass = true;
-                                }
-                                else
-                                    cout << "You are already part of this class or already added it in this request." << endl;
-                                break;
-                            }
-                        }
-                    }
-                    if (choseUcClass)
+                    toAdd = getUcClassToAdd(ucClasses);
+                    if (alreadyAdded.find(*toAdd) == alreadyAdded.end())
                         break;
-                    cout << "Please insert a valid option: ";
+                    else
+                        cout << "You have already added this class in this request\n";
                 }
                 alreadyAdded.insert(*toAdd);
                 pair<UcClass, UcClass *> p(toRemove, toAdd);
@@ -211,6 +142,68 @@ Request::Request(set<Student>* students, vector<UcClass>* ucClasses, char option
             }
         }
     }
+}
+
+UcClass Request::getUcClassToRemove() {
+    string subMenuOption;
+    vector<string> buttons;
+
+    list<UcClass> ucClassesList = this->student.getUcClasses();
+    Menu menu = Menu(ucClassesList);
+    buttons = menu.getButtons();
+    menu.draw();
+    while (true) {
+        cin >> subMenuOption;
+        if (checkRequestInput(buttons, subMenuOption)) {
+            break;
+        }
+        cout << "Please insert a valid option: ";
+    }
+    auto itr = ucClassesList.begin();
+    advance(itr, stoi(subMenuOption) - 1);
+    return *itr;
+}
+
+UcClass *Request::getUcClassToAdd(vector<UcClass>* ucClasses) {
+    string subMenuOption;
+    vector<string> buttons;
+    int ucIndex;
+    UcClass* toAdd;
+    bool choseUcClass = false;
+
+    Menu menu = Menu(*ucClasses);
+    menu.draw();
+    while (true) {
+        menu = Menu(*ucClasses);
+        buttons = menu.getButtons();
+        cin >> subMenuOption;
+        if (checkRequestInput(buttons, subMenuOption)) {
+            string aUcCode = buttons[stoi(subMenuOption) - 1];
+            buttons.clear();
+            ucIndex = findUc(aUcCode, *ucClasses);
+            for (int i = ucIndex; (*ucClasses)[i].getUcCode() == aUcCode; i++) {
+                buttons.push_back((*ucClasses)[i].getClassCode());
+            }
+            menu.setButtons(buttons);
+            menu.draw();
+            while (true) {
+                cin >> subMenuOption;
+                if (checkRequestInput(buttons, subMenuOption)) {
+                    toAdd = &(*ucClasses)[ucIndex + stoi(subMenuOption) - 1];
+                    if (!this->student.hasUcClass(*toAdd)) {
+                        choseUcClass = true;
+                    }
+                    else
+                        cout << "You are already part of this class." << endl;
+                    break;
+                }
+            }
+        }
+        if (choseUcClass)
+            break;
+        cout << "Please insert a valid option: ";
+    }
+    return toAdd;
 }
 
 bool Request::checkRequestInput(vector<std::string> buttons, std::string option) {
