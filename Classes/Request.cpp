@@ -7,7 +7,7 @@ Request::Request() {}
 
 /**
  * @brief Copy constructor
- * @param request a request to be copied
+ * @param request - request to be copied
  */
 Request::Request(const Request &request) {
     this->student = request.student;
@@ -16,8 +16,8 @@ Request::Request(const Request &request) {
 
 /**
  * @brief Parametrized constructor
- * @param student_ the student on which the changes are to be made
- * @param pairs_ list of pairs. Each pair is a UcClass to remove and a UcClass to add
+ * @param student_ - the student on which the changes are to be made
+ * @param pairs_ - list of pairs. Each pair is a UcClass to remove and a UcClass to add
  */
 Request::Request(Student student_, list<pair<UcClass, UcClass *>> pairs_) {
     this->student = student_;
@@ -41,9 +41,10 @@ Student Request::getStudent() const {
 }
 
 /**
- * @brief Finds the first class from a Curricular Unit
- * @param ucCode name of the Curricular Unit
- * @param ucClasses vector of all classes to be searched
+ * Uses binary search to
+ * @brief Finds the first class from a curricular unit
+ * @param ucCode - name of the curricular unit
+ * @param ucClasses - vector of all classes to be searched
  * @return
  */
 int Request::findUc(string ucCode, vector<UcClass> ucClasses) {
@@ -61,8 +62,25 @@ int Request::findUc(string ucCode, vector<UcClass> ucClasses) {
     return low;
 }
 
+/**
+ * Firstly the student's upCode is asked to fetch the student on which the changes are to be made. After that the option
+ * inputted represents what happens: \n
+ * (1) Option '3': Removes a class from the classes that the student has; \n
+ * (2) Option '4': Adds a class to the student's classes; \n
+ * (3) Option '5': Changes a pair or multiple pair of classes. In each pair, a class from the student is removed and a class chosen is added \n
+ * These changes don't take effect after the execution of this function. They will only be analysed and submitted when the function Database::handleRequests() is called \n
+ * Complexity: (1) O(n) being n the number of classes of the student (process of fetching the class to remove). (2) O(n) if the creation of the menu is taken into account,
+ * otherwise O(log(n)) n being the number of classes in the vector of classes; (3) O(m*n) being m the number of pairs that the user wants to change
+ * and n the number of classes in the vector of classes (to create the menu), or the number of classes of the student (to fetch the class to remove)
+ * @brief Depending on the option selected, builds a new request to be added to the main queue
+ * @see getUcClassToRemove()
+ * @see getUcClassToAdd()
+ * @param students - pointer to the set of students of the database
+ * @param ucClasses - pointer to the vector of classes of the database
+ * @param option - char that represents the type of request to be made
+ */
 Request::Request(set<Student>* students, vector<UcClass>* ucClasses, char option) {
-    int studentCode, ucIndex;
+    int studentCode;
     string subMenuOption;
     vector<string> buttons;
     set<UcClass> alreadyAdded;
@@ -105,7 +123,7 @@ Request::Request(set<Student>* students, vector<UcClass>* ucClasses, char option
             while (ucClassesAvailable.size() > 0) {
                 Menu menu1(ucClassesAvailable);
                 buttons = menu1.getButtons();
-                buttons.push_back("Quit");
+                buttons.push_back("Submit request");
                 menu1.setButtons(buttons);
                 menu1.draw();
                 cout<<"Choose an option: ";
@@ -149,6 +167,11 @@ Request::Request(set<Student>* students, vector<UcClass>* ucClasses, char option
     }
 }
 
+/**
+ * Complexity: O(n) n being the number of classes the student is in
+ * @brief Chooses the class to remove from the student the request is about
+ * @return class to remove from student
+ */
 UcClass Request::getUcClassToRemove() {
     string subMenuOption;
     vector<string> buttons;
@@ -170,6 +193,15 @@ UcClass Request::getUcClassToRemove() {
     return *itr;
 }
 
+/**
+ * The function fetches the chosen class with binary search and doesn't let the user choose a class the student already has\n
+ * Complexity: O(log(n)) being n the number of classes in the vector of classes of the database if the menu creation is accounted for, otherwise
+ * it is O(n)
+ * @brief Chooses a class to be added to the student the request is about
+ * @see findUc()
+ * @param ucClasses - pointer to the vector of classes of the database
+ * @return pointer to the class that is to be added
+ */
 UcClass *Request::getUcClassToAdd(vector<UcClass>* ucClasses) {
     string subMenuOption;
     vector<string> buttons;
@@ -223,6 +255,12 @@ UcClass *Request::getUcClassToAdd(vector<UcClass>* ucClasses) {
     return toAdd;
 }
 
+/**
+ * @brief Allows the verification of the input depending on the number of buttons of the menu
+ * @param buttons - buttons of the menu to be printed
+ * @param option - option chosen by the user
+ * @return
+ */
 bool Request::checkRequestInput(vector<std::string> buttons, std::string option) {
     if (buttons.size() > 9) {
         if (option.size() == 1 && isdigit(option[0])) {
@@ -242,16 +280,33 @@ bool Request::checkRequestInput(vector<std::string> buttons, std::string option)
     return false;
 }
 
+/**
+ * This function handles a certain request. Firstly the function checks if the student to which the changes are to be made hasn't been removed
+ * Afterwards, there are two things that are handled: \n
+ * (1) If the left side of the pair is a valid class, that class needs to be removed from the student. For that, the function checks
+ * if the student has that class and if its removal doesn't cause unbalance. If so the class is removed from the student
+ * (2) If the right side of the pair is a valid class, that class needs to be added to the student. For that, the function checks if
+ * the number of current students isn't equal to the capacity of the class so that the capacity isn't exceeded; if
+ * the student is already in a class in that curricular unit; if the change may cause unbalance and if there is an invalid overlap between
+ * the lectures to be added and each lecture from the classes the student is in. If everything checks out, the class is added to the student
+ * Complexity: O(m*(n + p)) being m the number of pairs to be analysed, n = O(Student::hasUcClass() + checkUnbalance() + Student::removeUcClass())
+ * and p = O(Student::hasUc() + checkUnbalance() + a*b*c*(Lecture::Overlaps() + Lecture::isOverlapableWith()) being a the number
+ * of classes the student is in, b the number of lectures in each of those classes and c the number of lectures from the class to add
+ * @brief Handles a request
+ * @param students - pointer to the set of students of the database
+ * @param ucClasses - vector of classes of the database
+ * @return a list of pairs of booleans so that the database knows which classes have to have their "current number of students" updated
+ */
 list<pair<bool, bool>> Request::handleRequest(set<Student>* students,vector<UcClass> ucClasses) {
     list<pair<bool, bool>> changeNumberStudents;// right increment left decrement
-    pair<bool, bool> aChange;// just aux pair
-    auto newStudentItr = (*students).find(this->student);// real student
-    if(newStudentItr==students->end()){
-        /**Student does not exist anymore*/
+    pair<bool, bool> aChange;// just auxiliary pair
+    auto newStudentItr = (*students).find(this->student);// copy of the student
+    if(newStudentItr==students->end()) {
+        // Student doesn't exist anymore
         cout<<"Failed! Student does not exist anymore!";
         return {};
     }
-    Student newStudent = *newStudentItr;// aux student
+    Student newStudent = *newStudentItr;// auxiliary student
     list<UcClass> stuUcClasses;//ucClasses da copia
     UcClass *toAdd;//para ir buscar a parte direita do pair
     list<Lecture> toAddLectures;//aux recebe as aulas da ucClass em cima
@@ -272,7 +327,7 @@ list<pair<bool, bool>> Request::handleRequest(set<Student>* students,vector<UcCl
                     return {};
                 }
             }else{
-                cout<<"Failed!Student does not have the UC "+toRemove.getUcCode()+", thus is not able to remove it!\n";
+                cout<<"Failed! Student does not have the UC "+toRemove.getUcCode()+", thus is not able to remove it!\n";
                 return {};
             }
         }
@@ -288,11 +343,11 @@ list<pair<bool, bool>> Request::handleRequest(set<Student>* students,vector<UcCl
         if (toAdd != nullptr) {
 
             if (toAdd->getNumberOfStudents() >= toAdd->getCapacity()) {
-                cout<<"Failed!Class "+toAdd->getClassCode()+" in the UC"+toAdd->getUcCode()+" is already full\n";
+                cout<<"Failed! Class "+toAdd->getClassCode()+" in the UC"+toAdd->getUcCode()+" is already full\n";
                 return {{false,false}};
             }
             else if (newStudent.hasUc(toAdd->getUcCode())){
-                cout<<"Failed!Student already has "+toAdd->getUcCode()+" has an UC!\n";
+                cout<<"Failed! Student already has "+toAdd->getUcCode()+" has an UC!\n";
                 return {};
             }
             else {
@@ -309,7 +364,7 @@ list<pair<bool, bool>> Request::handleRequest(set<Student>* students,vector<UcCl
                         toAddLectures = toAdd->getLectures();
                         for (auto itrToAddLectures = toAddLectures.begin(); itrToAddLectures != toAddLectures.end(); itrToAddLectures++) {
                             if (itrToAddLectures->Overlaps(*itrLectures) && !itrToAddLectures->isOverlapableWith(*itrLectures)) {
-                                cout<<"Failed!" +toAdd->getUcCode()+'-'+toAdd->getClassCode()+" overlaps with"+itrUcClasses->getUcCode()+'-'+itrUcClasses->getClassCode()+"\n";
+                                cout<<"Failed! " +toAdd->getUcCode()+'-'+toAdd->getClassCode()+" overlaps with "+itrUcClasses->getUcCode()+'-'+itrUcClasses->getClassCode()+"\n";
                                 return {{false,false}};
                             }
                         }
@@ -326,7 +381,19 @@ list<pair<bool, bool>> Request::handleRequest(set<Student>* students,vector<UcCl
     return changeNumberStudents;
 }
 
-bool Request::checkUnbalance(vector<UcClass> ucClasses,UcClass ucClass, int type)  {
+/**
+ * The unbalance exists if in a particular curricular unit, the difference between the current number of students of two classes
+ * is higher than 3. If so the user will be prompted to choose if the change should go through or not \n
+ * Complexity: O(m * n) being m the number of classes of the vector of classes from the database and n the number of classes
+ * of a particular curricular unit
+ * @brief Checks if adding or removing a student of a class causes unbalance of the number of students in a curricular unit
+ * @param ucClasses - vector of classes of the database
+ * @param ucClass - class to be added to removed
+ * @param type - type of request (removing or adding a class)
+ * @return true if there is unbalance and the user choose to go through with the change, false if there is no unbalance or the user doesn't want
+ * to go through with the change
+ */
+bool Request::checkUnbalance(vector<UcClass> ucClasses, UcClass ucClass, int type)  {
     int index=findUc(ucClass.getUcCode(),ucClasses);
     bool cond=false;
     int numberStudents=ucClass.getNumberOfStudents();

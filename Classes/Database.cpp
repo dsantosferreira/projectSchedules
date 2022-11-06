@@ -66,32 +66,6 @@ vector<UcClass>* Database::getScheduleReference() {
 }
 
 /**
- * Complexity: O(1)
- * @brief Getter for a particular class
- * @param i - index in the classes vector
- * @return pointer to the ucClass
- */
-UcClass* Database::getUcClass(int i) {
-    return &schedule[i];
-}
-
-/**
- * @brief Setter for the set of students
- * @param students_ - set of students
- */
-void Database::setStudents(set<Student> students_) {
-    this->students = students_;
-}
-
-/**
- * @brief Setter for classes vector
- * @param schedule_ - classes vector
- */
-void Database::setSchedule(vector<UcClass> schedule_) {
-    this->schedule = schedule_;
-}
-
-/**
  * Requests that don't have a class to remove or add reads "-" in the space of the class in the file, initializing each request
  * with a dummy class if necessary \n
  * Complexity: O(l*(log(s) + w)) being l the number of lines of the file, s the number of student in the set of students
@@ -387,20 +361,6 @@ vector<Student> Database::searchByUcClass(UcClass ucClass) const {
 }
 
 /**
- * Complexity: O(n) being n the number of students in the set of students
- * @brief Search for a Student given its upCode
- * @param upCode - integer with the student's upCode
- * @return true if the student exists, false otherwise
- */
-bool Database::searchStudent(int upCode) const {
-    list<UcClass> empty;
-    auto itr= this->students.find(Student("Irrelevant",upCode,empty));
-    if(itr!=this->students.end()) {itr->print(); return true;}
-    else cout<<"Student not found\n";
-    return false;
-}
-
-/**
  * Complexity: O(m * n) being m the number of students in the set of students and n the number of classes the student is in
  * @brief Search Students of a curricular unit
  * @param ucCode_ - ucCode of the curricular unit
@@ -529,30 +489,23 @@ vector<UcClass> Database::allUcs() const{
 }
 
 /**
- * Complexity: O(n) being n the number of classes in the vector of classes
- * @brief Returns a vector with all the classes
- * @return vector with all the classes
- */
-vector<UcClass> Database::allClasses() const {
-    set<string> alreadySeen;
-    vector<UcClass> result;
-    for(UcClass ucClass : schedule){
-        if (alreadySeen.find(ucClass.getClassCode()) == alreadySeen.end()){
-            alreadySeen.insert(ucClass.getClassCode());
-            result.push_back(ucClass);
-        }
-    }
-    return result;
-}
-
-/**
- * Pushes a request too the main queue of requests
+ * @brief Pushes a request too the main queue of requests
  * @param request - request to be pushed
  */
 void Database::pushRequestToQueue(Request request) {
     mainQueue.push(request);
 }
 
+/**
+ * This functions will handle each request in the archive and main queue individually. The requests from the archive queue
+ * will be resolved first before trying the ones in the main queue. Depending on the success of the request, the value of
+ * the current number of students of the classes affected will be updated and some requests that are not resolved will be added
+ * to the archive queue to be dealt with the next time the user submits the requests \n
+ * Complexity: O(m * (n + p)) being m the number of requests to be handled, n the number of pairs on the list of pairs of classes
+ * in each request and p being the time it takes to run Request::handleRequest()
+ * @see Request::handleRequest()
+ * @brief Handles all requests that are in the archive and main queue
+ */
 void Database::handleRequests() {
     int sizeMain = mainQueue.size();
     int sizeArchive=archive.size();
@@ -561,6 +514,7 @@ void Database::handleRequests() {
     list<pair<UcClass, UcClass*>> ucPairs;
     pair<bool, bool> aChange;
 
+    system("clear");
     // Goes through all requests
     for (int i = 0; i < sizeMain+sizeArchive ; i++) {
         addStudent = true;
@@ -647,6 +601,10 @@ void Database::updateStudents() const {
      file.close();
  }
 
+ /**
+  * Complexity: O(n) being n the number of requests in the archive queue
+  * @brief Updates the archive file with the requests that are still in the archive's queue
+  */
 void Database::updateArchive() {
      ofstream file("../files/archive.csv",ios::trunc);
      while(!archive.empty()){

@@ -28,30 +28,6 @@ void Program::createMenu() {
 }
 
 /**
- * @brief Gets the current page of the menu we are in
- * @return The current page of the menu as an integer
- */
-int Program::getCurrentPage() const {
-    return this->currentMenuPage;
-}
-
-/**
- * @brief Gets the database of the program
- * @return the database of the program
- */
-Database Program::getData() {
-    return this->data;
-}
-
-/**
- * @brief Receives the index of the new menu page we are in and set it as the current menu page
- * @param newCurrentPage - current page as an integer
- */
-void Program::setCurrentPage(int newCurrentPage)  {
-    this->currentMenuPage=newCurrentPage;
-}
-
-/**
  * @see Menu::draw()
  * @brief Draws the current page of the menu we are in
  */
@@ -783,7 +759,14 @@ bool invertedUcAmountOrder(Student s1, Student s2){
  * (3) Order by ascending upCode order \n
  * (4) Order by descending upCode order \n
  * (5) Order by ascending number of curricular units order\n
- * (6) Order by descending number of curricular units order
+ * (6) Order by descending number of curricular units order \n
+ * Complexity: O(log(n)) being n the number of students to be sorted. The complexity doesn't depend on the option chosen
+ * @see alfabeticOrder()
+ * @see invertedAlfabeticOrder()
+ * @see upCodeOrder()
+ * @see invertedUpCodeOrder()
+ * @see ucAmountOrder()
+ * @see invertedUcAmountOrder()
  * @brief Orders the vector of students to be printed depending on the option that is chosen
  * @param search - vector of students to be sorted
  */

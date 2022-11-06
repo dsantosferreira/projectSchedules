@@ -19,13 +19,9 @@ public:
     set<Student>* getStudentsReference();
     vector<UcClass> getSchedule() const;
     vector<UcClass>* getScheduleReference();
-    void setStudents(set<Student> students_);
-    void setSchedule(vector<UcClass> schedule_);
-    UcClass* getUcClass(int i);
     vector<Student> searchByUC(std::string ucCode)const;
     vector<Student> searchByUcClass(UcClass ucClass)const;
     vector<Student> searchByClass(string class_) const;
-    bool searchStudent(int upCode)const;
     void printClassDiagramSchedule(string classCode_)const;
     void printClassGraphicSchedule(string classCode_)const;
     vector<Student> searchMoreThan(int n) const;
@@ -42,7 +38,6 @@ public:
     void addStudent(int studentCode, string studentName);
     void removeStudent(int studentCode);
     vector<Student> allStudents() const;
-    vector<UcClass> allClasses() const;
 
 private:
     void readArchive();

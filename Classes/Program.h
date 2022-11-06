@@ -13,9 +13,6 @@ using namespace std;
 class Program {
 public:
     Program();
-    int getCurrentPage()const;
-    void setCurrentPage(int newCurrentpage);
-    Database getData();
     void draw() const;
     void run();
     void menu();

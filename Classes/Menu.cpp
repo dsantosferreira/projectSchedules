@@ -30,6 +30,7 @@ Menu::Menu(vector<UcClass> ucClasses) {
         }
     }
 }
+
 /**
  * Complexity: O(log(n) + p) being n the number of classes and p the number of classes of the curricular unit n
  * @brief Creates a menu of all the classes of a particular curricular unit
