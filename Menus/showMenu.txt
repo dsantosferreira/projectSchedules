@@ -1,0 +1,4 @@
+Show all students
+Show all UCs
+Show all classes of an UC
+Go back

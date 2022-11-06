@@ -108,6 +108,7 @@ Request::Request(set<Student>* students, vector<UcClass>* ucClasses, char option
                 buttons.push_back("Quit");
                 menu1.setButtons(buttons);
                 menu1.draw();
+                cout<<"Choose an option: ";
                 while (true) {
                     cin >> subMenuOption;
                     if (checkRequestInput(buttons, subMenuOption)) {
@@ -133,8 +134,12 @@ Request::Request(set<Student>* students, vector<UcClass>* ucClasses, char option
                     toAdd = getUcClassToAdd(ucClasses);
                     if (alreadyAdded.find(*toAdd) == alreadyAdded.end())
                         break;
-                    else
-                        cout << "You have already added this class in this request\n";
+                    else{
+
+                        cout << "You have already added this class in this request!Choose again:\n";
+
+
+                    }
                 }
                 alreadyAdded.insert(*toAdd);
                 pair<UcClass, UcClass *> p(toRemove, toAdd);
@@ -152,6 +157,7 @@ UcClass Request::getUcClassToRemove() {
     Menu menu = Menu(ucClassesList);
     buttons = menu.getButtons();
     menu.draw();
+    cout<<"Choose an UC to remove: ";
     while (true) {
         cin >> subMenuOption;
         if (checkRequestInput(buttons, subMenuOption)) {
@@ -171,36 +177,47 @@ UcClass *Request::getUcClassToAdd(vector<UcClass>* ucClasses) {
     UcClass* toAdd;
     bool choseUcClass = false;
 
-    Menu menu = Menu(*ucClasses);
-    menu.draw();
+    Menu menu1 = Menu(*ucClasses);
+    menu1.draw();
+    cout<<"Choose an UC to add: ";
     while (true) {
-        menu = Menu(*ucClasses);
+        Menu menu = Menu(*ucClasses);
         buttons = menu.getButtons();
         cin >> subMenuOption;
-        if (checkRequestInput(buttons, subMenuOption)) {
-            string aUcCode = buttons[stoi(subMenuOption) - 1];
-            buttons.clear();
-            ucIndex = findUc(aUcCode, *ucClasses);
-            for (int i = ucIndex; (*ucClasses)[i].getUcCode() == aUcCode; i++) {
-                buttons.push_back((*ucClasses)[i].getClassCode());
-            }
-            menu.setButtons(buttons);
-            menu.draw();
-            while (true) {
-                cin >> subMenuOption;
-                if (checkRequestInput(buttons, subMenuOption)) {
-                    toAdd = &(*ucClasses)[ucIndex + stoi(subMenuOption) - 1];
-                    if (!this->student.hasUcClass(*toAdd)) {
-                        choseUcClass = true;
+
+            if (checkRequestInput(buttons, subMenuOption)) {
+                string aUcCode = buttons[stoi(subMenuOption) - 1];
+
+                buttons.clear();
+                ucIndex = findUc(aUcCode, *ucClasses);
+                for (int i = ucIndex; (*ucClasses)[i].getUcCode() == aUcCode; i++) {
+                    buttons.push_back((*ucClasses)[i].getClassCode());
+                }
+                menu.setButtons(buttons);
+                menu.draw();
+                cout << "Now choose a class for the UC: ";
+                while (true) {
+                    cin >> subMenuOption;
+                    if (checkRequestInput(buttons, subMenuOption)) {
+                        toAdd = &(*ucClasses)[ucIndex + stoi(subMenuOption) - 1];
+                        if (!this->student.hasUcClass(*toAdd)) {
+                            choseUcClass = true;
+                        } else
+                            menu1.draw();
+                            cout << "You are already part of this class.Choose again:" << endl;
+                        break;
                     }
-                    else
-                        cout << "You are already part of this class." << endl;
-                    break;
                 }
             }
+
+        else{
+            choseUcClass=false;
+            menu1.draw();
+            cout<<"You already have this UC!Choose again:";
         }
         if (choseUcClass)
             break;
+        menu1.draw();
         cout << "Please insert a valid option: ";
     }
     return toAdd;
@@ -229,6 +246,11 @@ list<pair<bool, bool>> Request::handleRequest(set<Student>* students,vector<UcCl
     list<pair<bool, bool>> changeNumberStudents;// right increment left decrement
     pair<bool, bool> aChange;// just aux pair
     auto newStudentItr = (*students).find(this->student);// real student
+    if(newStudentItr==students->end()){
+        /**Student does not exist anymore*/
+        cout<<"Failed! Student does not exist anymore!";
+        return {};
+    }
     Student newStudent = *newStudentItr;// aux student
     list<UcClass> stuUcClasses;//ucClasses da copia
     UcClass *toAdd;//para ir buscar a parte direita do pair
@@ -246,10 +268,13 @@ list<pair<bool, bool>> Request::handleRequest(set<Student>* students,vector<UcCl
                     newStudent.removeUcClass(toRemove);
                     aChange.first = true;
                 } else {
+                    cout<<"Failed! Change would cause unbalance!\n";
                     return {};
                 }
-            }else
+            }else{
+                cout<<"Failed!Student does not have the UC "+toRemove.getUcCode()+", thus is not able to remove it!\n";
                 return {};
+            }
         }
         changeNumberStudents.push_back(aChange);
     }
@@ -263,13 +288,17 @@ list<pair<bool, bool>> Request::handleRequest(set<Student>* students,vector<UcCl
         if (toAdd != nullptr) {
 
             if (toAdd->getNumberOfStudents() >= toAdd->getCapacity()) {
+                cout<<"Failed!Class "+toAdd->getClassCode()+" in the UC"+toAdd->getUcCode()+" is already full\n";
                 return {{false,false}};
             }
-            else if (newStudent.hasUcClass(*toAdd))
+            else if (newStudent.hasUc(toAdd->getUcCode())){
+                cout<<"Failed!Student already has "+toAdd->getUcCode()+" has an UC!\n";
                 return {};
+            }
             else {
                 toAdd->setNumberOfStudents(toAdd->getNumberOfStudents() + 1);
                 if (checkUnbalance(ucClasses, *toAdd, 1)) {
+                    cout<<"Failed! Change would cause unbalance!\n";
                     return {};
                 }
                 for (auto itrUcClasses = stuUcClasses.begin(); itrUcClasses != stuUcClasses.end(); itrUcClasses++) {
@@ -280,6 +309,7 @@ list<pair<bool, bool>> Request::handleRequest(set<Student>* students,vector<UcCl
                         toAddLectures = toAdd->getLectures();
                         for (auto itrToAddLectures = toAddLectures.begin(); itrToAddLectures != toAddLectures.end(); itrToAddLectures++) {
                             if (itrToAddLectures->Overlaps(*itrLectures) && !itrToAddLectures->isOverlapableWith(*itrLectures)) {
+                                cout<<"Failed!" +toAdd->getUcCode()+'-'+toAdd->getClassCode()+" overlaps with"+itrUcClasses->getUcCode()+'-'+itrUcClasses->getClassCode()+"\n";
                                 return {{false,false}};
                             }
                         }
@@ -292,6 +322,7 @@ list<pair<bool, bool>> Request::handleRequest(set<Student>* students,vector<UcCl
         itrChanges++;
     }
     this->student = newStudent;
+    cout<<"Passed!\n";
     return changeNumberStudents;
 }
 
@@ -299,7 +330,7 @@ bool Request::checkUnbalance(vector<UcClass> ucClasses,UcClass ucClass, int type
     int index=findUc(ucClass.getUcCode(),ucClasses);
     bool cond=false;
     int numberStudents=ucClass.getNumberOfStudents();
-    while(ucClasses[index].getUcCode()==ucClass.getUcCode()){
+    while(index<ucClasses.size()&& ucClasses[index].getUcCode()==ucClass.getUcCode()){
         if(abs(ucClasses[index].getNumberOfStudents()-numberStudents) >3){
             cond=true;
             break;

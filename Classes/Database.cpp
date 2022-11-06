@@ -105,6 +105,7 @@ void Database::readArchive() {
     UcClass ucClass1, *ucClass2;
     string studentCode, ucCode1, classCode1, ucCode2, classCode2;
     while(getline(file,line)){
+
         istringstream words(line);
         getline(words,studentCode,',');
         Student student = *(students.find(Student("Irrelevant", stoi(studentCode), {})));
@@ -125,6 +126,7 @@ void Database::readArchive() {
         }
         Request request(student, pairs);
         archive.push(request);
+        pairs.clear();
     }
 }
 
@@ -570,6 +572,18 @@ void Database::handleRequests() {
         else {request = mainQueue.front(); mainQueue.pop();}// Loads next request
 
         ucPairs = request.getPairs();
+        cout<<request.getStudent().getStudentName()+"-up"<<request.getStudent().getStudentCode()<<":\n";
+        for(pair<UcClass,UcClass*>p:ucPairs){
+            if(p.first.getUcCode()!="-1" && p.second!= nullptr){
+                cout<<"\tSwitch->"+p.first.getUcCode()+'-'+p.first.getClassCode()+" for "+p.second->getUcCode()+'-'+p.second->getClassCode()+'\n';
+            }
+            else if(p.first.getUcCode()=="-1" ){
+                cout <<"\tAdd UC-> "+p.second->getUcCode()+'-'+p.second->getClassCode()+"\n";
+            }
+            else{
+                cout <<"\tRemove UC-> "+p.first.getUcCode()+'-'+p.first.getClassCode()+"\n";
+            }
+        }
         auto itrR = ucPairs.begin();
         changeNumberStudents = request.handleRequest(&students,schedule);
         if(changeNumberStudents.size()==0)
@@ -584,6 +598,7 @@ void Database::handleRequests() {
                 UcClass removed = (*itrR).first;
                 UcClass* originalUc = findUcClass(removed.getUcCode(), removed.getClassCode());
                 originalUc->setNumberOfStudents(originalUc->getNumberOfStudents() - 1);
+
             }
             itrR++;
         }
@@ -593,6 +608,10 @@ void Database::handleRequests() {
             students.erase(itr);
             students.insert(studentToAdd);
         }
+        string wait;
+        cout<<"\nEnter anything to see next request:";
+        cin>>wait;
+        system("clear");
 
     }
 }

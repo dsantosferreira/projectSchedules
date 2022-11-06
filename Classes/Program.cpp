@@ -20,6 +20,7 @@ Program::Program() {
  */
 void Program::createMenu() {
     this->menus.push_back(Menu("../Menus/mainMenu.txt"));//Initialize main menu
+    this->menus.push_back(Menu("../Menus/showMenu.txt"));//Initialize show menu
     this->menus.push_back(Menu("../Menus/searchSubMenu.txt"));// Initialize search submenu
     this->menus.push_back(Menu("../Menus/scheduleSubMenu.txt"));// Initialize schedule submenu
     this->menus.push_back(Menu("../Menus/requestsMenu"));
@@ -69,6 +70,7 @@ void Program:: run(){
         menu();
 // runs until quit option is selected
     }
+
     if(data.getMainRequest().size()>0 || data.getArchiveRequest().size()>0){
         cout<< "Do you want to save the stored requests?[y/n]: ";
         char answer;
@@ -77,6 +79,7 @@ void Program:: run(){
             data.handleRequests();
         }
     }
+
     data.updateStudents();
     data.updateArchive();
 
@@ -90,6 +93,7 @@ void Program:: run(){
  */
 void Program::menu() {
     draw(); //draw the current menu
+    cout<<"Choose an option: ";
     string option;
     bool cond = true;
     while (cond) {
@@ -106,15 +110,18 @@ void Program::menu() {
                             this->currentMenuPage=2;
                             break;
                         case '3':
-                            vacancies();
+                            this->currentMenuPage=3;
                             break;
                         case '4':
-                            this->currentMenuPage = 3;
+                            vacancies();
                             break;
                         case '5':
-                            data.handleRequests();
+                            this->currentMenuPage = 4;
                             break;
                         case '6':
+                            data.handleRequests();
+                            break;
+                        case '7':
                             this->currentMenuPage = -1;
                             break;
 
@@ -122,7 +129,28 @@ void Program::menu() {
                             cond = true;
                     }
                     break;
-                case 1: //is on show sub-menu
+                case 1:
+                    switch (option[0]){
+                        case '1':
+                            showStudents();
+                            break;
+                        case '2':
+                            showUcs();
+                            break;
+                        case '3':
+                            showClasses();
+                            break;
+                        case '4':
+                            currentMenuPage=0;
+                            break;
+                        default:
+                            cond = true;
+                    }
+
+
+
+                    break;
+                case 2: //is on show sub-menu
                     switch (option[0]) {
                         case '1':
                             searchStudent();
@@ -154,7 +182,7 @@ void Program::menu() {
                     }
                     break;
 
-                case 2:
+                case 3:
                     switch (option[0]) {
                         case '1':
                             printClassSchedule();
@@ -169,7 +197,7 @@ void Program::menu() {
                             cond=true;
                     }
                     break;
-                case 3:
+                case 4:
                 {
                     handleRequestOption(option[0]);
                     break;
@@ -193,6 +221,7 @@ void Program::printStudentSchedule() const {
     system("clear");
     Menu menu("../Menus/scheduleSubMenu2.txt");
     menu.draw();
+    cout<<"Choose an option: ";
     string option;
     cin >>option;
     while( option!="1" and option!="2"){
@@ -206,6 +235,7 @@ void Program::printStudentSchedule() const {
     set<Student> students= data.getStudents();
     auto itr=students.find(Student("Irrelevant",upCode,emptyList));
     if(itr!=students.end()){
+        system("clear");
         if(option=="1")itr->printGraphicalSchedule();
         else itr->printDiagramSchedule();
     }else {
@@ -225,6 +255,7 @@ void Program::printClassSchedule() const {
     system("clear");
     Menu menu("../Menus/scheduleSubMenu2.txt");
     menu.draw();
+    cout<<"Choose an option: ";
     string option;
     cin >>option;
     while( option!="1" and option!="2"){
@@ -232,20 +263,23 @@ void Program::printClassSchedule() const {
         cin>>option;
     }
     system("clear");
-    cout<<"Insert the class's year";
+    cout<<"Insert the class's year:";
     char year;
     while(getInput(year)|| (year-'1'>2 || year-'1'<0))cout<<"Invalid input please insert a number between 1-3:";
     system("clear");
     Menu secondaryMenu(data.getSchedule(),year);
     secondaryMenu.draw();
+    cout<<"Choose an option: ";
     vector<string> options=secondaryMenu.getButtons();
     cout<<"Insert the class:";
     int secondOption;
     while(getInput(secondOption)|| secondOption>options.size() || secondOption<1)cout<<"Invalid input please insert a number between 1-"<<options.size()<<':';
     string  class_=options[secondOption-1];
+    system("clear");
     if(option=="1") data.printClassGraphicSchedule(class_);
     else data.printClassDiagramSchedule(class_);
     wait();
+
 }
 
 /**
@@ -270,6 +304,7 @@ void Program::searchStudent() const {
         cout<<"Student not found\n";
     }
     wait();
+
 }
 
 /**
@@ -288,6 +323,7 @@ void Program::searchByClass() const {
     system("clear");
     Menu menu(data.getSchedule(),year);
     menu.draw();
+
     vector<string> options=menu.getButtons();
     cout<<"Insert the class:";
     int option;
@@ -297,7 +333,6 @@ void Program::searchByClass() const {
         customSorts(search);
         showSearch(search);
     }
-    wait();
 }
 
 /**
@@ -311,6 +346,7 @@ void Program::searchByUc() const {
     system("clear");
     Menu menu(this->data.getSchedule());
     menu.draw();
+
     vector<string> options=menu.getButtons();
     cout<<"Insert the Uc:";
     int option;
@@ -321,7 +357,7 @@ void Program::searchByUc() const {
         customSorts(search);
         showSearch(search);
     }
-    wait();
+
 }
 
 /**
@@ -335,6 +371,7 @@ void Program::searchByUcClass() const {
     system("clear");
     Menu menu(this->data.getSchedule());
     menu.draw();
+
     vector<string> options=menu.getButtons();
     cout<<"Insert the uc:";
     int option;
@@ -344,6 +381,7 @@ void Program::searchByUcClass() const {
     Menu secondMenu(this->data.getSchedule(),ucCode);
     system("clear");
     secondMenu.draw();
+
     options=secondMenu.getButtons();
     cout<<"Insert the class:";
 
@@ -355,7 +393,7 @@ void Program::searchByUcClass() const {
         customSorts(search);
         showSearch(search);
     }
-    wait();
+
 }
 
 /**
@@ -369,6 +407,8 @@ void Program::vacancies() const{
     system("clear");
     Menu menu(this->data.getSchedule());
     menu.draw();
+    cout<<"Choose an option: ";
+
     vector<string> options=menu.getButtons();
     cout<<"Insert the Uc:";
     int option;
@@ -407,7 +447,7 @@ void Program::moreThan() const {
         customSorts(search);
         showSearch(search);
     }
-    wait();
+
 
 }
 
@@ -427,7 +467,7 @@ void Program::searchByYear() const {
         customSorts(search);
         showSearch(search);
     }
-    wait();
+
 }
 
 /**
@@ -446,7 +486,7 @@ void Program::searchByAdmissionYear() const {
         customSorts(search);
         showSearch(search);
     }
-    wait();
+
 
 }
 
@@ -553,6 +593,7 @@ void Program::showStudents() const{
     vector<Student> search = data.allStudents();
     customSorts(search);
     showSearch(search);
+
 }
 
 /**
@@ -575,14 +616,27 @@ void Program::showUcs() const{
  * @see UcClass::printClassCode()
  */
 void Program::showClasses() const{
-    vector<UcClass> search = data.allClasses();
+    Menu menu(data.getSchedule());
+    menu.draw();
+
+    cout<<"Choose an UC:";
+    int option;
+    vector<string>options=menu.getButtons();
+    while(getInput(option)||option<1 || option>options.size())cout<<"Invalid input please insert a number between 1-"+options.size()+':';
+    string uc=options[option-1];
+    vector<UcClass>ucClasses=data.getSchedule();
+    int index= data.findUc(uc);
     cout << " _______________________\n";
     cout << "|                       |\n";
-    for(UcClass ucClass : search){
-        ucClass.printClassCode();
+    while(ucClasses[index].getUcCode()==uc){
+        ucClasses[index].printClassCode();
+        index++;
     }
     cout << "|_______________________|\n";
     wait();
+
+
+
 }
 
 /**
@@ -620,7 +674,7 @@ void Program::showSearch(vector<Student> search) const {
             search.at(start).print();
             start++;
         }
-        start++;
+
         string option;
         bool c = true;
         cout << "|-----------------------------------------------------------------------|\n";
@@ -738,6 +792,7 @@ void Program::customSorts(vector<Student>& search) const {
     string option;
     Menu menu = Menu("../Menus/sortMenu.txt");
     menu.draw();
+    cout<<"Choose an option: ";
     while (cond) {
         cin >> option;
         if (option.length() == 1 && isdigit(option[0])) {
