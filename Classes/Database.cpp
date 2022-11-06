@@ -84,6 +84,7 @@ void Database::readArchive() {
         }
         Request request(student, pairs);
         archive.push(request);
+        pairs.clear();
     }
 }
 
