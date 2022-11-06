@@ -1,0 +1,6 @@
+Alphabetic order - [A-Z]
+Reverse Alphabetic order - [Z-A]
+Ascending order [Up Code]
+Descending order [Up Code]
+Ascending order [No. UC]
+Descending order [No. UC]

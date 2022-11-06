@@ -1,5 +1,7 @@
 #include "Program.h"
 #include <limits>
+#include <algorithm>
+
 /**Functionality: The constructor of Program
  *
  * Description: It will define the current menu page at 0, create all the menus and initialize the database
@@ -106,8 +108,9 @@ void Program::menu() {
                             data.handleRequests();
                             break;
                         case '6':
-                            this->currentMenuPage = -1; //-1 indicates that it wants to leave
+                            this->currentMenuPage = -1;
                             break;
+
                         default:
                             cond = true;
                     }
@@ -284,6 +287,7 @@ void Program::searchByClass() const {
     while(getInput(option)|| option>options.size() || option<1)cout<<"Invalid input please insert a number between 1-"<<options.size()<<':';
     vector<Student> search = data.searchByClass(options[option-1]);
     if(!search.empty()){
+        customSorts(search);
         showSearch(search);
     }
     wait();
@@ -307,6 +311,7 @@ void Program::searchByUc() const {
     string ucCode=options[option-1];
     vector<Student> search = data.searchByUC(ucCode);
     if(!search.empty()){
+        customSorts(search);
         showSearch(search);
     }
     wait();
@@ -341,6 +346,7 @@ void Program::searchByUcClass() const {
     list<Lecture> empty;
     vector<Student> search = data.searchByUcClass(UcClass(ucCode,class_,empty));
     if(!search.empty()){
+        customSorts(search);
         showSearch(search);
     }
     wait();
@@ -392,6 +398,7 @@ void Program::moreThan() const {
     while(getInput(n))cout<<"Invalid input please insert a number:";
     vector<Student> search = data.searchMoreThan(n);
     if(!search.empty()){
+        customSorts(search);
         showSearch(search);
     }
     wait();
@@ -411,6 +418,7 @@ void Program::searchByYear() const {
     while(getInput(year))cout<<"Invalid input please insert a number:";
     vector<Student> search = data.searchByYear(year);
     if(!search.empty()){
+        customSorts(search);
         showSearch(search);
     }
     wait();
@@ -429,6 +437,7 @@ void Program::searchByAdmissionYear() const {
     while(getInput(year)) cout << "Invalid input please insert a number:";
     vector<Student> search = data.searchByYearAdmission(year);
     if(!search.empty()){
+        customSorts(search);
         showSearch(search);
     }
     wait();
@@ -511,6 +520,34 @@ bool Program::getInput(type &input) const {
     return false;
 }
 
+void Program::showStudents() const{
+    vector<Student> search = data.allStudents();
+    customSorts(search);
+    showSearch(search);
+}
+
+void Program::showUcs() const{
+    vector<UcClass> search = data.allUcs();
+    cout << " _______________________\n";
+    cout << "|                       |\n";
+    for(UcClass ucClass : search){
+        ucClass.printUcCode();
+    }
+    cout << "|_______________________|\n";
+    wait();
+}
+
+void Program::showClasses() const{
+    vector<UcClass> search = data.allClasses();
+    cout << " _______________________\n";
+    cout << "|                       |\n";
+    for(UcClass ucClass : search){
+        ucClass.printClassCode();
+    }
+    cout << "|_______________________|\n";
+    wait();
+}
+
 void Program::showSearch(vector<Student> search) const {
     system("clear");
     int start = 0;
@@ -541,7 +578,6 @@ void Program::showSearch(vector<Student> search) const {
             search.at(start).print();
             start++;
         }
-        start++;
         string option;
         bool c = true;
         cout << "|-----------------------------------------------------------------------|\n";
@@ -574,3 +610,77 @@ void Program::showSearch(vector<Student> search) const {
         }
     }
 }
+
+bool alfabeticOrder(Student s1, Student s2){
+    return s1.getStudentName() <= s2.getStudentName();
+}
+
+bool invertedAlfabeticOrder(Student s1, Student s2){
+    return !alfabeticOrder(s1,s2);
+}
+
+bool upCodeOrder(Student s1, Student s2) {
+    return s1.getStudentCode() <= s2.getStudentCode();
+}
+
+
+bool invertedUpCodeOrder(Student s1, Student s2){
+    return !upCodeOrder(s1,s2);
+}
+
+bool ucAmountOrder(Student s1, Student s2){
+    if(s1.getUcClasses().size() == s2.getUcClasses().size()){
+        return alfabeticOrder(s1,s2);
+    }
+
+    return s1.getUcClasses().size() < s2.getUcClasses().size();
+}
+
+bool invertedUcAmountOrder(Student s1, Student s2){
+    if(s1.getUcClasses().size() == s2.getUcClasses().size()){
+        return alfabeticOrder(s1,s2);
+    }
+
+    return s2.getUcClasses().size() < s1.getUcClasses().size();
+}
+
+void Program::customSorts(vector<Student>& search) const {
+    bool cond = true;
+    string option;
+    Menu menu = Menu("../Menus/sortMenu.txt");
+    menu.draw();
+    while (cond) {
+        cin >> option;
+        if (option.length() == 1 && isdigit(option[0])) {
+            switch (option[0]) {
+                case '1':
+                    sort(search.begin(), search.end(), alfabeticOrder);
+                    cond = false;
+                    break;
+                case '2':
+                    sort(search.begin(), search.end(), invertedAlfabeticOrder);
+                    cond = false;
+                    break;
+                case '3':
+                    sort(search.begin(), search.end(), upCodeOrder);
+                    cond = false;
+                    break;
+                case '4':
+                    sort(search.begin(), search.end(), invertedUpCodeOrder);
+                    cond = false;
+                    break;
+                case '5':
+                    sort(search.begin(), search.end(), ucAmountOrder);
+                    cond = false;
+                    break;
+                case '6':
+                    sort(search.begin(), search.end(), invertedUcAmountOrder);
+                    cond = false;
+                    break;
+            }
+        }
+        if(cond) cout << "Choose a valid option\n";
+
+    }
+}
+

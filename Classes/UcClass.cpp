@@ -62,6 +62,12 @@ void UcClass::print() const {
                 <<':'<< (lecture_.getLectureTime().first-(int)lecture_.getLectureTime().first)*6<<"0|End:"<<(int)lecture_.getLectureTime().second
                 <<':'<< (lecture_.getLectureTime().second-(int)lecture_.getLectureTime().second)*6<<"0|Type:"+lecture_.getType()<<endl;
         }
+}
 
+void UcClass::printUcCode() const{
+    cout << "|\t" << ucCode << "\t|\n";
+}
 
+void UcClass::printClassCode() const{
+    cout << "|\t" << classCode << "\t\t|\n";
 }
