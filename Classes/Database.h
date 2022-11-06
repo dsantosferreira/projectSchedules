@@ -32,7 +32,6 @@ public:
     vector<Student> searchByYear(int year)const;
     vector<Student> searchByYearAdmission(int year) const;
     vector<UcClass> allUcs() const;
-    int getNumberUcClasses() const;
     int findUc(string ucCode)const;
     void handleRequests();
     void pushRequestToQueue(Request request);

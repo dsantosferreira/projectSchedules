@@ -2,6 +2,14 @@
 
 #include <iostream>
 
+/**
+ * Constructs a database by reading the necessary files (classes file, students file and the archive)
+ * @see readUcClasses()
+ * @see readUcClassesFile()
+ * @see readStudentClassesFile()
+ * @see readArchive()
+ * @brief Default constructor
+ */
 Database::Database() {
     readUcClasses();
     readUcClassesFile();
@@ -9,54 +17,87 @@ Database::Database() {
     readArchive();
 }
 
+/**
+ * @brief Getter of main queue for requests
+ * @return queue of requests
+ */
  queue<Request> Database::getMainRequest() const {
     return this->mainQueue;
 }
 
+/**
+ * @brief Getter of archive queue for requests
+ * @return queue of requests
+ */
 queue<Request> Database::getArchiveRequest() const {
     return this->archive;
 }
 
+/**
+ * @brief Getter for all the classes
+ * @return vector of all the classes
+ */
 vector<UcClass> Database::getSchedule() const {
     return schedule;
 }
 
+/**
+ * @brief Getter for all the students
+ * @return set of all the students
+ */
 set<Student> Database::getStudents() const {
     return students;
 }
 
+/**
+ * Getter of the set of all students by reference
+ * @return pointer to set of all students
+ */
 set<Student>* Database::getStudentsReference() {
     return &students;
 }
 
+/**
+ * Getter of the vector of classes by reference
+ * @return pointer to vector of all classes
+ */
 vector<UcClass>* Database::getScheduleReference() {
     return &schedule;
 }
 
+/**
+ * Complexity: O(1)
+ * @brief Getter for a particular class
+ * @param i - index in the classes vector
+ * @return pointer to the ucClass
+ */
 UcClass* Database::getUcClass(int i) {
     return &schedule[i];
 }
 
+/**
+ * @brief Setter for the set of students
+ * @param students_ - set of students
+ */
 void Database::setStudents(set<Student> students_) {
     this->students = students_;
 }
 
+/**
+ * @brief Setter for classes vector
+ * @param schedule_ - classes vector
+ */
 void Database::setSchedule(vector<UcClass> schedule_) {
     this->schedule = schedule_;
 }
 
-int Database::getNumberUcClasses() const {
-    int counter = 0;
-    set<string> alreadySeen;
-    for(UcClass ucClass : schedule) {
-        string ucCode = ucClass.getUcCode();
-        if (alreadySeen.find(ucCode) == alreadySeen.end()) {
-            alreadySeen.insert(ucCode);
-            counter++;
-        }
-    }
-    return counter;
-}
+/**
+ * Requests that don't have a class to remove or add reads "-" in the space of the class in the file, initializing each request
+ * with a dummy class if necessary \n
+ * Complexity: O(l*(log(s) + w)) being l the number of lines of the file, s the number of student in the set of students
+ * and w the number of words in each line of the file
+ * @brief Reads the archive file and initializes its queue
+ */
 void Database::readArchive() {
     list<pair<UcClass, UcClass*>> pairs;
     ifstream file("../files/archive.csv");
@@ -87,6 +128,10 @@ void Database::readArchive() {
     }
 }
 
+/**
+ * Complexity: O(m + n) being m the number of lines of the file and n the number of classes
+ * @brief Reads the classes file to create an ordered vector of classes without the lectures
+ */
 void Database::readUcClasses() {
     vector<UcClass> ucClasses;
     set<UcClass> aux;
@@ -107,6 +152,11 @@ void Database::readUcClasses() {
     }
 }
 
+/**
+ * Complexity: O(m * log(n)) being m the number of lines of the file and n the number of classes
+ * @see findUcClass()
+ * @brief Reads the classes file to create the lectures and insert them in each corresponding class
+ */
 void Database::readUcClassesFile() {
     ifstream in("../files/classes.csv");
     string aLine, ucCode, classCode, weekDay, type, startTime, duration;
@@ -130,6 +180,12 @@ void Database::readUcClassesFile() {
     }
 }
 
+/**
+ * Besides adding the classes to each student, this function sets the correct capacity and current number of students of
+ * each class \n
+ * Complexity: O(m * log(n)) being m the number of lines of the file and n the number of classes in the classes vector
+ * @brief Reads the students file and creates the students set of the database
+ */
 void Database::readStudentClassesFile() {
     ifstream in("../files/students_classes.csv");
     string stuCode, stuName, ucCode, classCode, aLine, prevStuCode = "";
@@ -171,6 +227,14 @@ void Database::readStudentClassesFile() {
 
 }
 
+/**
+ * This function uses binary search in the vector to search for the desired class efficiently \n
+ * Complexity: O(log(n)) being n the number of classes in the classes vector \n
+ * @brief Finds a certain class given its ucCode and classCode as input
+ * @param ucCode - ucCode of the class to find
+ * @param classCode - classCode of the class to find
+ * @return pointer to the class that was found
+ */
 UcClass* Database::findUcClass(string ucCode, string classCode) {
     int i, j, middle;
     i = 0;
@@ -200,16 +264,13 @@ UcClass* Database::findUcClass(string ucCode, string classCode) {
 return curr;
 }
 
-
-
-
-/**Functionality: Find the lowerbound of an Uc in the vector of UcClasses and return its index
- *
- * Description: This Function is going to receive as parameter a string which will be a UC code, and then will search for the first occurrence of the UC
- * in the vector, returning when finding it the index of that Uc in the vector.
- *
- * @param ucCode string with the code of the UC
- * @return The index of the first occurrence of the Uc in the vector
+/**
+ * This function used a lower bound search (similar to binary search) to search for the first class of the desired
+ * curricular unit. It is important to then traverse every class of a certain curricular unit
+ * Complexity: O(log(n)) being n the number of classes in the classes vector
+ * @brief Finds the first class from the curricular unit that is to be found given its ucCode as input
+ * @param ucCode - ucCode of the curricular unit to be found
+ * @return The index of the first occurrence of the curricular unit in the vector in the vector
  */
 int Database::findUc(std::string ucCode)const {
     int begin=0, end= this->schedule.size()-1;
@@ -223,11 +284,11 @@ int Database::findUc(std::string ucCode)const {
     return begin;
 }
 
-/**Functionality: Print the class schedule in the form of a Diagram
- *
- * Description: This Function will receive as a parameter a string which will have a class code, then it will search for all the lectures of this class and
- * print them with the use of the UcClass method print, forming a pleasant schedule.
- *
+/**
+ * Given the classCode of the class, this function calls the function that prints the lectures of a class \n
+ * Complexity: O(n) being n the number of classes in the classes vector
+ * @brief Prints a class' schedule in the form of a diagram
+ * @see UcClass::print()
  * @param classCode_ string with a class code
  */
 void Database::printClassDiagramSchedule(string classCode_)const{
@@ -238,12 +299,10 @@ void Database::printClassDiagramSchedule(string classCode_)const{
 
 }
 
-/**Functionality: Print the class schedule in a more graphical way
- *
- * Description: This Function will receive as a parameter a string which will have a class code, then it will search for all the lectures of this class and
- * format them in a string, then printing them forming a pleasant schedule.
- *
- * @param classCode_ string with a class code
+/**
+ * Complexity: O(m*n) being m the number of classes in the classes vector and n the number of lectures in each of the classes
+ * @brief Print the class schedule in a more graphical structure similar to a timetable
+ * @param classCode_ - classCode of the class
  */
 void Database::printClassGraphicSchedule(std::string classCode_) const {
     cout << classCode_ + " schedule\n";
@@ -307,14 +366,12 @@ void Database::printClassGraphicSchedule(std::string classCode_) const {
     cout << schedule_;
 }
 
-/**Functionality: search Students belonging to a class of an UC
- *
- * Description:This function will receive as a parameter an UcClass, then it will search for all the Students that belong to the class of that UC
- * displaying them using Student method print. the function will give a warning if no student was found as well as returning false,otherwise it
- * will return true.
- *
+/**
+ * Complexity: O(m*n) being m the number of student in the set of students and n the numbers of classes each student is in
+ * @see Student::hasUcClass()
+ * @brief Searches students belonging to a class of a particular curricular unit
  * @param ucClass UcClass
- * @return return false if no student was found and true if at least one student was found
+ * @return vector of students in the class given as input
  */
 vector<Student> Database::searchByUcClass(UcClass ucClass) const {
     vector<Student> result;
@@ -327,14 +384,11 @@ vector<Student> Database::searchByUcClass(UcClass ucClass) const {
     return result;
 }
 
-/**Functionality: Search for a Student
- *
- * Description: This function will receive as a parameter an int with a up code of a student,then it will search for the Student and display him
- * using Student method print.The function will give a warning if no student was found as well as returning false,otherwise it
- * will return true.
- *
- * @param upCode int with the Students up code
- * @return return false if no student was found and true otherwise
+/**
+ * Complexity: O(n) being n the number of students in the set of students
+ * @brief Search for a Student given its upCode
+ * @param upCode - integer with the student's upCode
+ * @return true if the student exists, false otherwise
  */
 bool Database::searchStudent(int upCode) const {
     list<UcClass> empty;
@@ -344,15 +398,13 @@ bool Database::searchStudent(int upCode) const {
     return false;
 }
 
-/**Functionality: Search Students of an UC
- * Description: This function will receive as a parameter a string with an Uc code, then it will search for the Students of that Uc and display them
- * using the Student method print.The function will give a warning if no student was found as well as returning false,otherwise it
- * will return true.
- *
- * @param ucCode_ string with UC code
- * @return return false if no student was found and true otherwise
+/**
+ * Complexity: O(m * n) being m the number of students in the set of students and n the number of classes the student is in
+ * @brief Search Students of a curricular unit
+ * @param ucCode_ - ucCode of the curricular unit
+ * @return vector of students in the curricular unit
  */
-vector<Student> Database::searchByUC(std::string ucCode_)const{
+vector<Student> Database::searchByUC(string ucCode_)const{
     vector<Student> result;
     for(Student student : students){
         if(student.hasUc(ucCode_)){
@@ -363,16 +415,13 @@ vector<Student> Database::searchByUC(std::string ucCode_)const{
     return result;
 }
 
-/**Function: Search students of a class
- *
- * Description: This function will receive as a parameter a string with an class code, then it will search for the Students of that class and display them
- * using the Student method print.The function will give a warning if no student was found as well as returning false,otherwise it
- * will return true.
- *
- * @param class_ string with class code
- * @return return false if no student was found and true otherwise
+/**
+ * Complexity: O(m * n) being m the number of students in the set of students and n the number of classes that student is in
+ * @brief Search students of a class
+ * @param class_ - classCode of the class
+ * @return vector of student that are in the class
  */
-vector<Student> Database::searchByClass(std::string class_) const {
+vector<Student> Database::searchByClass(string class_) const {
     vector<Student> result;
     for(Student student : students){
         if(student.hasClass(class_)){
@@ -383,15 +432,11 @@ vector<Student> Database::searchByClass(std::string class_) const {
     return result;
 }
 
-
-/**Function: Search Students with more than N UCs
- *
- * Description: This function will receive as a parameter an int with a number of minimum UCs the Students should have, then it will search for the
- * Students that met that condition and display them using the Student method print.The function will give a warning if no student was found as well as
- * returning false,otherwise it will return true.
- *
- * @param n int with the minimum of Ucs the Student should have
- * @return return false if no student was found and true otherwise
+/**
+ * Complexity: O(n) being n the number of students in the set of students
+ * @brief Search students with more than n curricular units
+ * @param n - integer with the minimum of curricular units the student should have
+ * @return vector of students that have n or more curricular units
  */
 vector<Student> Database::searchMoreThan(int n) const {
     vector<Student> result;
@@ -406,13 +451,11 @@ vector<Student> Database::searchMoreThan(int n) const {
     return result;
 }
 
-/**Functionality: Search Students of an academic year
- *
- * Description: This function will receive as a parameter an int with an academic year, then it will search for the Students which belong to that
- * academic year and display them using the Student method print.The function will return false if no Student was found,otherwise it will return true.
- *
- * @param year int with an academic year
- * @return  return false if no student was found and true otherwise
+/**
+ * Complexity: O(m * n) being m the numbers of students in the set of students and n the numebrs of classes the student is in
+ * @brief Search students of an academic year
+ * @param year - integer with an academic year
+ * @return vector of students that are enrolled in a class from the nth year
  */
 vector<Student> Database::searchByYear(int year) const{
     vector<Student> result;
@@ -434,13 +477,11 @@ vector<Student> Database::searchByYear(int year) const{
     return result;
 }
 
-/**Functionality: Search Students who entered in a year
- *
- * Description: This function will receive as a parameter an int with a year, then it will search for the Students which entered the university
- * that year and display them using the Student method print.The function will return false if no Student was found,otherwise it will return true.
- *
- * @param year int with a year
- * @return  return false if no student was found and true otherwise
+/**
+ * Complexity: O(n) being n the number of students in the set of students
+ * @brief Search Students who started studying in a certain year
+ * @param year - integer with the year
+ * @return vector of students that started sutdying in the year specified
  */
 vector<Student> Database::searchByYearAdmission(int year) const{
     vector<Student> result;
@@ -455,6 +496,11 @@ vector<Student> Database::searchByYearAdmission(int year) const{
     return result;
 }
 
+/**
+ * Complexity: O(n) being n the number of students in the set of students
+ * @brief Returns all the students in a vector
+ * @return vector of all the students
+ */
 vector<Student> Database::allStudents() const{
     vector<Student> result;
     for(Student student : students){
@@ -463,6 +509,11 @@ vector<Student> Database::allStudents() const{
     return result;
 }
 
+/**
+ * Complexity: O(n) being n the number of classes in the classes vector
+ * @brief Returns all the curricular units
+ * @return vector of all the curricular units
+ */
 vector<UcClass> Database::allUcs() const{
     set<string> alreadySeen;
     vector<UcClass> result;
@@ -475,6 +526,11 @@ vector<UcClass> Database::allUcs() const{
     return result;
 }
 
+/**
+ * Complexity: O(n) being n the number of classes in the vector of classes
+ * @brief Returns a vector with all the classes
+ * @return vector with all the classes
+ */
 vector<UcClass> Database::allClasses() const {
     set<string> alreadySeen;
     vector<UcClass> result;
@@ -486,6 +542,11 @@ vector<UcClass> Database::allClasses() const {
     }
     return result;
 }
+
+/**
+ * Pushes a request too the main queue of requests
+ * @param request - request to be pushed
+ */
 void Database::pushRequestToQueue(Request request) {
     mainQueue.push(request);
 }
@@ -536,14 +597,26 @@ void Database::handleRequests() {
     }
 }
 
+/**
+ * @brief Adds a student to the set of students
+ * @param studentCode - student code of the student to be added
+ * @param studentName - student name of the student to be added
+ */
 void Database::addStudent(int studentCode, string studentName) {
      students.insert(Student(studentName, studentCode, {}));
  }
 
+ /**
+  * @brief Removes a student of the set of students
+  * @param studentCode -  student code of the student to be removed
+  */
 void Database::removeStudent(int studentCode) {
      students.erase(Student("Irrelevant", studentCode, {}));
  }
 
+ /**
+  * @brief Updates the students file for future use
+  */
 void Database::updateStudents() const {
      ofstream file("../files/students_classes.csv",ios::trunc);
      file<<"StudentCode,StudentName,UcCode,ClassCode"<<endl;

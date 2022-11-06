@@ -7,6 +7,7 @@
 Student::Student() {}
 
 /**
+ * Complexity: linear in the number of classes
  * @brief Removes the class given as input from the student's classes.
  * @param aUcClass - class to remove from student
  */
@@ -69,6 +70,7 @@ void Student::setUcClasses(list<UcClass> ucClasses_) {
 }
 
 /**
+ * Complexity: linear in pos
  * @brief Adds a UcClass to the student's classes before the UcClass in position "pos"
  * @param aUcClass - UcClass to add
  * @param pos - position of UcClass to which "aUcClass" is going to be inserted before
@@ -112,25 +114,8 @@ bool Student::operator<(const Student &student) const {
     return this->studentCode < student.studentCode;
 }
 
-// APAGAR?
-string Student::classOfUc(string ucCode_) const {
-    for(UcClass ucClass: this->ucClasses){
-        if(ucClass.getUcCode()==ucCode_) return ucClass.getClassCode();
-    }
-    string s=0;
-    return s;
-}
-
-// APAGAR?
-string Student::ucOfClass(std::string classCode_) const {
-    for(UcClass ucClass: this->ucClasses){
-        if(ucClass.getClassCode()==classCode_) return ucClass.getUcCode();
-    }
-    string s=0;
-    return s;
-}
-
 /**
+ * Complexity: Linear in the number of classes of the student
  * @brief Checks if a certain student is part of a certain class
  * @param classCode_ - class to be checked
  * @return true if student is part of the class to be checked, false otherwise
@@ -143,6 +128,7 @@ bool Student::hasClass(string classCode_) const {
 }
 
 /**
+ * Complexity: Linear in the number of classes of the student
  * @brief Checks if a certain student is enrolled in a certain curricular unit
  * @param ucCode_ - curricular unit to be checked
  * @return true if student is enrolled in the curricular unit, false otherwise
@@ -155,6 +141,8 @@ bool Student::hasUc(string ucCode_) const {
 }
 
 /**
+ * Complexity: O(classes*lectures) being "classes" the classes that the students is in and "lectures" the lectures of a
+ * certain class
  * Goes through all the student's lectures and displays them in a format similar to a timetable
  * @brief Draw a graphical menu of the student
  */
@@ -216,6 +204,7 @@ void Student::printGraphicalSchedule() const {
 }
 
 /**
+ * Complexity: Linear in the number of classes of the student
  * @brief Verify if student belongs to a class for a certain curricular unit
  * @param ucClass_ - class of a certain curricular unit to be checked
  * @return true if the student is enrolled in the class of the certain curricular unit, false otherwise

@@ -276,6 +276,7 @@ void Program::searchStudent() const {
  * Given an year and corresponding class from the menu as input, prints the name and student code of every student in that class. If the input
  * is invalid the user is notified.
  * @see showSearch()
+ * @see customSorts()
  * @brief Search and prints all students from a class
  */
 void Program::searchByClass() const {
@@ -297,13 +298,13 @@ void Program::searchByClass() const {
         showSearch(search);
     }
     wait();
-
 }
 
 /**
  * Given a curricular unit from the menu as input, prints the name and student code of every student in that curricular unit.
  * If the input is invalid the user is notified.
  * @see showSearch()
+ * @see customSorts()
  * @brief Search and prints all students from a curricular unit
  */
 void Program::searchByUc() const {
@@ -327,6 +328,7 @@ void Program::searchByUc() const {
  * Given a curricular unit and a class from that curricular unit as input from the menu, prints the name and student code of every student
  * in the class of that particular course unit. If the input invalid the user is notified.
  * @see showSearch()
+ * @see customSorts()
  * @brief Search Students belonging to a class of a particular curricular unit
  */
 void Program::searchByUcClass() const {
@@ -358,7 +360,9 @@ void Program::searchByUcClass() const {
 
 /**
  * Given a curricular unit as input from the menu, prints the capacity, vacancies and current number os students enrolled in each class
- * of that curricular unit. If the input is invalid the user is notified.
+ * of that curricular unit. If the input is invalid the user is notified. \n
+ * Complexity: O(m + n) being m the number of classes in the classes vector and n the number of classes of a particular curricular unit
+ * @see Database::findUc()
  * @brief Displays the capacity, number of students and the vacancies of the classes from a curricular unit
  */
 void Program::vacancies() const{
@@ -390,6 +394,7 @@ void Program::vacancies() const{
 /**
  * Given an integer "n" as input, prints all the students' names and student codes that are enrolled in "n" or more curricular units. If the input
  * is lower than 1 all students will be printed.
+ * @see customSorts()
  * @brief Displays the students that are enrolled in "n" or more curricular units
  */
 void Program::moreThan() const {
@@ -409,6 +414,7 @@ void Program::moreThan() const {
 /**
  * Given an year "n" as input, prints the name and student code of every student that is in the "n"th year.
  * @see showSearch()
+ * @see customSorts()
  * @brief Displays all the students belonging to a year
  */
 void Program::searchByYear() const {
@@ -427,6 +433,7 @@ void Program::searchByYear() const {
 /**
  * Given an year "n" as input, prints the name and student code of every student that became a student at FEUP in the year n.
  * @see showSearch()
+ * @see customSorts()
  * @brief Displays all the Students who became a student at FEUP in the year n.
  */
 void Program::searchByAdmissionYear() const {
@@ -548,6 +555,10 @@ void Program::showStudents() const{
     showSearch(search);
 }
 
+/**
+ * @brief Sets up the printing of the curricular units
+ * @see UcClass::printUcCode()
+ */
 void Program::showUcs() const{
     vector<UcClass> search = data.allUcs();
     cout << " _______________________\n";
@@ -559,6 +570,10 @@ void Program::showUcs() const{
     wait();
 }
 
+/**
+ * @brief Sets up the printing of the classes
+ * @see UcClass::printClassCode()
+ */
 void Program::showClasses() const{
     vector<UcClass> search = data.allClasses();
     cout << " _______________________\n";
@@ -570,6 +585,11 @@ void Program::showClasses() const{
     wait();
 }
 
+/**
+ * @brief Sets up the printing for any vector of students given by the variable search. The printing is done in pages so that
+ * the user doesn't have to scroll to see all the output
+ * @param search - vector of students to print
+ */
 void Program::showSearch(vector<Student> search) const {
     system("clear");
     int start = 0;
@@ -634,23 +654,52 @@ void Program::showSearch(vector<Student> search) const {
     }
 }
 
+/**
+ * @brief Used to order students by ascending alphabetic order
+ * @param s1 - first student
+ * @param s2 - second student
+ * @return true if the first student's name is lower than the second's, false otherwise
+ */
 bool alfabeticOrder(Student s1, Student s2){
     return s1.getStudentName() <= s2.getStudentName();
 }
 
+/**
+ * @brief Used to order students by descending alphabetic order
+ * @param s1 - first student
+ * @param s2 - second student
+ * @return true if the first student's name is higher than the second's, false otherwise
+ */
 bool invertedAlfabeticOrder(Student s1, Student s2){
     return !alfabeticOrder(s1,s2);
 }
 
+/**
+ * @brief Used to order students by upCode ascending order
+ * @param s1 - first student
+ * @param s2 - second student
+ * @return true if the first student's upCode is lower than the second's, false otherwise
+ */
 bool upCodeOrder(Student s1, Student s2) {
     return s1.getStudentCode() <= s2.getStudentCode();
 }
 
-
+/**
+ * @brief Used to order students by upCode descending order
+ * @param s1 - first student
+ * @param s2 - second student
+ * @return true if the first student's upCode is higher than the second's, false otherwise
+ */
 bool invertedUpCodeOrder(Student s1, Student s2){
     return !upCodeOrder(s1,s2);
 }
 
+/**
+ * If the students are enrolled int the same number of classes, thier are sorted in ascending student's name order
+ * @param s1 - first student
+ * @param s2 - second student
+ * @return true if the first student is enrolled in more classes than the second student, false otherwise
+ */
 bool ucAmountOrder(Student s1, Student s2){
     if(s1.getUcClasses().size() == s2.getUcClasses().size()){
         return alfabeticOrder(s1,s2);
@@ -659,6 +708,12 @@ bool ucAmountOrder(Student s1, Student s2){
     return s1.getUcClasses().size() < s2.getUcClasses().size();
 }
 
+/**
+ * If the students are enrolled int the same number of classes, thier are sorted in ascending student's name order
+ * @param s1 - first student
+ * @param s2 - second student
+ * @return true if the first student is enrolled in less classes than the second student, false otherwise
+ */
 bool invertedUcAmountOrder(Student s1, Student s2){
     if(s1.getUcClasses().size() == s2.getUcClasses().size()){
         return alfabeticOrder(s1,s2);
@@ -667,6 +722,17 @@ bool invertedUcAmountOrder(Student s1, Student s2){
     return s2.getUcClasses().size() < s1.getUcClasses().size();
 }
 
+/**
+ * Orders the vector of students depending on the input given: \n
+ * (1) Order by ascending alphabetic order \n
+ * (2) Order by descending alphabetic order \n
+ * (3) Order by ascending upCode order \n
+ * (4) Order by descending upCode order \n
+ * (5) Order by ascending number of curricular units order\n
+ * (6) Order by descending number of curricular units order
+ * @brief Orders the vector of students to be printed depending on the option that is chosen
+ * @param search - vector of students to be sorted
+ */
 void Program::customSorts(vector<Student>& search) const {
     bool cond = true;
     string option;
@@ -703,7 +769,6 @@ void Program::customSorts(vector<Student>& search) const {
             }
         }
         if(cond) cout << "Choose a valid option\n";
-
     }
 }
 
