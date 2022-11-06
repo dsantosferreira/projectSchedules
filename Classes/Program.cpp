@@ -578,7 +578,6 @@ void Program::showSearch(vector<Student> search) const {
             search.at(start).print();
             start++;
         }
-        start++;
         string option;
         bool c = true;
         cout << "|-----------------------------------------------------------------------|\n";
