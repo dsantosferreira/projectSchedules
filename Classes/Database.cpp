@@ -57,12 +57,12 @@ int Database::getNumberUcClasses() const {
     }
     return counter;
 }
-/*
+
 void Database::readArchive() {
     list<pair<UcClass, UcClass>> pairs;
     ifstream file("../files/archive.csv");
     string line;
-    UcClass ucClass1,*ucClass2;
+    UcClass ucClass1,ucClass2;
     string studentCode, ucCode1, classCode1, ucCode2, classCode2;
     while(getline(file,line)){
         istringstream words(line);
@@ -80,7 +80,7 @@ void Database::readArchive() {
                 UcClass ucClass1 = *(findUcClass(ucCode1, classCode1));
             }
             if(ucCode2=="-"){
-                ucClass2= nullptr;
+                ucClass2=UcClass("-1","-1",{});
             }
             else{
                 UcClass* ucClass2 = findUcClass(ucCode2, classCode2);
@@ -92,7 +92,7 @@ void Database::readArchive() {
         archive.push(request);
     }
 }
-*/
+
 void Database::readUcClasses() {
     vector<UcClass> ucClasses;
     set<UcClass> aux;
@@ -480,14 +480,14 @@ void Database::pushRequestToQueue(Request request) {
 void Database::handleRequests() {
     int sizeMain = mainQueue.size();
     int sizeArchive=archive.size();
-    bool addStudent;
+
     list<pair<bool, bool>> changeNumberStudents;
     list<pair<UcClass, UcClass>> ucPairs;
-    pair<bool, bool> aChange;
+
 
     // Goes through all requests
     for (int i = 0; i < sizeMain+sizeArchive ; i++) {
-        addStudent = true;
+
         Request request;
         if (i < sizeArchive) {
             request = archive.front();
@@ -497,37 +497,10 @@ void Database::handleRequests() {
             mainQueue.pop();
         }// Loads next request
 
-       //request.handleRequest();
-
-
+       if(!request.handleRequest(&this->students,&schedule)){
+           archive.push(request);
+       }
     }
-/*
-        ucPairs = request.getPairs();
-        auto itrR = ucPairs.begin();
-        changeNumberStudents = request.handleRequest(&students,schedule);
-        if(changeNumberStudents.size()==0)
-            addStudent=false;
-
-        for (auto itrC = changeNumberStudents.begin(); itrC != changeNumberStudents.end(); itrC++) {
-            aChange = *itrC;
-            if(aChange.first==false && aChange.second==false){
-                archive.push(request);
-            }
-            if (aChange.first == true) {
-                UcClass removed = (*itrR).first;
-                UcClass* originalUc = findUcClass(removed.getUcCode(), removed.getClassCode());
-                originalUc->setNumberOfStudents(originalUc->getNumberOfStudents() - 1);
-            }
-            itrR++;
-        }
-        if (addStudent) {
-            Student studentToAdd = request.getStudent();
-            auto itr = students.find(studentToAdd);
-            students.erase(itr);
-            students.insert(studentToAdd);
-        }
-
-    }*/
 }
 
 
@@ -541,14 +514,14 @@ void Database::updateStudents() const {
      }
      file.close();
  }
-/*
+
 void Database::updateArchive()  {
      ofstream file("../files/archive.csv",ios::trunc);
      while(!archive.empty()){
-         Request2 request=archive.front();
+         Request request=archive.front();
          archive.pop();
          file<<request.getStudent().getStudentCode();
-         for(pair<UcClass,UcClass*> p:request.getPairs()){
+         for(pair<UcClass,UcClass> p:request.getPairs()){
              file << ',';
              if(p.first.getUcCode()=="-1"){
                  file<<"-,-";
@@ -557,10 +530,10 @@ void Database::updateArchive()  {
                  file<<p.first.getUcCode()<<','<<p.first.getClassCode();
              }
              file<<",";
-             if(p.second== nullptr){
+             if(p.second.getUcCode()== "-1"){
                  file<<"-,-";
              }else{
-                 file<<p.second->getUcCode()<<','<<p.second->getClassCode();
+                 file<<p.second.getUcCode()<<','<<p.second.getClassCode();
              }
 
          }
@@ -571,4 +544,3 @@ void Database::updateArchive()  {
 
  }
 
-*/

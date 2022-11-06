@@ -11,6 +11,7 @@
 #include "Student.h"
 #include "UcClass.h"
 #include <set>
+#include <limits>
 
 class Request {
 public:
@@ -25,8 +26,9 @@ public:
     }
     list<pair<UcClass,UcClass>> getPairs() const;
     Student getStudent()const;
-    bool handleRequest(set<Student>* students, vector<UcClass> ucClasses);
+    bool handleRequest(set<Student>* students, vector<UcClass>* ucClasses);
     bool checkUnbalance(vector<UcClass> ucClasses, UcClass ucClass, int type);
+    int findUc(string ucCode, vector<UcClass> ucClasses);
 
 private:
     Student student;

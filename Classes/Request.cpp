@@ -6,89 +6,122 @@
 
 Request::Request(Student student_, list<pair<UcClass, UcClass>> pairs_) {
     this->student=student_;
-    this->pairs=pairs_;
+    this->removeAdd=pairs_;
 }
 list<pair<UcClass,UcClass>> Request::getPairs() const {
-    return this->pairs;
+    return this->removeAdd;
 }
 Student Request::getStudent()const{
     return this->student;
 }
 
-bool Request::handleRequest(set<Student>* students, vector<UcClass> ucClasses) {
-    list<pair<bool, bool>> changeNumberStudents;// right increment left decrement
-    pair<bool, bool> aChange;// just aux pair
+bool Request::handleRequest(set<Student>* students, vector<UcClass>* ucClasses) {
+
+    vector<UcClass> ucClassesCopy=*ucClasses;
     auto newStudentItr = (*students).find(this->student);// real student
     Student newStudent = *newStudentItr;// aux student
     list<UcClass> stuUcClasses;//ucClasses da copia
-    UcClass *toAdd;//para ir buscar a parte direita do pair
     list<Lecture> toAddLectures;//aux recebe as aulas da ucClass em cima
     int posForAdding;//posição onde adicionar
 
-    for (auto itr = removeAdd.begin(); itr != removeAdd.end(); itr++) {
-        aChange = {false, false};
-        UcClass toRemove = itr->first;
+    /**Removing the ucClasses*/
+    for(pair<UcClass,UcClass> p:removeAdd){
+        string uc=p.first.getUcCode();
+        if(uc!="-1"){
+            if(student.hasUc(uc)){
+                if (!checkUnbalance(ucClassesCopy, p.first, 0)) {
+                    newStudent.removeUcClass(p.first);
+                    int index= findUc(uc,ucClassesCopy);
+                    ucClassesCopy[index].setNumberOfStudents(ucClassesCopy[index].getNumberOfStudents()-1);/**decreasing the number of students in a uc class*/
 
-        if (toRemove.getUcCode() != "-1") {
-            if (newStudent.hasUcClass(toRemove)) {
-                toRemove.setNumberOfStudents(toRemove.getNumberOfStudents() - 1);
-                if (!checkUnbalance(ucClasses, toRemove, 0)) {
-                    newStudent.removeUcClass(toRemove);
-                    aChange.first = true;
                 } else {
-                    return {};
+                    cout<<"Failed!Change would case unbalance!";
+                    return false;
                 }
             }else
-                return {};
+                cout<<"Failed! Student does not have "+uc+" has an UC, thus it is impossible to remove!";
+                return false;
         }
-        changeNumberStudents.push_back(aChange);
-    }
 
-    auto itrChanges = changeNumberStudents.begin();
-    for (auto itr = removeAdd.begin(); itr != removeAdd.end(); itr++) {
-        stuUcClasses = newStudent.getUcClasses();
-        toAdd = itr->second;
-        posForAdding = 0;
+        }
 
-        if (toAdd != nullptr) {
-
-            if (toAdd->getNumberOfStudents() >= toAdd->getCapacity()) {
-                return {{false,false}};
-            }
-            else if (newStudent.hasUcClass(*toAdd))
-                return {};
-            else {
-                toAdd->setNumberOfStudents(toAdd->getNumberOfStudents() + 1);
-                if (checkUnbalance(ucClasses, *toAdd, 1)) {
-                    return {};
+    /**Adding the UcClasses*/
+    for(pair<UcClass,UcClass> p:removeAdd){
+        string uc=p.second.getUcCode();
+        string class_=p.second.getClassCode();
+        int index= findUc(uc,ucClassesCopy);
+        UcClass ucClassToAdd=ucClassesCopy[index];
+        if(uc!="-1"){
+            if(!student.hasUc(uc)){
+                if (checkUnbalance(ucClassesCopy, p.second, 1)) {
+                    cout<<"Failed!Change would case unbalance!";
+                    return false;
                 }
-                for (auto itrUcClasses = stuUcClasses.begin(); itrUcClasses != stuUcClasses.end(); itrUcClasses++) {
-                    list<Lecture> lectures = itrUcClasses->getLectures();
-                    if (*itrUcClasses < *toAdd)
-                        posForAdding++;
-                    for (auto itrLectures = lectures.begin(); itrLectures != lectures.end(); itrLectures++) {
-                        toAddLectures = toAdd->getLectures();
-                        for (auto itrToAddLectures = toAddLectures.begin(); itrToAddLectures != toAddLectures.end(); itrToAddLectures++) {
-                            if (itrToAddLectures->Overlaps(*itrLectures) && !itrToAddLectures->isOverlapableWith(*itrLectures)) {
-                                return {{false,false}};
+                if(ucClassToAdd.getNumberOfStudents()>=ucClassToAdd.getCapacity()){
+                    cout<<"Failed! The Class "+class_+" in the UC "+uc+" is already full!";
+                    return false;
+                }else{
+                    for(UcClass ucClass:newStudent.getUcClasses() ){
+                        if(ucClassToAdd<ucClass) {
+                            posForAdding++;
+                        }
+                        for(Lecture lecture:ucClass.getLectures()){
+                            for(Lecture lectureToAdd:ucClassToAdd.getLectures()){
+                                if(lectureToAdd.isOverlapableWith(lecture)){
+                                    cout<<"Failed!"+ucClassToAdd.getUcCode()+'-'+ucClassToAdd.getClassCode()+" lectures would overlap with"+
+                                    ucClass.getUcCode()+'-'+ucClass.getClassCode()+" lectures!";
+                                    return false;
+                                }
                             }
                         }
                     }
+                    newStudent.addUcClass(ucClassToAdd,posForAdding);
+                    ucClassesCopy[index].setNumberOfStudents(ucClassesCopy[index].getNumberOfStudents()-1);/**Adding one to the number of students in UcClass*/
+
                 }
-                newStudent.addUcClass(toAdd, posForAdding);
-                itrChanges->second = true;
-            }
+
+            }else
+                cout<<"Failed! Student already has "+uc+" has an UC!";
+            return false;
         }
-        itrChanges++;
     }
-    this->student = newStudent;
+
+    this->student=newStudent;
+    *ucClasses=ucClassesCopy;
+    students->erase(newStudentItr);
+    students->insert(this->student);
     return true;
+    }
+
+
+
+/**
+ * @brief Finds the first class from a Curricular Unit
+ * @param ucCode name of the Curricular Unit
+ * @param ucClasses vector of all classes to be searched
+ * @return
+ */
+int Request::findUc(string ucCode, vector<UcClass> ucClasses) {
+    int low = 0, high = ucClasses.size() - 1;
+    int middle;
+    while (low != high) {
+        middle = low + (high - low)/2;
+        if (ucClasses[middle].getUcCode() >= ucCode) {
+            high = middle;
+        }
+        else {
+            low = middle + 1;
+        }
+    }
+    return low;
 }
 
 bool Request::checkUnbalance(vector<UcClass> ucClasses, UcClass ucClass, int type)  {
     int index=findUc(ucClass.getUcCode(),ucClasses);
     bool cond=false;
     int numberStudents=ucClass.getNumberOfStudents();
+    if(type==0) numberStudents--;
+    else numberStudents++;
     while(ucClasses[index].getUcCode()==ucClass.getUcCode()){
         if(abs(ucClasses[index].getNumberOfStudents()-numberStudents) >3){
             cond=true;

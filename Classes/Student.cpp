@@ -69,6 +69,11 @@ void Student::setUcClasses(list<UcClass> ucClasses_) {
  * @param aUcClass UcClass to add
  * @param pos position of UcClass to which "aUcClass" is going to be inserted before
  */
+void Student::addUcClass(UcClass aUcClass, int pos) {
+    auto itr = ucClasses.begin();
+    advance(itr, pos);
+    ucClasses.insert(itr, aUcClass);
+}
 void Student::addUcClass(UcClass* aUcClass, int pos) {
     auto itr = ucClasses.begin();
     advance(itr, pos);
