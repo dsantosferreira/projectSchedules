@@ -396,7 +396,10 @@ vector<Student> Database::searchByClass(std::string class_) const {
 vector<Student> Database::searchMoreThan(int n) const {
     vector<Student> result;
     for(Student student:students){
-        if(student.getUcClasses().size()>=n){
+  /*      if (student.getStudentName() == "Manuel Anibal Jose Anibal")
+            cout << student.getUcClasses().size() << endl;*/1
+        int nUcClasses = student.getUcClasses().size();
+        if(nUcClasses >= n){
             result.push_back(student);
         }
     }
