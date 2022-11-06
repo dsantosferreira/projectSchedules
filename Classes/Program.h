@@ -38,6 +38,7 @@ public:
     void showStudents() const;
     void showUcs() const;
     void showClasses() const;
+    void customSorts(vector<Student> &search) const;
 
 
     template<typename type >
