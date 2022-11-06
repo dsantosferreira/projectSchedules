@@ -15,10 +15,7 @@ public:
     Program();
     int getCurrentPage()const;
     void setCurrentPage(int newCurrentpage);
-
-    Database getData(){
-        return this->data;
-    }
+    Database getData();
     void draw() const;
     void run();
     void menu();
@@ -36,12 +33,8 @@ public:
     void wait() const;
     void handleRequestOption(char option);
     void showSearch(vector<Student> search) const;
-
     template<typename type >
     bool getInput(type &input) const;
-
-
-
 private:
     bool validateStudentCode(int studentCode);
     int currentMenuPage;
@@ -50,4 +43,4 @@ private:
 };
 
 
-#endif //PROJETO_SCHEDULE_PROGRAM_H
+#endif

@@ -1,9 +1,8 @@
 #include "Program.h"
 #include <limits>
-/**Functionality: The constructor of Program
- *
- * Description: It will define the current menu page at 0, create all the menus and initialize the database
- *
+/**
+ * Defines the current menu page at 0, creates all the menus and initialize the database
+ * @brief The constructor of Program
  */
 Program::Program() {
     this->currentMenuPage=0;
@@ -12,11 +11,10 @@ Program::Program() {
     cout<<"Welcome to the Better Sigarra.\n";
 }
 
-
-
-/**Functionality: Initialize all the menus
- * Auxiliary function of the constructor Program(),this function is used for creating the menus the program needs,
- * it does that by initializing it and then pushing it to the attribute of the Program menus which is a vector of menus
+/**
+ * Auxiliary function of the constructor Program(). It creates the menus the program needs by initializing them
+ * and then pushing them to the Program's menu vector
+ * @brief Initializes all the menus
  */
 void Program::createMenu() {
     this->menus.push_back(Menu("../Menus/mainMenu.txt"));//Initialize main menu
@@ -27,33 +25,42 @@ void Program::createMenu() {
 }
 
 /**
- *This Function is used to get the current page of the menu we are in
- * @return The current Page Of the Menu
+ * @brief Gets the current page of the menu we are in
+ * @return The current page of the menu as an integer
  */
 int Program::getCurrentPage() const {
     return this->currentMenuPage;
 }
 
 /**
- *
- * @param newCurrentPage
- * This function receive the index of the new menu page we are in and set it as the current menu page
+ * @brief Gets the database of the program
+ * @return the database of the program
+ */
+Database Program::getData() {
+    return this->data;
+}
+
+/**
+ * @brief Receives the index of the new menu page we are in and set it as the current menu page
+ * @param newCurrentPage - current page as an integer
  */
 void Program::setCurrentPage(int newCurrentPage)  {
     this->currentMenuPage=newCurrentPage;
 }
 
-/**Functionality: draw the current page of the menu we are in
- * Description: Take the attribute menus get the current menu and use the method draw of the menu to draw it
+/**
+ * @see Menu::draw()
+ * @brief Draws the current page of the menu we are in
  */
 void Program::draw() const {
     this->menus[this->currentMenuPage].draw(); //draw the current menu
 }
 
-/**Functionality: Run the program
- *
- * Description: Uses a while to stop the program from finishing without the users permission, the while will ne broke when the Program attribute
- * currentMenuPage is equal to -1
+/**
+ * Uses a while loop to stop the program from finishing without the users permission. The while will loop will be broke
+ * when the Program attribute currentMenuPage is equal to -1. It also guarantees that the initial files are updated when
+ * exiting the application
+ * @brief Starts the program and exits it properly
  */
 void Program:: run(){
     while(this->currentMenuPage!=-1){
@@ -73,11 +80,11 @@ void Program:: run(){
 
 }
 
-/**Functionality: Makes the Program work, calls the functions and deals with the majority of the inputs and with the current menu page.
- *
- * Description: This function is what is going to make our program work, it will draw the current menu pages get the inputs the user gives
- * (giving a warning if the input is invalid) and decides what the program should do next,it will do that by calling other function from the
- * Program with the help pf a switch.
+/**
+ * This function is what is going to make our program work, it will draw the current menu pages get the inputs the user gives
+ * (giving a warning if the input is invalid) and decides what the program should do next. It will do that by calling other functions from the
+ * Program with the help of a switch.
+ * @brief Decides what is done based on the menu that is being shown and the input that is given
  */
 void Program::menu() {
     draw(); //draw the current menu
@@ -172,11 +179,12 @@ void Program::menu() {
     }
 }
 
-/**Functionality: Print the schedule of the Student and make it more user friendly.
- *
- * Description: This function will  make the program be more user friendly it will draw the menu page corresponding to the schedule option and then it will ask
- * the user to choose between printing a graphical or a diagram menu then it will ask for the Students up code and then will call the functions to
- * print the menu, giving a warning if no Student was found, the function will wait until the user has finished seeing the menu to finish its execution
+/**
+ * Prints a student's schedule using a graphical representation or a diagram depending on the user's input. The user will
+ * be notified if the student code that was given doesn't exist.
+ * @see Student::printGraphicalSchedule
+ * @see Student::printDiagramSchedule
+ * @brief Prints the schedule of a Student
  */
 void Program::printStudentSchedule() const {
     system("clear");
@@ -203,12 +211,12 @@ void Program::printStudentSchedule() const {
     wait();
 }
 
-/**Functionality: Print class Schedule and make it more user friendly.
- *
- * Description: This function will  make the program be more user friendly, it will draw the menu page corresponding to the schedule option and then it will ask
- * the user to choose between printing a graphical or a diagram menu, then it will ask the class's year, after that it  will display a menu with all
- * the classes from that year and ask you to choose one(giving a warning if the option is invalid) then it will call the functions to print the menu,
- * the function will wait until the user has finished seeing the menu to finish its execution.
+/**
+ * Prints a class' schedule using a graphical representation or a diagram depending on the user's input. The user will
+ * be notified if the year or class input is invalid.
+ * @see Database::printClassGraphicSchedule
+ * @see Database::printClassDiagramSchedule
+ * @brief Prints the schedule of class
  */
 void Program::printClassSchedule() const {
     system("clear");
@@ -237,11 +245,10 @@ void Program::printClassSchedule() const {
     wait();
 }
 
-/**Functionality: Search Student and make it more user friendly
- *
- * Description:This function will  make the program more user friendly,it will start by clearing the terminal window,then it will ask the user to insert the
- * up code of a student(giving a warning if the input is invalid) and the will search the Student and printing his name and his up(if student was not
- * found then the function will give a warning)the function will wait until the user as finished seeing the Student to finish its execution
+/**
+ * Given a student code by the user as input, prints the name and student code of that student if it exists in the database.
+ * If not, the student code given is invalid and the user is notified.
+ * @brief Searches and prints a student's name and student code
  */
 void Program::searchStudent() const {
     system("clear");
@@ -262,12 +269,11 @@ void Program::searchStudent() const {
     wait();
 }
 
-/**Functionality: Search Students in a Class and make it more user friendly
- *
- * Description: This function will  make the program more user friendly,it will start by clearing the terminal window,it will ask the user the class's year and then
- * it will display a menu with all the classes from that year, after that it will ask the user to choose a class(giving a warning if the input is invalid)
- * and then it will search for all the Students belonging to that class,the function will wait until the user as finished seeing the Student to finish its
- * execution.
+/**
+ * Given an year and corresponding class from the menu as input, prints the name and student code of every student in that class. If the input
+ * is invalid the user is notified.
+ * @see showSearch()
+ * @brief Search and prints all students from a class
  */
 void Program::searchByClass() const {
 
@@ -290,11 +296,11 @@ void Program::searchByClass() const {
 
 }
 
-/**Function: Search Student in a UC and make it more user friendly
- *
- * Description: This function will make the program more user friendly,it will start by clearing the terminal window,following that it will display a menu with all
- * the Ucs,after that it will ask the user to choose one Uc(giving a warning if the input is invalid) and then it will search for all the students
- * belonging to that Uc, displaying them in the process,the function will wait until the user as finished seeing the Student to finish its execution.
+/**
+ * Given a curricular unit from the menu as input, prints the name and student code of every student in that curricular unit.
+ * If the input is invalid the user is notified.
+ * @see showSearch()
+ * @brief Search and prints all students from a curricular unit
  */
 void Program::searchByUc() const {
     system("clear");
@@ -312,13 +318,11 @@ void Program::searchByUc() const {
     wait();
 }
 
-/**Function: Search Students belonging to a class on an UC.
- *
- * Description: This function will make the program more user friendly,it will start by clearing the terminal window,then it will display a menu with all the UCs,
- * following that it will ask the user to choose one(giving a warning if the input is invalid) and after that it will display another menu this time
- * with all the classes of the chosen Uc,this time will ask the user to choose a class(giving aa warning if the input is invalid) and then it will
- * search for all the Students belonging to that class for that UC, displaying them in the process,the function will wait until the user as finished
- * seeing the Student to finish its execution.
+/**
+ * Given a curricular unit and a class from that curricular unit as input from the menu, prints the name and student code of every student
+ * in the class of that particular course unit. If the input invalid the user is notified.
+ * @see showSearch()
+ * @brief Search Students belonging to a class of a particular curricular unit
  */
 void Program::searchByUcClass() const {
     system("clear");
@@ -346,12 +350,10 @@ void Program::searchByUcClass() const {
     wait();
 }
 
-/**Functionality: display the capacity,number of students and the vacancies left of the classes of a UC.
- *
- * Description: This function will make the program more user friendly,it will start by clearing the terminal window,then it will display a menu with
- * all the UCs, following that it will ask the user to choose one(giving a warning if the input is invalid),after that it will search all the classes
- * of that UC and for each one of them will display the capacity,the number of students belonging to them and the vacancies left,the function will wait
- * until the user as finished seeing the Student to finish its execution.
+/**
+ * Given a curricular unit as input from the menu, prints the capacity, vacancies and current number os students enrolled in each class
+ * of that curricular unit. If the input is invalid the user is notified.
+ * @brief Displays the capacity, number of students and the vacancies of the classes from a curricular unit
  */
 void Program::vacancies() const{
     system("clear");
@@ -379,11 +381,10 @@ void Program::vacancies() const{
 
 }
 
-/**Functionality: Display the Students that have more that n UCs.
- *
- *Description:  This function will make the program more user friendly,it will start by clearing the terminal window,then it will ask the user
- * to insert the minimum number of UCs the Student should hava,after that it will display all the Students who met the condition,the function
- * will wait until the user as finished seeing the Student to finish its execution.
+/**
+ * Given an integer "n" as input, prints all the students' names and student codes that are enrolled in "n" or more curricular units. If the input
+ * is lower than 1 all students will be printed.
+ * @brief Displays the students that are enrolled in "n" or more curricular units
  */
 void Program::moreThan() const {
     system("clear");
@@ -398,11 +399,10 @@ void Program::moreThan() const {
 
 }
 
-/**Functionality:  Display all the students belonging to a year
- *
- * Description: This function will make the program more user friendly,it will start by clearing the terminal window,then it will ask the user to insert
- * the year the Students should belong,after that it will search and display all the Students belonging to that year,the function will wait until the
- * user as finished seeing the Student to finish its execution.
+/**
+ * Given an year "n" as input, prints the name and student code of every student that is in the "n"th year.
+ * @see showSearch()
+ * @brief Displays all the students belonging to a year
  */
 void Program::searchByYear() const {
     system("clear");
@@ -416,11 +416,10 @@ void Program::searchByYear() const {
     wait();
 }
 
-/**Functionality: Display all the Students who enter FEUP in the year X.
- *
- * Description: This function will make the program more user friendly,it will start by clearing the terminal window,then it will ask the user to insert
- * the year the Students should have entered,after that it will search and display all the Students who entered that year,the function will wait until the
- * user as finished seeing the Student to finish its execution.
+/**
+ * Given an year "n" as input, prints the name and student code of every student that became a student at FEUP in the year n.
+ * @see showSearch()
+ * @brief Displays all the Students who became a student at FEUP in the year n.
  */
 void Program::searchByAdmissionYear() const {
     system("clear");
@@ -435,10 +434,8 @@ void Program::searchByAdmissionYear() const {
 
 }
 
-/**Functionality: Make the program wait until the user wants it to continue
- *
- * Description: This is an auxiliary function, it will create a string and ask the user to insert anything when he wants to continue the program. That
- * way the program will be on hold until the user tells it to continue.
+/**
+ * @brief Pauses the program until the user writes something in the console.
  */
 void Program::wait() const {
     cout<<"\nEnter anything to go back:";
@@ -446,6 +443,17 @@ void Program::wait() const {
     cin>>wait;
 }
 
+/**
+ * Chooses what to do based on the option given: \n
+ * (1) Remove a student from the database \n
+ * (2) Add a student to the database \n
+ * (3) Submit a request to remove a class of a student \n
+ * (4) Submit a request to add a class of a student \n
+ * (5) Submit a request to change a class of a student \n
+ * (6) Goes back to the main menu
+ * @brief Handles what to do next based on the option that is given as input
+ * @param option - option of the request
+ */
 void Program::handleRequestOption(char option) {
     set<Student> students = data.getStudents();
     int studentCode;
@@ -483,6 +491,11 @@ void Program::handleRequestOption(char option) {
     }
 }
 
+/**
+ * @brief Determines if the given student's student code is valid or not
+ * @param studentCode - student code of a student
+ * @return true if the student code is valid, false otherwise
+ */
 bool Program::validateStudentCode(int studentCode) {
     int year = studentCode / 100000;
     if (studentCode / 100000000 > 0 && studentCode / 1000000000 == 0 && year > 1926)
@@ -497,8 +510,11 @@ bool Program::validateStudentCode(int studentCode) {
  * (the use of the template will make this function useful for every type of variable) then it will ask the user to give an input and after that will check
  * if the input is valid for the type of the variable. If it not valid it will clear the i nput and return false, otherwise ir will return true. As the
  * variable is passed by reference it will keep the value of the input.
- * @tparam type input
- * @return bool
+ * Gets user's input and checks if it valid according to the type of the variable "input". The variable "input" will be
+ * updated since it is passed by reference.
+ * @brief Validates the input depending on the type of input that is desired
+ * @tparam type - variable that will hold the user's input
+ * @return true if the input was valid, false otherwise.
  */
 template<typename type>
 bool Program::getInput(type &input) const {
@@ -511,6 +527,12 @@ bool Program::getInput(type &input) const {
     return false;
 }
 
+/**
+ * Prints all the students' name and student code from the listing that was previously done. The printing is done by pages, so
+ * that the user doesn't have to scroll to see all the outputs.
+ * @brief Prints any student listing that was done
+ * @param search - vector of students to print
+ */
 void Program::showSearch(vector<Student> search) const {
     system("clear");
     int start = 0;
